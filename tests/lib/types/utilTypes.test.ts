@@ -1,5 +1,5 @@
 import { describe, expectTypeOf, it } from "vitest";
-import { OptionalFunc } from "../../lib/utilTypes";
+import { OptionalFunc } from "../../../lib/types/utilTypes";
 
 describe("OptionalFunc", () => {
   it("allows functions", () => {
