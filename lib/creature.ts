@@ -1,6 +1,7 @@
+import { Ability, AbilityFuncParamsWithoutTargets } from "./ability";
 import { RegistryContext } from "./registry";
 import { SkillList } from "./skills";
-import { Id } from "./utilTypes";
+import { Id, OptionalFunc } from "./utilTypes";
 
 export type RegistryToCreatureDefId<TRegistryContext extends RegistryContext> =
   TRegistryContext["creatures"] extends Record<infer TDefId, unknown>
@@ -16,6 +17,10 @@ export type CreatureDefinition<
     TRegistryContext,
     [CreatureInstance<RegistryToCreatureDefId<TRegistryContext>>]
   >;
+  abilities: OptionalFunc<
+    Ability<TRegistryContext>,
+    AbilityFuncParamsWithoutTargets<TRegistryContext>
+  >[];
 };
 
 export type CreatureInstance<TDefId extends Id> = {

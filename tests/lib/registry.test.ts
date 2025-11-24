@@ -1,5 +1,5 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
-import { finishRegistry } from "@/lib/types/registry";
+import { finishRegistry } from "@/lib/registry";
 
 describe("RegistryContext", () => {
   it("can be instantiated with specific creature IDs", () => {

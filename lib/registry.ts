@@ -1,14 +1,15 @@
 import { CreatureDefinition } from "./creature";
+import { Id } from "./utilTypes";
 
-export type Registry<TId extends string, TItem> = {
+export type Registry<TId extends Id, TItem> = {
   [key in TId]: TItem;
 };
 
-export type RawRegistry<TId extends string, TItem> = {
+export type RawRegistry<TId extends Id, TItem> = {
   [key in TId]: Omit<TItem, "id">;
 };
 
-export type RegistryContext<TCreatureId extends string = string> = {
+export type RegistryContext<TCreatureId extends Id = Id> = {
   creatures: Registry<
     TCreatureId,
     CreatureDefinition<RegistryContext<TCreatureId>>
