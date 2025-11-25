@@ -44,7 +44,7 @@ export function getDefaultSave(): Save<MainRegistryContext> {
       roster: {
         "creature-1": { id: "creature-1", definitionId: "human", hp: 10 },
       },
-      combats: [],
+      expeditions: [],
     },
   };
 }

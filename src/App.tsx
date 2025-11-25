@@ -34,7 +34,14 @@ function App() {
 
   return (
     <div>
-      <button onClick={clearSave}>Clear Save</button>
+      <button
+        onClick={() => {
+          clearSave();
+          location.reload();
+        }}
+      >
+        Clear Save
+      </button>
       <div>
         Last Tick:{" "}
         {gameContext

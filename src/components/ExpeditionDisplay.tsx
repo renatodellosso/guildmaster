@@ -1,19 +1,20 @@
-import { Combat } from "@/lib/combat";
 import { CreatureInstance } from "@/lib/creature";
+import { Expedition } from "@/lib/expedition";
 import { GameContext } from "@/lib/gameContext";
 import { RegistryContext, RegistryToCreatureDefId } from "@/lib/registry";
 
-export default function CombatDisplay<
+export default function ExpeditionDisplay<
   TRegistryContext extends RegistryContext,
 >({
-  combat,
+  expedition,
   gameContext,
-  registry,
 }: {
-  combat: Combat<TRegistryContext>;
+  expedition: Expedition<TRegistryContext>;
   gameContext: GameContext<TRegistryContext>;
   registry: TRegistryContext;
 }) {
+  const combat = expedition.combat;
+
   return (
     <div>
       <strong>Allies</strong>
@@ -46,7 +47,7 @@ export default function CombatDisplay<
               {String(creature.id)} - HP: {creature.hp}
             </li>
           );
-        })} 
+        })}
       </ul>
     </div>
   );

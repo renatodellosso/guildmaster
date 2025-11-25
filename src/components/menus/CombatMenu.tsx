@@ -1,6 +1,6 @@
 import { GameContext } from "@/lib/gameContext";
 import { RegistryContext } from "@/lib/registry";
-import CombatDisplay from "../CombatDisplay";
+import ExpeditionDisplay from "../ExpeditionDisplay";
 
 export default function CombatMenu<TRegistryContext extends RegistryContext>({
   gameContext,
@@ -12,11 +12,14 @@ export default function CombatMenu<TRegistryContext extends RegistryContext>({
   return (
     <div>
       <h1>Combat Menu</h1>
-      {
-        gameContext.combats.map((combat, index) => (
-          <CombatDisplay key={index} combat={combat} gameContext={gameContext} registry={registry} />
-        ))
-      }
+      {gameContext.expeditions.map((expedition, index) => (
+        <ExpeditionDisplay
+          key={index}
+          expedition={expedition}
+          gameContext={gameContext}
+          registry={registry}
+        />
+      ))}
     </div>
   );
 }

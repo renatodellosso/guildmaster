@@ -11,7 +11,7 @@ export default function useTick<TRegistryContext extends RegistryContext>(
   ticksPerSecond: number = 1,
   saveInterval: number = 10
 ) {
-  const [saveCounter, setSaveCounter] = useState(0);
+  const [_saveCounter, setSaveCounter] = useState(0);
   const [lastSaveAt, setLastSaveAt] = useState<number>();
   const [lastDelta, setLastDelta] = useState<number>();
 

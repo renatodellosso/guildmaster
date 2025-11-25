@@ -62,6 +62,7 @@ export function buildGameContext<TRegistryContext extends RegistryContext>(
         CreatureInstance<RegistryToCreatureDefId<TRegistryContext>>
       >
     ),
-    combats: [],
+    expeditions: [],
+    lastTick: Date.now(),
   };
 }

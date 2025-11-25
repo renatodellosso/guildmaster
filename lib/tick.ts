@@ -6,7 +6,7 @@ export function tick<TRegistryContext extends RegistryContext>(
   gameContext: GameContext<TRegistryContext>,
   registry: TRegistryContext
 ) {
-  for (const combat of gameContext.combats) {
-    handleCombatTick(combat, gameContext, registry);
+  for (const expedition of gameContext.expeditions) {
+    handleCombatTick(expedition.combat, gameContext, registry);
   }
 }

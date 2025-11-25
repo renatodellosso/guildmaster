@@ -191,11 +191,15 @@ export function handleCombatTick<TRegistryContext extends RegistryContext>(
   registryContext: TRegistryContext
 ) {
   function onVictory() {
-    gameContext.combats = gameContext.combats.filter((c) => c !== combat);
+    gameContext.expeditions = gameContext.expeditions.filter(
+      (c) => c.combat !== combat
+    );
   }
 
   function onDefeat() {
-    gameContext.combats = gameContext.combats.filter((c) => c !== combat);
+    gameContext.expeditions = gameContext.expeditions.filter(
+      (c) => c.combat !== combat
+    );
   }
 
   takeCombatTurn(combat, onVictory, onDefeat, gameContext, registryContext);
