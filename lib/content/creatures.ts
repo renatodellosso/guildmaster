@@ -1,24 +1,26 @@
 import { CreatureDefinition } from "../creature";
 import { finishRegistry, RawRegistry } from "../registry";
+import { chooseRandom } from "../utils";
 import { Id } from "../utilTypes";
 import { MainRegistryContext } from "./mainRegistryContext";
 
-export type CreatureDefId = "test";
+export type CreatureDefId = "human";
 
 const rawCreatures = {
-  test: {
-    name: "Test Creature",
+  human: {
+    name: "Human",
     skills: {},
     abilities: [
       {
-        name: "Test Ability",
-        description: "An ability for testing purposes.",
-        activate: (caster) => {
-          console.log("Test Ability Activated");
-          caster.hp += 10;
+        name: "Punch",
+        description: "Punch an enemy",
+        activate: (caster, targets) => {
+          targets[0].hp -= caster.hp / 4;
         },
         canActivate: () => true,
-        selectTargets: (caster) => [caster],
+        selectTargets: (_caster, combat) => [
+          chooseRandom(combat.enemies.creatures),
+        ],
         priority: 0,
       },
     ],

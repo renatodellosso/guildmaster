@@ -76,7 +76,7 @@ describe(takeCombatTurn.name, () => {
 
     const gameContext = buildGameContext<typeof registryContext>([]);
 
-    takeCombatTurn(combat, failTest, gameContext, registryContext);
+    takeCombatTurn(combat, failTest, failTest, gameContext, registryContext);
 
     for (const creature of [
       ...combat.allies.creatures,
@@ -152,7 +152,7 @@ describe(takeCombatTurn.name, () => {
 
     const gameContext = buildGameContext<typeof registryContext>([]);
 
-    takeCombatTurn(combat, failTest, gameContext, registryContext);
+    takeCombatTurn(combat, failTest, failTest, gameContext, registryContext);
   });
 
   it("takes turns in order", () => {
@@ -198,7 +198,7 @@ describe(takeCombatTurn.name, () => {
 
     const gameContext = buildGameContext<typeof registryContext>([]);
 
-    takeCombatTurn(combat, failTest, gameContext, registryContext);
+    takeCombatTurn(combat, failTest, failTest, gameContext, registryContext);
 
     expect(actionOrder).toEqual([
       "instance-1",
@@ -254,7 +254,7 @@ describe(takeCombatTurn.name, () => {
 
     const gameContext = buildGameContext<typeof registryContext>(roster);
 
-    takeCombatTurn(combat, failTest, gameContext, registryContext);
+    takeCombatTurn(combat, failTest, failTest, gameContext, registryContext);
 
     expect(actionOrder).toEqual([
       "instance-1",
@@ -333,7 +333,13 @@ describe(handleRetreat.name, () => {
 
     const combat = {
       allies: {
-        creatures: [],
+        creatures: [
+          {
+            id: "creature-1",
+            definitionId: "creature-def-1",
+            hp: 10,
+          },
+        ],
         retreatTriggers: [
           {
             id: "instance-1",
@@ -349,7 +355,7 @@ describe(handleRetreat.name, () => {
       enemies: undefined as any,
     } satisfies Combat<typeof registryContext>;
 
-    handleRetreat(combat, () => {}, registryContext);
+    handleRetreat(combat, () => {}, {} as any, registryContext);
 
     expect(combat.allies.retreatTimer).toBeGreaterThan(-1);
   });
@@ -368,7 +374,32 @@ describe(handleRetreat.name, () => {
 
     const handleRetreatCallback = vi.fn();
 
-    handleRetreat(combat, handleRetreatCallback, registryContext);
+    handleRetreat(combat, handleRetreatCallback, {} as any, registryContext);
+
+    expect(handleRetreatCallback).toHaveBeenCalled();
+  });
+
+  it("calls the retreat callback immediately if all allies are dead", () => {
+    const registryContext = buildRegistryContext({});
+
+    const combat = {
+      allies: {
+        creatures: [
+          {
+            id: "creature-1",
+            definitionId: "creature-def-1",
+            hp: 0,
+          },
+        ],
+        retreatTriggers: [],
+        retreatTimer: -1,
+      },
+      enemies: undefined as any,
+    } satisfies Combat<typeof registryContext>;
+
+    const handleRetreatCallback = vi.fn();
+
+    handleRetreat(combat, handleRetreatCallback, {} as any, registryContext);
 
     expect(handleRetreatCallback).toHaveBeenCalled();
   });

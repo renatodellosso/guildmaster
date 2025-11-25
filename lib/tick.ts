@@ -1,4 +1,4 @@
-import { takeCombatTurn } from "./combat";
+import { handleCombatTick } from "./combat";
 import { GameContext } from "./gameContext";
 import { RegistryContext } from "./registry";
 
@@ -7,6 +7,6 @@ export function tick<TRegistryContext extends RegistryContext>(
   registry: TRegistryContext
 ) {
   for (const combat of gameContext.combats) {
-    takeCombatTurn(combat, () => {}, gameContext, registry);
+    handleCombatTick(combat, gameContext, registry);
   }
 }

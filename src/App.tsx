@@ -10,7 +10,7 @@ function App() {
   const [gameContext, setGameContext] = useState<MainGameContext>({
     lastTick: Date.now(),
     roster: {
-      creature1: { id: "creature1", definitionId: "test", hp: 100 },
+      creature1: { id: "creature1", definitionId: "human", hp: 100 },
     },
     combats: [
       {
@@ -20,7 +20,13 @@ function App() {
           retreatTimer: -1,
         },
         enemies: {
-          creatures: [],
+          creatures: [
+            {
+              id: "creature2",
+              definitionId: "human",
+              hp: 100,
+            },
+          ],
           retreatTriggers: [],
           retreatTimer: -1,
         },

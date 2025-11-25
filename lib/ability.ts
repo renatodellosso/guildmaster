@@ -2,7 +2,7 @@ import { Combat } from "./combat";
 import { CreatureInstance } from "./creature";
 import { GameContext } from "./gameContext";
 import { RegistryContext, RegistryToCreatureDefId } from "./registry";
-import { getFromOptionalFunc, OptionalFunc } from "./utilTypes";
+import { getFromOptionalFunc, Id, OptionalFunc } from "./utilTypes";
 
 export enum AbilityPriority {
   Low = 0,
@@ -34,7 +34,7 @@ export type Ability<TRegistryContext extends RegistryContext> = {
   activate: (...args: AbilityFuncParams<TRegistryContext>) => void;
   selectTargets: (
     ...args: AbilityFuncParamsWithoutTargets<TRegistryContext>
-  ) => CreatureInstance<RegistryToCreatureDefId<TRegistryContext>>[];
+  ) => (Id | CreatureInstance<RegistryToCreatureDefId<TRegistryContext>>)[];
   canActivate: OptionalFunc<boolean, AbilityFuncParams<TRegistryContext>>;
   priority: OptionalFunc<AbilityPriority, AbilityFuncParams<TRegistryContext>>;
 };
