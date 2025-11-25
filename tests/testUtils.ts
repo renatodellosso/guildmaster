@@ -1,6 +1,11 @@
-import { RetreatTriggerDefinition } from "@/lib/combat";
-import { CreatureDefinition } from "@/lib/creature";
-import { RegistryContext, Registry } from "@/lib/registry";
+import { CombatSide, RetreatTriggerDefinition } from "@/lib/combat";
+import { CreatureDefinition, CreatureInstance } from "@/lib/creature";
+import { GameContext } from "@/lib/gameContext";
+import {
+  RegistryContext,
+  Registry,
+  RegistryToCreatureDefId,
+} from "@/lib/registry";
 import { Id } from "@/lib/utilTypes";
 
 /**
@@ -27,5 +32,36 @@ export function buildRegistryContext<
           RegistryContext<TCreatureId, TRetreatTriggerId>
         >
       >),
+  };
+}
+
+export function buildCombatSide<TRegistryContext extends RegistryContext>(
+  creatureInstances: (
+    | CreatureInstance<RegistryToCreatureDefId<TRegistryContext>>
+    | Id
+  )[]
+): CombatSide<TRegistryContext> {
+  return {
+    creatures: creatureInstances,
+    retreatTriggers: [],
+    retreatTimer: -1,
+  };
+}
+
+export function buildGameContext<TRegistryContext extends RegistryContext>(
+  roster: CreatureInstance<RegistryToCreatureDefId<TRegistryContext>>[] = []
+): GameContext<TRegistryContext> {
+  return {
+    roster: roster.reduce(
+      (acc, creature) => {
+        acc[creature.id] = creature;
+        return acc;
+      },
+      {} as Record<
+        Id,
+        CreatureInstance<RegistryToCreatureDefId<TRegistryContext>>
+      >
+    ),
+    combats: [],
   };
 }

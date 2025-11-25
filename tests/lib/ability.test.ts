@@ -48,7 +48,7 @@ describe(getAbilities.name, () => {
       priority: 50,
     };
 
-    const registryContext = {
+    const registryContext = buildRegistryContext({
       creatures: {
         "creature-1": {
           id: "creature-1",
@@ -57,7 +57,7 @@ describe(getAbilities.name, () => {
           abilities: [ability],
         },
       },
-    };
+    });
 
     const abilities = getAbilities<any>(
       {
@@ -65,6 +65,7 @@ describe(getAbilities.name, () => {
         id: "instance-1",
         hp: 10,
       },
+      {} as any,
       {} as any,
       registryContext
     );
@@ -98,7 +99,7 @@ describe(getCastableAbilities.name, () => {
       priority: 50,
     };
 
-    const registryContext = {
+    const registryContext = buildRegistryContext({
       creatures: {
         "creature-1": {
           id: "creature-1",
@@ -107,7 +108,7 @@ describe(getCastableAbilities.name, () => {
           abilities: [ability1, ability2],
         },
       },
-    };
+    });
 
     const castableAbilities = getCastableAbilities<any>(
       {
@@ -115,6 +116,7 @@ describe(getCastableAbilities.name, () => {
         id: "instance-1",
         hp: 10,
       },
+      {} as any,
       {} as any,
       registryContext
     );
@@ -159,6 +161,7 @@ describe(getHighestPriorityAbilities.name, () => {
       abilities,
       {} as any,
       [],
+      {} as any,
       {} as any,
       {} as any
     );
@@ -241,6 +244,7 @@ describe(selectAbilityForCreature.name, () => {
     const selectedAbility = selectAbilityForCreature(
       { definitionId: "creature-1", id: "instance-1", hp: 10 },
       {} as any,
+      {} as any,
       registryContext
     );
 
@@ -262,6 +266,7 @@ describe(selectAbilityForCreature.name, () => {
 
     const selectedAbility = selectAbilityForCreature(
       { definitionId: "creature-1", id: "instance-1", hp: 10 },
+      {} as any,
       {} as any,
       registryContext
     );
@@ -302,6 +307,7 @@ describe(selectAbilityForCreature.name, () => {
     const selectedAbility = selectAbilityForCreature(
       { definitionId: "creature-1", id: "instance-1", hp: 10 },
       {} as any,
+      {} as any,
       registryContext
     );
 
@@ -341,6 +347,7 @@ describe(selectAbilityForCreature.name, () => {
 
     const selectedAbility = selectAbilityForCreature(
       { definitionId: "creature-1", id: "instance-1", hp: 10 },
+      {} as any,
       {} as any,
       registryContext
     );

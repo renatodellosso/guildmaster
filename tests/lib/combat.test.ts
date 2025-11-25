@@ -1,30 +1,21 @@
 import {
   checkRetreatTriggers,
   Combat,
-  CombatSide,
   handleRetreat,
   takeCombatTurn,
 } from "@/lib/combat";
 import { RegistryContext, RegistryToCreatureDefId } from "@/lib/registry";
 import { getFromOptionalFunc, Id } from "@/lib/utilTypes";
 import { describe, expect, it, vi } from "vitest";
-import { buildRegistryContext } from "../testUtils";
+import {
+  buildCombatSide,
+  buildGameContext,
+  buildRegistryContext,
+} from "../testUtils";
 import { CreatureInstance } from "@/lib/creature";
 
 function failTest() {
   throw new Error("This function should not have been called");
-}
-
-function buildCombatSide<TRegistryContext extends RegistryContext>(
-  creatureInstances: CreatureInstance<
-    RegistryToCreatureDefId<TRegistryContext>
-  >[]
-): CombatSide<TRegistryContext> {
-  return {
-    creatures: creatureInstances,
-    retreatTriggers: [],
-    retreatTimer: -1,
-  };
 }
 
 describe(takeCombatTurn.name, () => {
@@ -83,17 +74,27 @@ describe(takeCombatTurn.name, () => {
       ]),
     } satisfies Combat<typeof registryContext>;
 
-    takeCombatTurn(combat, failTest, registryContext);
+    const gameContext = buildGameContext<typeof registryContext>([]);
+
+    takeCombatTurn(combat, failTest, gameContext, registryContext);
 
     for (const creature of [
       ...combat.allies.creatures,
       ...combat.enemies.creatures,
     ]) {
-      const creatureDef = registryContext.creatures[creature.definitionId];
+      const defId: RegistryToCreatureDefId<typeof registryContext> = (
+        creature as CreatureInstance<
+          RegistryToCreatureDefId<typeof registryContext>
+        >
+      ).definitionId;
+      const creatureDef = registryContext.creatures[defId];
       const abilities = getFromOptionalFunc(
         creatureDef.abilities,
-        creature,
+        creature as CreatureInstance<
+          RegistryToCreatureDefId<typeof registryContext>
+        >,
         combat,
+        gameContext,
         registryContext
       );
 
@@ -106,6 +107,7 @@ describe(takeCombatTurn.name, () => {
         creature,
         [],
         combat,
+        gameContext,
         registryContext
       );
     }
@@ -148,7 +150,9 @@ describe(takeCombatTurn.name, () => {
       ]),
     } satisfies Combat<typeof registryContext>;
 
-    takeCombatTurn(combat, failTest, registryContext);
+    const gameContext = buildGameContext<typeof registryContext>([]);
+
+    takeCombatTurn(combat, failTest, gameContext, registryContext);
   });
 
   it("takes turns in order", () => {
@@ -192,7 +196,65 @@ describe(takeCombatTurn.name, () => {
       ]),
     } satisfies Combat<typeof registryContext>;
 
-    takeCombatTurn(combat, failTest, registryContext);
+    const gameContext = buildGameContext<typeof registryContext>([]);
+
+    takeCombatTurn(combat, failTest, gameContext, registryContext);
+
+    expect(actionOrder).toEqual([
+      "instance-1",
+      "instance-2",
+      "instance-3",
+      "instance-4",
+    ]);
+  });
+
+  it("works for sides with creatures in the roster", () => {
+    const actionOrder: Id[] = [];
+
+    const registryContext = buildRegistryContext({
+      creatures: {
+        "creature-1": {
+          id: "creature-1",
+          name: "Creature 1",
+          skills: {},
+          abilities: [
+            {
+              name: "Record Action",
+              description: "Records its action",
+              activate: (
+                caster: { id: Id },
+                _targets: unknown,
+                _combat: unknown,
+                _registryContext: unknown
+              ) => {
+                actionOrder.push(caster.id);
+              },
+              selectTargets: () => [],
+              canActivate: true,
+              priority: 0,
+            },
+          ],
+        },
+      },
+    });
+
+    const roster = [
+      { id: "instance-1", definitionId: "creature-1", hp: 10 },
+      { id: "instance-2", definitionId: "creature-1", hp: 10 },
+      { id: "instance-3", definitionId: "creature-1", hp: 10 },
+      { id: "instance-4", definitionId: "creature-1", hp: 10 },
+    ] satisfies CreatureInstance<
+      RegistryToCreatureDefId<typeof registryContext>
+    >[];
+
+    const combat = {
+      allies: buildCombatSide(["instance-1", "instance-2"]),
+      enemies: buildCombatSide(["instance-3", "instance-4"]),
+    } satisfies Combat<typeof registryContext>;
+
+    const gameContext = buildGameContext<typeof registryContext>(roster);
+
+    takeCombatTurn(combat, failTest, gameContext, registryContext);
 
     expect(actionOrder).toEqual([
       "instance-1",
