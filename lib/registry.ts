@@ -36,7 +36,7 @@ export type RegistryToRetreatTriggerId<
     ? TDefId
     : Id;
 
-export function finishRegistry<TId extends string, TItem extends { id: TId }>(
+export function finishRegistry<TId extends Id, TItem extends { id: TId }>(
   rawRegistry: RawRegistry<TId, TItem>
 ): Registry<TId, TItem> {
   const finishedRegistry = {} as Registry<TId, TItem>;

@@ -1,34 +1,45 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import CombatMenu from "./components/menus/CombatMenu";
+import {
+  MainGameContext,
+  mainRegistry,
+} from "@/lib/content/mainRegistryContext";
+import useTick from "@/lib/hooks/useTick";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [gameContext, setGameContext] = useState<MainGameContext>({
+    lastTick: Date.now(),
+    roster: {
+      creature1: { id: "creature1", definitionId: "test", hp: 100 },
+    },
+    combats: [
+      {
+        allies: {
+          creatures: ["creature1"],
+          retreatTriggers: [],
+          retreatTimer: -1,
+        },
+        enemies: {
+          creatures: [],
+          retreatTriggers: [],
+          retreatTimer: -1,
+        },
+      },
+    ],
+  });
+
+  useTick(gameContext!, setGameContext, mainRegistry);
 
   return (
-    <>
+    <div>
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        Last Tick:{" "}
+        {gameContext
+          ? new Date(gameContext.lastTick).toLocaleTimeString()
+          : "N/A"}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+      <CombatMenu gameContext={gameContext} registry={mainRegistry} />
+    </div>
   );
 }
 
