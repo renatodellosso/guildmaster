@@ -4,7 +4,7 @@ import {
   handleRetreat,
   takeCombatTurn,
 } from "@/lib/combat";
-import { RegistryContext, RegistryToCreatureDefId } from "@/lib/registry";
+import { RegistryContext, RegistryToCreatureId } from "@/lib/registry";
 import { getFromOptionalFunc, Id } from "@/lib/utilTypes";
 import { describe, expect, it, vi } from "vitest";
 import {
@@ -82,16 +82,16 @@ describe(takeCombatTurn.name, () => {
       ...combat.allies.creatures,
       ...combat.enemies.creatures,
     ]) {
-      const defId: RegistryToCreatureDefId<typeof registryContext> = (
+      const defId: RegistryToCreatureId<typeof registryContext> = (
         creature as CreatureInstance<
-          RegistryToCreatureDefId<typeof registryContext>
+          RegistryToCreatureId<typeof registryContext>
         >
       ).definitionId;
       const creatureDef = registryContext.creatures[defId];
       const abilities = getFromOptionalFunc(
         creatureDef.abilities,
         creature as CreatureInstance<
-          RegistryToCreatureDefId<typeof registryContext>
+          RegistryToCreatureId<typeof registryContext>
         >,
         combat,
         gameContext,
@@ -244,7 +244,7 @@ describe(takeCombatTurn.name, () => {
       { id: "instance-3", definitionId: "creature-1", hp: 10 },
       { id: "instance-4", definitionId: "creature-1", hp: 10 },
     ] satisfies CreatureInstance<
-      RegistryToCreatureDefId<typeof registryContext>
+      RegistryToCreatureId<typeof registryContext>
     >[];
 
     const combat = {

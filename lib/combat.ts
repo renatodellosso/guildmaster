@@ -3,7 +3,7 @@ import { CreatureInstance } from "./creature";
 import { GameContext } from "./gameContext";
 import {
   RegistryContext,
-  RegistryToCreatureDefId,
+  RegistryToCreatureId,
   RegistryToRetreatTriggerId,
 } from "./registry";
 import { Id } from "./utilTypes";
@@ -27,10 +27,7 @@ export type Combat<TRegistryContext extends RegistryContext> = {
 };
 
 export type CombatSide<TRegistryContext extends RegistryContext> = {
-  creatures: (
-    | CreatureInstance<RegistryToCreatureDefId<TRegistryContext>>
-    | Id
-  )[];
+  creatures: (CreatureInstance<RegistryToCreatureId<TRegistryContext>> | Id)[];
   retreatTriggers: RetreatTriggerInstance<
     RegistryToRetreatTriggerId<TRegistryContext>
   >[];
@@ -41,7 +38,7 @@ export type CombatSide<TRegistryContext extends RegistryContext> = {
 };
 
 function takeTurnForCreature<TRegistryContext extends RegistryContext>(
-  creature: CreatureInstance<RegistryToCreatureDefId<TRegistryContext>>,
+  creature: CreatureInstance<RegistryToCreatureId<TRegistryContext>>,
   combat: Combat<TRegistryContext>,
   gameContext: GameContext<TRegistryContext>,
   registryContext: TRegistryContext
@@ -67,9 +64,7 @@ function takeTurnForCreature<TRegistryContext extends RegistryContext>(
   const targets = rawTargets.map((targetOrId) =>
     typeof targetOrId === "string"
       ? gameContext.roster[targetOrId]
-      : (targetOrId as CreatureInstance<
-          RegistryToCreatureDefId<TRegistryContext>
-        >)
+      : (targetOrId as CreatureInstance<RegistryToCreatureId<TRegistryContext>>)
   );
 
   ability.activate(creature, targets, combat, gameContext, registryContext);
@@ -84,7 +79,7 @@ function isEntireSideDead<TRegistryContext extends RegistryContext>(
       typeof creatureOrId === "string"
         ? gameContext.roster[creatureOrId]
         : (creatureOrId as CreatureInstance<
-            RegistryToCreatureDefId<TRegistryContext>
+            RegistryToCreatureId<TRegistryContext>
           >);
 
     if (creature.hp > 0) {
@@ -153,7 +148,7 @@ function takeTurnsForCombatSide<TRegistryContext extends RegistryContext>(
       typeof creatureOrId === "string"
         ? gameContext.roster[creatureOrId]
         : (creatureOrId as CreatureInstance<
-            RegistryToCreatureDefId<TRegistryContext>
+            RegistryToCreatureId<TRegistryContext>
           >);
 
     takeTurnForCreature(creature, combat, gameContext, registryContext);

@@ -1,10 +1,11 @@
 import { CombatSide, RetreatTriggerDefinition } from "@/lib/combat";
 import { CreatureDefinition, CreatureInstance } from "@/lib/creature";
+import { DungeonDefinition } from "@/lib/dungeon";
 import { GameContext } from "@/lib/gameContext";
 import {
   RegistryContext,
   Registry,
-  RegistryToCreatureDefId,
+  RegistryToCreatureId,
 } from "@/lib/registry";
 import { Id } from "@/lib/utilTypes";
 
@@ -32,12 +33,18 @@ export function buildRegistryContext<
           RegistryContext<TCreatureId, TRetreatTriggerId>
         >
       >),
+    dungeons:
+      registry.dungeons ||
+      ({} as Registry<
+        Id,
+        DungeonDefinition<RegistryContext<TCreatureId, TRetreatTriggerId>>
+      >),
   };
 }
 
 export function buildCombatSide<TRegistryContext extends RegistryContext>(
   creatureInstances: (
-    | CreatureInstance<RegistryToCreatureDefId<TRegistryContext>>
+    | CreatureInstance<RegistryToCreatureId<TRegistryContext>>
     | Id
   )[]
 ): CombatSide<TRegistryContext> {
@@ -49,7 +56,7 @@ export function buildCombatSide<TRegistryContext extends RegistryContext>(
 }
 
 export function buildGameContext<TRegistryContext extends RegistryContext>(
-  roster: CreatureInstance<RegistryToCreatureDefId<TRegistryContext>>[] = []
+  roster: CreatureInstance<RegistryToCreatureId<TRegistryContext>>[] = []
 ): GameContext<TRegistryContext> {
   return {
     roster: roster.reduce(
@@ -57,10 +64,7 @@ export function buildGameContext<TRegistryContext extends RegistryContext>(
         acc[creature.id] = creature;
         return acc;
       },
-      {} as Record<
-        Id,
-        CreatureInstance<RegistryToCreatureDefId<TRegistryContext>>
-      >
+      {} as Record<Id, CreatureInstance<RegistryToCreatureId<TRegistryContext>>>
     ),
     expeditions: [],
     lastTick: Date.now(),

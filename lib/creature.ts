@@ -1,17 +1,17 @@
 import { Ability, AbilityFuncParamsWithoutTargets } from "./ability";
-import { RegistryContext, RegistryToCreatureDefId } from "./registry";
+import { RegistryContext, RegistryToCreatureId } from "./registry";
 import { SkillList } from "./skills";
+import { randomId } from "./utils";
 import { Id, OptionalFunc } from "./utilTypes";
-
 
 export type CreatureDefinition<
   TRegistryContext extends RegistryContext = RegistryContext,
 > = {
-  id: RegistryToCreatureDefId<TRegistryContext>;
+  id: RegistryToCreatureId<TRegistryContext>;
   name: string;
   skills: SkillList<
     TRegistryContext,
-    [CreatureInstance<RegistryToCreatureDefId<TRegistryContext>>]
+    [CreatureInstance<RegistryToCreatureId<TRegistryContext>>]
   >;
   abilities?: OptionalFunc<
     Ability<TRegistryContext>[],
@@ -25,3 +25,16 @@ export type CreatureInstance<TDefId extends Id> = {
 
   hp: number;
 };
+
+export function createCreatureInstance<
+  TRegistryContext extends RegistryContext,
+>(
+  defId: RegistryToCreatureId<TRegistryContext>,
+  _registryContext: TRegistryContext
+): CreatureInstance<RegistryToCreatureId<TRegistryContext>> {
+  return {
+    id: randomId(),
+    definitionId: defId,
+    hp: 100,
+  };
+}

@@ -1,7 +1,7 @@
 import { CreatureInstance } from "@/lib/creature";
 import { Expedition } from "@/lib/expedition";
 import { GameContext } from "@/lib/gameContext";
-import { RegistryContext, RegistryToCreatureDefId } from "@/lib/registry";
+import { RegistryContext, RegistryToCreatureId } from "@/lib/registry";
 
 export default function ExpeditionDisplay<
   TRegistryContext extends RegistryContext,
@@ -24,7 +24,7 @@ export default function ExpeditionDisplay<
             typeof creatureId === "string"
               ? gameContext.roster[creatureId]
               : (creatureId as CreatureInstance<
-                  RegistryToCreatureDefId<TRegistryContext>
+                  RegistryToCreatureId<TRegistryContext>
                 >);
           return (
             <li key={String(creature.id)}>
@@ -40,7 +40,7 @@ export default function ExpeditionDisplay<
             typeof creatureId === "string"
               ? gameContext.roster[creatureId]
               : (creatureId as CreatureInstance<
-                  RegistryToCreatureDefId<TRegistryContext>
+                  RegistryToCreatureId<TRegistryContext>
                 >);
           return (
             <li key={String(creature.id)}>
