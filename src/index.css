@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+body {
+  @apply bg-black text-white font-sans;
+}
+
+h1 {
+  @apply text-2xl font-bold mb-4;
+}
+
+h2 {
+  @apply text-xl font-semibold mb-3;
+}
+
+h3 {
+  @apply text-lg font-medium mb-2;
+}
+
+button, select, input, textarea {
+  @apply border border-white hover:bg-gray-700 active:bg-gray-900 px-1 cursor-pointer;
+}

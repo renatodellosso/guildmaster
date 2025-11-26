@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import CombatMenu from "./components/menus/CombatMenu";
+import ExpeditionsMenu from "./components/menus/ExpeditionsMenu";
 import {
   MainGameContext,
   mainRegistry,
@@ -53,7 +53,7 @@ function App() {
         Last Save:{" "}
         {lastSaveAt ? new Date(lastSaveAt).toLocaleTimeString() : "N/A"}
       </div>
-      <CombatMenu gameContext={gameContext} registry={mainRegistry} />
+      <ExpeditionsMenu gameContext={gameContext} registry={mainRegistry} />
       <RosterMenu gameContext={gameContext} registry={mainRegistry} />
     </div>
   );
