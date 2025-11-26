@@ -22,6 +22,6 @@ export type Id = string | number | symbol;
 
 export type Context = {
   game: MainGameContext;
-  setGame: (game: MainGameContext) => void;
+  updateGameState: () => void;
   registry: MainRegistryContext;
 };

@@ -29,6 +29,7 @@ export default function StartExpeditionMenu({
     context.game.expeditions.push(
       createExpedition(dungeonId, [], context.registry)
     );
+    context.updateGameState();
 
     onStartExpedition();
   }
@@ -41,6 +42,7 @@ export default function StartExpeditionMenu({
         <select
           onChange={(e) => setDungeonId(e.target.value as typeof dungeonId)}
         >
+          <option value="">Select a dungeon</option>
           {Object.values(context.registry.dungeons).map((dungeon, index) => (
             <option key={index} value={String(dungeon.id)}>
               {dungeon.name}

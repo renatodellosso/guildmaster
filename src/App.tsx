@@ -8,6 +8,7 @@ import useTick from "@/lib/hooks/useTick";
 import useSave from "@/lib/hooks/useSave";
 import { clearSave } from "@/lib/saveUtils";
 import RosterMenu from "./components/menus/RosterMenu";
+import { Context } from "@/lib/utilTypes";
 
 function App() {
   const save = useSave();
@@ -16,9 +17,9 @@ function App() {
     save
   );
 
-  const context = {
+  const context: Context = {
     game: gameContext!,
-    setGame: setGameContext,
+    updateGameState: () => setGameContext({ ...gameContext! }),
     registry: mainRegistry,
   };
 
