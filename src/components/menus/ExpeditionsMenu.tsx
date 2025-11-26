@@ -1,18 +1,9 @@
-import { GameContext } from "@/lib/gameContext";
-import { RegistryContext } from "@/lib/registry";
 import ExpeditionDisplay from "../ExpeditionDisplay";
 import { useState } from "react";
 import StartExpeditionMenu from "./StartExpeditionMenu";
+import { Context } from "@/lib/utilTypes";
 
-export default function ExpeditionsMenu<
-  TRegistryContext extends RegistryContext,
->({
-  gameContext,
-  registry,
-}: {
-  gameContext: GameContext<TRegistryContext>;
-  registry: TRegistryContext;
-}) {
+export default function ExpeditionsMenu({ context }: { context: Context }) {
   const [creatingExpedition, setCreatingExpedition] = useState(false);
 
   return (
@@ -23,17 +14,15 @@ export default function ExpeditionsMenu<
       </button>
       {creatingExpedition ? (
         <StartExpeditionMenu
-          gameContext={gameContext}
-          registry={registry}
+          context={context}
           onStartExpedition={() => setCreatingExpedition(false)}
         />
       ) : (
-        gameContext.expeditions.map((expedition, index) => (
+        context.game.expeditions.map((expedition, index) => (
           <ExpeditionDisplay
             key={index}
             expedition={expedition}
-            gameContext={gameContext}
-            registry={registry}
+            context={context}
           />
         ))
       )}

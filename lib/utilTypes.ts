@@ -1,3 +1,8 @@
+import {
+  MainGameContext,
+  MainRegistryContext,
+} from "./content/mainRegistryContext";
+
 export type OptionalFunc<TReturn, TArgs extends unknown[] = unknown[]> =
   | ((...args: TArgs) => TReturn)
   | TReturn;
@@ -14,3 +19,9 @@ export function getFromOptionalFunc<TReturn, TArgs extends unknown[]>(
 }
 
 export type Id = string | number | symbol;
+
+export type Context = {
+  game: MainGameContext;
+  setGame: (game: MainGameContext) => void;
+  registry: MainRegistryContext;
+};

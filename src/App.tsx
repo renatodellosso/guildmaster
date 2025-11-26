@@ -16,6 +16,12 @@ function App() {
     save
   );
 
+  const context = {
+    game: gameContext!,
+    setGame: setGameContext,
+    registry: mainRegistry,
+  };
+
   useEffect(() => {
     if (save) {
       setGameContext(save);
@@ -53,8 +59,8 @@ function App() {
         Last Save:{" "}
         {lastSaveAt ? new Date(lastSaveAt).toLocaleTimeString() : "N/A"}
       </div>
-      <ExpeditionsMenu gameContext={gameContext} registry={mainRegistry} />
-      <RosterMenu gameContext={gameContext} registry={mainRegistry} />
+      <ExpeditionsMenu context={context} />
+      <RosterMenu context={context} />
     </div>
   );
 }

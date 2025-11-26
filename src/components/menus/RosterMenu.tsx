@@ -1,20 +1,14 @@
-import { GameContext } from "@/lib/gameContext";
-import { RegistryContext } from "@/lib/registry";
+import { Context } from "@/lib/utilTypes";
 
-export default function RosterMenu<TRegistryContext extends RegistryContext>({
-  gameContext,
-  registry,
-}: {
-  gameContext: GameContext<TRegistryContext>;
-  registry: TRegistryContext;
-}) {
+export default function RosterMenu({ context }: { context: Context }) {
   return (
     <div>
       <h1>Roster Menu</h1>
       <ul>
-        {Object.values(gameContext.roster).map((creature) => (
+        {Object.values(context.game.roster).map((creature) => (
           <li key={String(creature.id)}>
-            {registry.creatures[creature.definitionId].name} (HP: {creature.hp})
+            {context.registry.creatures[creature.definitionId].name} (HP:{" "}
+            {creature.hp})
           </li>
         ))}
       </ul>

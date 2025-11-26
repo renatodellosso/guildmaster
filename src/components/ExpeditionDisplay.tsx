@@ -1,17 +1,15 @@
+import { MainRegistryContext } from "@/lib/content/mainRegistryContext";
 import { CreatureInstance } from "@/lib/creature";
 import { Expedition } from "@/lib/expedition";
-import { GameContext } from "@/lib/gameContext";
-import { RegistryContext, RegistryToCreatureId } from "@/lib/registry";
+import { RegistryToCreatureId } from "@/lib/registry";
+import { Context } from "@/lib/utilTypes";
 
-export default function ExpeditionDisplay<
-  TRegistryContext extends RegistryContext,
->({
+export default function ExpeditionDisplay({
   expedition,
-  gameContext,
+  context,
 }: {
-  expedition: Expedition<TRegistryContext>;
-  gameContext: GameContext<TRegistryContext>;
-  registry: TRegistryContext;
+  expedition: Expedition<MainRegistryContext>;
+  context: Context;
 }) {
   const combat = expedition.combat;
 
@@ -22,9 +20,9 @@ export default function ExpeditionDisplay<
         {combat.allies.creatures.map((creatureId) => {
           const creature =
             typeof creatureId === "string"
-              ? gameContext.roster[creatureId]
+              ? context.game.roster[creatureId]
               : (creatureId as CreatureInstance<
-                  RegistryToCreatureId<TRegistryContext>
+                  RegistryToCreatureId<MainRegistryContext>
                 >);
           return (
             <li key={String(creature.id)}>
@@ -38,9 +36,9 @@ export default function ExpeditionDisplay<
         {combat.enemies.creatures.map((creatureId) => {
           const creature =
             typeof creatureId === "string"
-              ? gameContext.roster[creatureId]
+              ? context.game.roster[creatureId]
               : (creatureId as CreatureInstance<
-                  RegistryToCreatureId<TRegistryContext>
+                  RegistryToCreatureId<MainRegistryContext>
                 >);
           return (
             <li key={String(creature.id)}>

@@ -1,21 +1,18 @@
+import { MainRegistryContext } from "@/lib/content/mainRegistryContext";
 import { createExpedition } from "@/lib/expedition";
-import { GameContext } from "@/lib/gameContext";
-import { RegistryContext, RegistryToDungeonId } from "@/lib/registry";
+import { RegistryToDungeonId } from "@/lib/registry";
+import { Context } from "@/lib/utilTypes";
 import { useState } from "react";
 
-export default function StartExpeditionMenu<
-  TRegistryContext extends RegistryContext,
->({
-  gameContext,
-  registry,
+export default function StartExpeditionMenu({
+  context,
   onStartExpedition,
 }: {
-  gameContext: GameContext<TRegistryContext>;
-  registry: TRegistryContext;
+  context: Context;
   onStartExpedition: () => void;
 }) {
   const [dungeonId, setDungeonId] =
-    useState<RegistryToDungeonId<TRegistryContext>>();
+    useState<RegistryToDungeonId<MainRegistryContext>>();
   const [error, setError] = useState<string>();
 
   function start() {
@@ -23,13 +20,15 @@ export default function StartExpeditionMenu<
       setError("No dungeon selected");
       return;
     }
-    const dungeon = registry.dungeons[dungeonId];
+    const dungeon = context.registry.dungeons[dungeonId];
     if (!dungeon) {
       setError("Invalid dungeon selected");
       return;
     }
 
-    gameContext.expeditions.push(createExpedition(dungeonId, [], registry));
+    context.game.expeditions.push(
+      createExpedition(dungeonId, [], context.registry)
+    );
 
     onStartExpedition();
   }
@@ -42,7 +41,7 @@ export default function StartExpeditionMenu<
         <select
           onChange={(e) => setDungeonId(e.target.value as typeof dungeonId)}
         >
-          {Object.values(registry.dungeons).map((dungeon, index) => (
+          {Object.values(context.registry.dungeons).map((dungeon, index) => (
             <option key={index} value={String(dungeon.id)}>
               {dungeon.name}
             </option>
