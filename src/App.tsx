@@ -3,19 +3,15 @@ import ExpeditionsMenu from "./components/menus/ExpeditionsMenu";
 import {
   MainGameContext,
   mainRegistry,
+  MainRegistryContext,
 } from "@/lib/content/mainRegistryContext";
 import useTick from "@/lib/hooks/useTick";
-import useSave from "@/lib/hooks/useSave";
-import { clearSave } from "@/lib/saveUtils";
+import { clearSave, getDefaultSave, loadSave } from "@/lib/saveUtils";
 import RosterMenu from "./components/menus/RosterMenu";
 import { Context } from "@/lib/utilTypes";
 
 function App() {
-  const save = useSave();
-
-  const [gameContext, setGameContext] = useState<MainGameContext | undefined>(
-    save
-  );
+  const [gameContext, setGameContext] = useState<MainGameContext>();
 
   const context: Context = {
     game: gameContext!,
@@ -24,10 +20,13 @@ function App() {
   };
 
   useEffect(() => {
+    const save = loadSave<MainRegistryContext>();
     if (save) {
-      setGameContext(save);
+      setGameContext(save.gameContext);
+    } else {
+      setGameContext(getDefaultSave().gameContext);
     }
-  }, [save]);
+  }, []);
 
   const { lastSaveAt, lastDelta } = useTick(
     gameContext!,

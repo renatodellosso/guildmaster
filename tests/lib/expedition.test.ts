@@ -6,6 +6,8 @@ import { Encounter } from "@/lib/dungeon";
 import { RegistryContext } from "@/lib/registry";
 import { CreatureInstance } from "@/lib/creature";
 import { Id } from "@/lib/utilTypes";
+import { Combat } from "@/lib/combat";
+import { MainRegistryContext } from "@/lib/content/mainRegistryContext";
 
 describe(startCombat.name, () => {
   it("chooses a random encounter", () => {
@@ -35,7 +37,7 @@ describe(startCombat.name, () => {
     const expedition = {
       dungeonId: "dungeon1" as const,
       party: ["hero1", "hero2"],
-      combat: {} as any,
+      combat: {} as Combat<MainRegistryContext>,
     };
 
     const enemyIds = new Set<Id>();
@@ -79,7 +81,7 @@ describe(startCombat.name, () => {
     const expedition = {
       dungeonId: "dungeon1" as const,
       party: ["hero1", "hero2"],
-      combat: {} as any,
+      combat: {} as Combat<MainRegistryContext>,
     };
 
     const combatInstance = startCombat(expedition, registryContext);
@@ -88,8 +90,7 @@ describe(startCombat.name, () => {
     combatInstance.enemies.creatures.forEach(
       (creature: Id | CreatureInstance<Id>) => {
         const definitionId = (creature as CreatureInstance<Id>).definitionId;
-        creatureCount[definitionId] =
-          (creatureCount[definitionId] || 0) + 1;
+        creatureCount[definitionId] = (creatureCount[definitionId] || 0) + 1;
       }
     );
 

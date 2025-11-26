@@ -1,6 +1,7 @@
 import {
   checkRetreatTriggers,
   Combat,
+  CombatSide,
   handleRetreat,
   takeCombatTurn,
 } from "@/lib/combat";
@@ -13,6 +14,8 @@ import {
   buildRegistryContext,
 } from "../testUtils";
 import { CreatureInstance } from "@/lib/creature";
+import { MainGameContext } from "@/lib/content/mainRegistryContext";
+import { GameContext } from "@/lib/gameContext";
 
 function failTest() {
   throw new Error("This function should not have been called");
@@ -127,8 +130,7 @@ describe(takeCombatTurn.name, () => {
               activate: (
                 caster: unknown,
                 _targets: unknown,
-                combat: Combat<RegistryContext>,
-                _registryContext: unknown
+                combat: Combat<RegistryContext>
               ) => {
                 expect(combat.allies.creatures).toContain(caster);
               },
@@ -168,12 +170,7 @@ describe(takeCombatTurn.name, () => {
             {
               name: "Record Action",
               description: "Records its action",
-              activate: (
-                caster: { id: Id },
-                _targets: unknown,
-                _combat: unknown,
-                _registryContext: unknown
-              ) => {
+              activate: (caster: { id: Id }) => {
                 actionOrder.push(caster.id);
               },
               selectTargets: () => [],
@@ -221,12 +218,7 @@ describe(takeCombatTurn.name, () => {
             {
               name: "Record Action",
               description: "Records its action",
-              activate: (
-                caster: { id: Id },
-                _targets: unknown,
-                _combat: unknown,
-                _registryContext: unknown
-              ) => {
+              activate: (caster: { id: Id }) => {
                 actionOrder.push(caster.id);
               },
               selectTargets: () => [],
@@ -269,24 +261,16 @@ describe(checkRetreatTriggers.name, () => {
   it("returns true if any retreat trigger is activated", () => {
     const registryContext = buildRegistryContext({
       retreatTriggers: {
-        "retreat-trigger-1": (
-          _combat: unknown,
-          _registryContext: unknown,
-          _data: unknown
-        ) => {
+        "retreat-trigger-1": () => {
           return false;
         },
-        "retreat-trigger-2": (
-          _combat: unknown,
-          _registryContext: unknown,
-          _data: unknown
-        ) => {
+        "retreat-trigger-2": () => {
           return true;
         },
       },
     });
 
-    const combat = {
+    const combat: Combat<typeof registryContext> = {
       allies: {
         creatures: [],
         retreatTriggers: [
@@ -301,8 +285,8 @@ describe(checkRetreatTriggers.name, () => {
         ],
         retreatTimer: -1,
       },
-      enemies: undefined as any,
-    } satisfies Combat<typeof registryContext>;
+      enemies: undefined as unknown as CombatSide<typeof registryContext>,
+    };
 
     const result = checkRetreatTriggers(combat, registryContext);
 
@@ -314,24 +298,16 @@ describe(handleRetreat.name, () => {
   it("sets retreat timer when a retreat trigger is activated", () => {
     const registryContext = buildRegistryContext({
       retreatTriggers: {
-        "retreat-trigger-1": (
-          _combat: unknown,
-          _registryContext: unknown,
-          _data: unknown
-        ) => {
+        "retreat-trigger-1": () => {
           return false;
         },
-        "retreat-trigger-2": (
-          _combat: unknown,
-          _registryContext: unknown,
-          _data: unknown
-        ) => {
+        "retreat-trigger-2": () => {
           return true;
         },
       },
     });
 
-    const combat = {
+    const combat: Combat<typeof registryContext> = {
       allies: {
         creatures: [
           {
@@ -352,10 +328,15 @@ describe(handleRetreat.name, () => {
         ],
         retreatTimer: -1,
       },
-      enemies: undefined as any,
-    } satisfies Combat<typeof registryContext>;
+      enemies: undefined as unknown as CombatSide<typeof registryContext>,
+    };
 
-    handleRetreat(combat, () => {}, {} as any, registryContext);
+    handleRetreat(
+      combat,
+      () => {},
+      {} as GameContext<typeof registryContext>,
+      registryContext
+    );
 
     expect(combat.allies.retreatTimer).toBeGreaterThan(-1);
   });
@@ -369,12 +350,17 @@ describe(handleRetreat.name, () => {
         retreatTriggers: [],
         retreatTimer: 1,
       },
-      enemies: undefined as any,
-    } satisfies Combat<typeof registryContext>;
+      enemies: undefined as unknown as CombatSide<typeof registryContext>,
+    };
 
     const handleRetreatCallback = vi.fn();
 
-    handleRetreat(combat, handleRetreatCallback, {} as any, registryContext);
+    handleRetreat(
+      combat,
+      handleRetreatCallback,
+      {} as MainGameContext,
+      registryContext
+    );
 
     expect(handleRetreatCallback).toHaveBeenCalled();
   });
@@ -382,7 +368,7 @@ describe(handleRetreat.name, () => {
   it("calls the retreat callback immediately if all allies are dead", () => {
     const registryContext = buildRegistryContext({});
 
-    const combat = {
+    const combat: Combat<typeof registryContext> = {
       allies: {
         creatures: [
           {
@@ -394,12 +380,17 @@ describe(handleRetreat.name, () => {
         retreatTriggers: [],
         retreatTimer: -1,
       },
-      enemies: undefined as any,
-    } satisfies Combat<typeof registryContext>;
+      enemies: undefined as unknown as CombatSide<typeof registryContext>,
+    };
 
     const handleRetreatCallback = vi.fn();
 
-    handleRetreat(combat, handleRetreatCallback, {} as any, registryContext);
+    handleRetreat(
+      combat,
+      handleRetreatCallback,
+      {} as MainGameContext,
+      registryContext
+    );
 
     expect(handleRetreatCallback).toHaveBeenCalled();
   });

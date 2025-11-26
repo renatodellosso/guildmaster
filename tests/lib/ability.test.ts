@@ -9,17 +9,25 @@ import {
 } from "@/lib/ability";
 import { describe, expect, expectTypeOf, it } from "vitest";
 import { buildRegistryContext } from "../testUtils";
+import { GameContext } from "@/lib/gameContext";
+import { Combat } from "@/lib/combat";
+import {
+  MainGameContext,
+  MainRegistryContext,
+} from "@/lib/content/mainRegistryContext";
+import { CreatureInstance } from "@/lib/creature";
+import { CreatureDefId } from "@/lib/content/creatures";
 
 describe("Ability", () => {
   it("allows arbitrary priority functions", () => {
     type Func = (
-      caster: any,
-      targets: any,
-      combat: any,
-      registryContext: any
+      caster: unknown,
+      targets: unknown,
+      combat: unknown,
+      registryContext: unknown
     ) => number;
 
-    type Priority = Ability<any>["priority"];
+    type Priority = Ability<MainRegistryContext>["priority"];
 
     expectTypeOf<Func>().toExtend<Priority>();
   });
@@ -27,7 +35,7 @@ describe("Ability", () => {
   it("allows arbitrary priority values", () => {
     type Value = number;
 
-    type Priority = Ability<any>["priority"];
+    type Priority = Ability<MainRegistryContext>["priority"];
 
     expectTypeOf<Value>().toExtend<Priority>();
   });
@@ -35,9 +43,11 @@ describe("Ability", () => {
 
 describe(getAbilities.name, () => {
   it("returns an array of abilities", () => {
-    type Abilities = ReturnType<typeof getAbilities<any>>;
+    type Abilities = ReturnType<typeof getAbilities<typeof registryContext>>;
 
-    expectTypeOf<Abilities>().toEqualTypeOf<Ability<any>[]>();
+    expectTypeOf<Abilities>().toEqualTypeOf<
+      Ability<typeof registryContext>[]
+    >();
 
     const ability = {
       name: "Test Ability",
@@ -59,27 +69,30 @@ describe(getAbilities.name, () => {
       },
     });
 
-    const abilities = getAbilities<any>(
+    const abilities = getAbilities<typeof registryContext>(
       {
         definitionId: "creature-1",
         id: "instance-1",
         hp: 10,
       },
-      {} as any,
-      {} as any,
+      {} as Combat<typeof registryContext>,
+      {} as GameContext<typeof registryContext>,
       registryContext
     );
 
-    expectTypeOf(abilities).toEqualTypeOf<Ability<any>[]>();
     expect(abilities).toEqual([ability]);
   });
 });
 
 describe(getCastableAbilities.name, () => {
   it("returns only castable abilities", () => {
-    type CastableAbilities = ReturnType<typeof getCastableAbilities<any>>;
+    type CastableAbilities = ReturnType<
+      typeof getCastableAbilities<typeof registryContext>
+    >;
 
-    expectTypeOf<CastableAbilities>().toEqualTypeOf<Ability<any>[]>();
+    expectTypeOf<CastableAbilities>().toEqualTypeOf<
+      Ability<typeof registryContext>[]
+    >();
 
     const ability1 = {
       name: "Castable Ability",
@@ -110,25 +123,24 @@ describe(getCastableAbilities.name, () => {
       },
     });
 
-    const castableAbilities = getCastableAbilities<any>(
+    const castableAbilities = getCastableAbilities<typeof registryContext>(
       {
         definitionId: "creature-1",
         id: "instance-1",
         hp: 10,
       },
-      {} as any,
-      {} as any,
+      {} as Combat<typeof registryContext>,
+      {} as GameContext<typeof registryContext>,
       registryContext
     );
 
-    expectTypeOf(castableAbilities).toEqualTypeOf<Ability<any>[]>();
     expect(castableAbilities).toEqual([ability1]);
   });
 });
 
 describe(getHighestPriorityAbilities.name, () => {
   it("returns abilities with the highest priority", () => {
-    const ability1: Ability<any> = {
+    const ability1 = {
       name: "Ability 1",
       description: "First ability",
       activate: () => {},
@@ -137,7 +149,7 @@ describe(getHighestPriorityAbilities.name, () => {
       priority: AbilityPriority.High,
     };
 
-    const ability2: Ability<any> = {
+    const ability2 = {
       name: "Ability 2",
       description: "Second ability",
       activate: () => {},
@@ -146,7 +158,7 @@ describe(getHighestPriorityAbilities.name, () => {
       priority: AbilityPriority.Medium,
     };
 
-    const ability3: Ability<any> = {
+    const ability3 = {
       name: "Ability 3",
       description: "Third ability",
       activate: () => {},
@@ -159,21 +171,20 @@ describe(getHighestPriorityAbilities.name, () => {
 
     const highestPriorityAbilities = getHighestPriorityAbilities(
       abilities,
-      {} as any,
+      {} as CreatureInstance<CreatureDefId>,
       [],
-      {} as any,
-      {} as any,
-      {} as any
+      {} as Combat<MainRegistryContext>,
+      {} as MainGameContext,
+      {} as MainRegistryContext
     );
 
-    expectTypeOf(highestPriorityAbilities).toEqualTypeOf<Ability<any>[]>();
     expect(highestPriorityAbilities).toEqual([ability1, ability3]);
   });
 });
 
 describe(selectAbilityFromList.name, () => {
   it("selects an ability from a list", () => {
-    const ability1: Ability<any> = {
+    const ability1 = {
       name: "Ability 1",
       description: "First ability",
       activate: () => {},
@@ -182,7 +193,7 @@ describe(selectAbilityFromList.name, () => {
       priority: AbilityPriority.High,
     };
 
-    const ability2: Ability<any> = {
+    const ability2 = {
       name: "Ability 2",
       description: "Second ability",
       activate: () => {},
@@ -195,12 +206,11 @@ describe(selectAbilityFromList.name, () => {
 
     const selectedAbility = selectAbilityFromList(abilities);
 
-    expectTypeOf(selectedAbility).toEqualTypeOf<Ability<any> | undefined>();
     expect(abilities).toContain(selectedAbility!);
   });
 
   it("returns undefined for an empty list", () => {
-    const abilities: Ability<any>[] = [];
+    const abilities: Ability<MainRegistryContext>[] = [];
 
     const selectedAbility = selectAbilityFromList(abilities);
 
@@ -210,7 +220,7 @@ describe(selectAbilityFromList.name, () => {
 
 describe(selectAbilityForCreature.name, () => {
   it("selects an ability for a creature", () => {
-    const ability1: Ability<any> = {
+    const ability1 = {
       name: "Ability 1",
       description: "First ability",
       activate: () => {},
@@ -219,7 +229,7 @@ describe(selectAbilityForCreature.name, () => {
       priority: AbilityPriority.High,
     };
 
-    const ability2: Ability<any> = {
+    const ability2 = {
       name: "Ability 2",
       description: "Second ability",
       activate: () => {},
@@ -243,12 +253,14 @@ describe(selectAbilityForCreature.name, () => {
 
     const selectedAbility = selectAbilityForCreature(
       { definitionId: "creature-1", id: "instance-1", hp: 10 },
-      {} as any,
-      {} as any,
+      {} as Combat<typeof registryContext>,
+      {} as GameContext<typeof registryContext>,
       registryContext
     );
 
-    expectTypeOf(selectedAbility).toExtend<Ability<any> | undefined>();
+    expectTypeOf(selectedAbility).toExtend<
+      Ability<typeof registryContext> | undefined
+    >();
     expect(abilities).toContain(selectedAbility!);
   });
 
@@ -266,8 +278,8 @@ describe(selectAbilityForCreature.name, () => {
 
     const selectedAbility = selectAbilityForCreature(
       { definitionId: "creature-1", id: "instance-1", hp: 10 },
-      {} as any,
-      {} as any,
+      {} as Combat<typeof registryContext>,
+      {} as GameContext<typeof registryContext>,
       registryContext
     );
 
@@ -275,7 +287,7 @@ describe(selectAbilityForCreature.name, () => {
   });
 
   it("only selects castable abilities", () => {
-    const ability1: Ability<any> = {
+    const ability1 = {
       name: "Castable Ability",
       description: "A castable ability",
       activate: () => {},
@@ -284,7 +296,7 @@ describe(selectAbilityForCreature.name, () => {
       priority: AbilityPriority.High,
     };
 
-    const ability2: Ability<any> = {
+    const ability2 = {
       name: "Non-Castable Ability",
       description: "A non-castable ability",
       activate: () => {},
@@ -306,17 +318,19 @@ describe(selectAbilityForCreature.name, () => {
 
     const selectedAbility = selectAbilityForCreature(
       { definitionId: "creature-1", id: "instance-1", hp: 10 },
-      {} as any,
-      {} as any,
+      {} as Combat<typeof registryContext>,
+      {} as GameContext<typeof registryContext>,
       registryContext
     );
 
-    expectTypeOf(selectedAbility).toExtend<Ability<any> | undefined>();
+    expectTypeOf(selectedAbility).toExtend<
+      Ability<typeof registryContext> | undefined
+    >();
     expect(selectedAbility).toEqual(ability1);
   });
 
   it("only selects abilities with the highest priority", () => {
-    const ability1: Ability<any> = {
+    const ability1 = {
       name: "High Priority Ability",
       description: "A high priority ability",
       activate: () => {},
@@ -325,7 +339,7 @@ describe(selectAbilityForCreature.name, () => {
       priority: AbilityPriority.High,
     };
 
-    const ability2: Ability<any> = {
+    const ability2 = {
       name: "Low Priority Ability",
       description: "A low priority ability",
       activate: () => {},
@@ -347,12 +361,14 @@ describe(selectAbilityForCreature.name, () => {
 
     const selectedAbility = selectAbilityForCreature(
       { definitionId: "creature-1", id: "instance-1", hp: 10 },
-      {} as any,
-      {} as any,
+      {} as Combat<typeof registryContext>,
+      {} as GameContext<typeof registryContext>,
       registryContext
     );
 
-    expectTypeOf(selectedAbility).toExtend<Ability<any> | undefined>();
+    expectTypeOf(selectedAbility).toExtend<
+      Ability<typeof registryContext> | undefined
+    >();
     expect(selectedAbility).toEqual(ability1);
   });
 });

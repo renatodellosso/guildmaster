@@ -1,6 +1,6 @@
 import { GameContext } from "@/lib/gameContext";
 import { RegistryContext } from "@/lib/registry";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { tick } from "../tick";
 import { saveGame } from "../saveUtils";
 
@@ -11,11 +11,11 @@ export default function useTick<TRegistryContext extends RegistryContext>(
   ticksPerSecond: number = 1,
   saveInterval: number = 10
 ) {
-  const [_saveCounter, setSaveCounter] = useState(0);
+  const [, setSaveCounter] = useState(0);
   const [lastSaveAt, setLastSaveAt] = useState<number>();
   const [lastDelta, setLastDelta] = useState<number>();
 
-  function handleTick() {
+  const handleTick = useCallback(() => {
     const now = Date.now();
     const delta = (now - gameContext.lastTick) / 1000; // delta in seconds
     setLastDelta(delta);
@@ -38,12 +38,12 @@ export default function useTick<TRegistryContext extends RegistryContext>(
 
       return prev;
     });
-  }
+  }, [gameContext, registry, setGameContext, saveInterval]);
 
   useEffect(() => {
     const interval = setInterval(handleTick, 1000 / ticksPerSecond);
     return () => clearInterval(interval);
-  }, [gameContext, setGameContext, registry, ticksPerSecond]);
+  }, [gameContext, setGameContext, registry, ticksPerSecond, handleTick]);
 
   return { lastSaveAt, lastDelta };
 }

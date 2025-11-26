@@ -25,10 +25,7 @@ export function startCombat<TRegistryContext extends RegistryContext>(
     (arr, e) => {
       for (let i = 0; i < e.count; i++) {
         arr.push(
-          createCreatureInstance(
-            e.id as RegistryToCreatureId<TRegistryContext>,
-            registryContext
-          )
+          createCreatureInstance(e.id as RegistryToCreatureId<TRegistryContext>)
         );
       }
       return arr;
@@ -62,7 +59,7 @@ export function createExpedition<TRegistryContext extends RegistryContext>(
       {
         dungeonId,
         party,
-        combat: {} as any,
+        combat: {} as Combat<TRegistryContext>,
       },
       registryContext
     ),

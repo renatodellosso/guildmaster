@@ -23,10 +23,10 @@ export function saveGame<TRegistryContext extends RegistryContext>(
 
 export function loadSave<
   TRegistryContext extends RegistryContext,
->(): Save<TRegistryContext> | null {
+>(): Save<TRegistryContext> {
   const savedData = localStorage.getItem(SAVE_KEY);
   if (!savedData) {
-    return null;
+    return getDefaultSave();
   }
 
   return JSON.parse(savedData);

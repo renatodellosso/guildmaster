@@ -29,8 +29,7 @@ export type CreatureInstance<TDefId extends Id> = {
 export function createCreatureInstance<
   TRegistryContext extends RegistryContext,
 >(
-  defId: RegistryToCreatureId<TRegistryContext>,
-  _registryContext: TRegistryContext
+  defId: RegistryToCreatureId<TRegistryContext>
 ): CreatureInstance<RegistryToCreatureId<TRegistryContext>> {
   return {
     id: randomId(),

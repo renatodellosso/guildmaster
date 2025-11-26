@@ -16,18 +16,11 @@ describe("RegistryContext", () => {
       };
     };
 
-    const registryContext: MyRegistryContext = {
-      creatures: {
-        goblin: { id: "goblin", name: "Goblin" },
-        orc: { id: "orc", name: "Orc" },
-      },
-    };
-
     expectTypeOf<
-      typeof registryContext.creatures.goblin.id
+      MyRegistryContext["creatures"]["goblin"]["id"]
     >().toEqualTypeOf<"goblin">();
     expectTypeOf<
-      typeof registryContext.creatures.orc.id
+      MyRegistryContext["creatures"]["orc"]["id"]
     >().toEqualTypeOf<"orc">();
 
     expectTypeOf<"goblin" | "orc">().toExtend<
