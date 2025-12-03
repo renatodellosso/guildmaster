@@ -6,6 +6,7 @@ import {
   RegistryToCreatureId,
   RegistryToRetreatTriggerId,
 } from "./registry";
+import { getCreature } from "./utils";
 import { Id } from "./utilTypes";
 
 export type RetreatTriggerDefinition<TRegistryContext extends RegistryContext> =
@@ -62,9 +63,7 @@ function takeTurnForCreature<TRegistryContext extends RegistryContext>(
   );
 
   const targets = rawTargets.map((targetOrId) =>
-    typeof targetOrId === "string"
-      ? gameContext.roster[targetOrId]
-      : (targetOrId as CreatureInstance<RegistryToCreatureId<TRegistryContext>>)
+    getCreature(targetOrId, gameContext)
   );
 
   ability.activate(creature, targets, combat, gameContext, registryContext);
@@ -75,12 +74,7 @@ function isEntireSideDead<TRegistryContext extends RegistryContext>(
   gameContext: GameContext<TRegistryContext>
 ): boolean {
   for (const creatureOrId of side.creatures) {
-    const creature =
-      typeof creatureOrId === "string"
-        ? gameContext.roster[creatureOrId]
-        : (creatureOrId as CreatureInstance<
-            RegistryToCreatureId<TRegistryContext>
-          >);
+    const creature = getCreature(creatureOrId, gameContext);
 
     if (creature.hp > 0) {
       return false;
@@ -143,13 +137,7 @@ function takeTurnsForCombatSide<TRegistryContext extends RegistryContext>(
   registryContext: TRegistryContext
 ) {
   for (const creatureOrId of combat.allies.creatures) {
-    // Lookup creature instance by ID
-    const creature =
-      typeof creatureOrId === "string"
-        ? gameContext.roster[creatureOrId]
-        : (creatureOrId as CreatureInstance<
-            RegistryToCreatureId<TRegistryContext>
-          >);
+    const creature = getCreature(creatureOrId, gameContext);
 
     takeTurnForCreature(creature, combat, gameContext, registryContext);
   }
