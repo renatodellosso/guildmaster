@@ -1,10 +1,7 @@
 import { selectAbilityForCreature } from "./ability";
-import { CreatureInstance } from "./creature";
+import { AdventurerInstance, CreatureInstance } from "./creature";
 import { GameContext } from "./gameContext";
-import {
-  RegistryContext,
-  RegistryToRetreatTriggerId,
-} from "./registry";
+import { RegistryContext, RegistryToRetreatTriggerId } from "./registry";
 import { getCreature } from "./utils";
 import { Id } from "./utilTypes";
 
@@ -184,6 +181,16 @@ export function handleCombatTick<TRegistryContext extends RegistryContext>(
     gameContext.expeditions = gameContext.expeditions.filter(
       (c) => c.combat !== combat
     );
+
+    for (const creatureOrId of combat.allies.creatures) {
+      const creature = getCreature(
+        creatureOrId,
+        gameContext
+      ) as AdventurerInstance<TRegistryContext>;
+      creature.activity = {
+        definitionId: "resting",
+      };
+    }
   }
 
   takeCombatTurn(combat, onVictory, onDefeat, gameContext, registryContext);

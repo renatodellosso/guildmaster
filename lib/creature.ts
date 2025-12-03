@@ -1,4 +1,5 @@
 import { Ability, AbilityFuncParamsWithoutTargets } from "./ability";
+import { ActivityInstance } from "./activity";
 import { RegistryContext, RegistryToCreatureId } from "./registry";
 import { SkillList } from "./skills";
 import { randomId } from "./utils";
@@ -23,6 +24,11 @@ export type CreatureInstance<TRegistryContext extends RegistryContext> = {
 
   hp: number;
 };
+
+export type AdventurerInstance<TRegistryContext extends RegistryContext> =
+  CreatureInstance<TRegistryContext> & {
+    activity: ActivityInstance;
+  };
 
 export function createCreatureInstance<
   TRegistryContext extends RegistryContext,

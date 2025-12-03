@@ -1,5 +1,9 @@
 import { CombatSide, RetreatTriggerDefinition } from "@/lib/combat";
-import { CreatureDefinition, CreatureInstance } from "@/lib/creature";
+import {
+  AdventurerInstance,
+  CreatureDefinition,
+  CreatureInstance,
+} from "@/lib/creature";
 import { DungeonDefinition } from "@/lib/dungeon";
 import { GameContext } from "@/lib/gameContext";
 import { RegistryContext, Registry } from "@/lib/registry";
@@ -49,7 +53,7 @@ export function buildCombatSide<TRegistryContext extends RegistryContext>(
 }
 
 export function buildGameContext<TRegistryContext extends RegistryContext>(
-  roster: CreatureInstance<TRegistryContext>[] = []
+  roster: AdventurerInstance<TRegistryContext>[] = []
 ): GameContext<TRegistryContext> {
   return {
     roster: roster.reduce(
@@ -57,7 +61,7 @@ export function buildGameContext<TRegistryContext extends RegistryContext>(
         acc[creature.id] = creature;
         return acc;
       },
-      {} as Record<Id, CreatureInstance<TRegistryContext>>
+      {} as Record<Id, AdventurerInstance<TRegistryContext>>
     ),
     expeditions: [],
     lastTick: Date.now(),

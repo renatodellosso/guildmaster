@@ -13,7 +13,7 @@ import {
   buildGameContext,
   buildRegistryContext,
 } from "../testUtils";
-import { CreatureInstance } from "@/lib/creature";
+import { AdventurerInstance, CreatureInstance } from "@/lib/creature";
 import { MainGameContext } from "@/lib/content/mainRegistryContext";
 import { GameContext } from "@/lib/gameContext";
 
@@ -273,27 +273,39 @@ describe(takeCombatTurn.name, () => {
         id: "instance-1",
         definitionId: "creature-1",
         name: "Creature 1",
+        activity: {
+          definitionId: "resting",
+        },
         hp: 10,
       },
       {
         id: "instance-2",
         definitionId: "creature-1",
         name: "Creature 2",
+        activity: {
+          definitionId: "resting",
+        },
         hp: 10,
       },
       {
         id: "instance-3",
         definitionId: "creature-1",
         name: "Creature 3",
+        activity: {
+          definitionId: "resting",
+        },
         hp: 10,
       },
       {
         id: "instance-4",
         definitionId: "creature-1",
         name: "Creature 4",
+        activity: {
+          definitionId: "resting",
+        },
         hp: 10,
       },
-    ] satisfies CreatureInstance<typeof registryContext>[];
+    ] satisfies AdventurerInstance<typeof registryContext>[];
 
     const combat = {
       allies: buildCombatSide(["instance-1", "instance-2"]),

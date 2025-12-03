@@ -46,7 +46,7 @@ export default function StartExpeditionMenu({
     }
 
     context.game.expeditions.push(
-      createExpedition(dungeonId, party, context.registry)
+      createExpedition(dungeonId, party, context.game, context.registry)
     );
     context.updateGameState();
 

@@ -46,6 +46,9 @@ export function getDefaultSave(): Save<MainRegistryContext> {
           id: "creature-1",
           definitionId: "human",
           name: "Test",
+          activity: {
+            definitionId: "resting",
+          },
           hp: 10,
         },
       },

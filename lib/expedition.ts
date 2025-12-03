@@ -1,5 +1,6 @@
 import { Combat } from "./combat";
 import { createCreatureInstance, CreatureInstance } from "./creature";
+import { GameContext } from "./gameContext";
 import {
   RegistryContext,
   RegistryToCreatureId,
@@ -50,8 +51,17 @@ export function startCombat<TRegistryContext extends RegistryContext>(
 export function createExpedition<TRegistryContext extends RegistryContext>(
   dungeonId: RegistryToDungeonId<TRegistryContext>,
   party: Id[],
+  gameContext: GameContext<TRegistryContext>,
   registryContext: TRegistryContext
 ): Expedition<TRegistryContext> {
+  // Update activities
+  for (const creatureId of party) {
+    gameContext.roster[creatureId].activity = {
+      definitionId: "onExpedition",
+      data: { dungeonId },
+    };
+  }
+
   return {
     dungeonId,
     party,
