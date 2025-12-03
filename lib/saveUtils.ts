@@ -42,7 +42,12 @@ export function getDefaultSave(): Save<MainRegistryContext> {
     gameContext: {
       lastTick: Date.now(),
       roster: {
-        "creature-1": { id: "creature-1", definitionId: "human", hp: 10 },
+        "creature-1": {
+          id: "creature-1",
+          definitionId: "human",
+          name: "Test",
+          hp: 10,
+        },
       },
       expeditions: [],
     },

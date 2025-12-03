@@ -15,6 +15,8 @@ const rawCreatures = {
         name: "Punch",
         description: "Punch an enemy",
         activate: (caster, targets) => {
+          if (targets.length === 0 || !targets[0]) return;
+          console.log("Activating Punch on", targets, "by", caster);
           targets[0].hp -= caster.hp / 4;
         },
         canActivate: () => true,

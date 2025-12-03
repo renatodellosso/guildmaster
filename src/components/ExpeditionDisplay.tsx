@@ -25,9 +25,7 @@ export default function ExpeditionDisplay({
                   RegistryToCreatureId<MainRegistryContext>
                 >);
           return (
-            <li key={String(creature.id)}>
-              {String(creature.id)} - HP: {creature.hp}
-            </li>
+            <CreatureDisplay key={String(creature.id)} creature={creature} />
           );
         })}
       </ul>
@@ -41,12 +39,22 @@ export default function ExpeditionDisplay({
                   RegistryToCreatureId<MainRegistryContext>
                 >);
           return (
-            <li key={String(creature.id)}>
-              {String(creature.id)} - HP: {creature.hp}
-            </li>
+            <CreatureDisplay key={String(creature.id)} creature={creature} />
           );
         })}
       </ul>
     </div>
+  );
+}
+
+function CreatureDisplay({
+  creature,
+}: {
+  creature: CreatureInstance<RegistryToCreatureId<MainRegistryContext>>;
+}) {
+  return (
+    <li>
+      {creature.name} - HP: {creature.hp}
+    </li>
   );
 }

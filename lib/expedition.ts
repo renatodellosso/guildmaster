@@ -25,7 +25,10 @@ export function startCombat<TRegistryContext extends RegistryContext>(
     (arr, e) => {
       for (let i = 0; i < e.count; i++) {
         arr.push(
-          createCreatureInstance(e.id as RegistryToCreatureId<TRegistryContext>)
+          createCreatureInstance(
+            e.id as RegistryToCreatureId<TRegistryContext>,
+            registryContext
+          )
         );
       }
       return arr;

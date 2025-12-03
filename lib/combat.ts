@@ -186,12 +186,14 @@ export function handleCombatTick<TRegistryContext extends RegistryContext>(
   registryContext: TRegistryContext
 ) {
   function onVictory() {
+    console.log("Expedition victorious!");
     gameContext.expeditions = gameContext.expeditions.filter(
       (c) => c.combat !== combat
     );
   }
 
   function onDefeat() {
+    console.log("Expedition defeated!");
     gameContext.expeditions = gameContext.expeditions.filter(
       (c) => c.combat !== combat
     );
