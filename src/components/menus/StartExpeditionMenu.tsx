@@ -2,7 +2,7 @@ import { MainRegistryContext } from "@/lib/content/mainRegistryContext";
 import { CreatureInstance } from "@/lib/creature";
 import { createExpedition } from "@/lib/expedition";
 import { getMaxPartySize } from "@/lib/gameStats";
-import { RegistryToCreatureId, RegistryToDungeonId } from "@/lib/registry";
+import { RegistryToDungeonId } from "@/lib/registry";
 import { Context, Id } from "@/lib/utilTypes";
 import { useState } from "react";
 
@@ -111,9 +111,7 @@ function PartyMemberSelector({
   currentText,
   onChange,
 }: {
-  availableMembers: CreatureInstance<
-    RegistryToCreatureId<MainRegistryContext>
-  >[];
+  availableMembers: CreatureInstance<MainRegistryContext>[];
   currentText: string;
   onChange: (newSelected: Id) => void;
 }) {

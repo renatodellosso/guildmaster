@@ -16,7 +16,6 @@ import {
   MainRegistryContext,
 } from "@/lib/content/mainRegistryContext";
 import { CreatureInstance } from "@/lib/creature";
-import { CreatureDefId } from "@/lib/content/creatures";
 
 describe("Ability", () => {
   it("allows arbitrary priority functions", () => {
@@ -173,7 +172,7 @@ describe(getHighestPriorityAbilities.name, () => {
 
     const highestPriorityAbilities = getHighestPriorityAbilities(
       abilities,
-      {} as CreatureInstance<CreatureDefId>,
+      {} as CreatureInstance<MainRegistryContext>,
       [],
       {} as Combat<MainRegistryContext>,
       {} as MainGameContext,

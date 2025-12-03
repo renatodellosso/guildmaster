@@ -98,16 +98,12 @@ describe(takeCombatTurn.name, () => {
       ...combat.enemies.creatures,
     ]) {
       const defId: RegistryToCreatureId<typeof registryContext> = (
-        creature as CreatureInstance<
-          RegistryToCreatureId<typeof registryContext>
-        >
+        creature as CreatureInstance<typeof registryContext>
       ).definitionId;
       const creatureDef = registryContext.creatures[defId];
       const abilities = getFromOptionalFunc(
         creatureDef.abilities,
-        creature as CreatureInstance<
-          RegistryToCreatureId<typeof registryContext>
-        >,
+        creature as CreatureInstance<typeof registryContext>,
         combat,
         gameContext,
         registryContext
@@ -297,9 +293,7 @@ describe(takeCombatTurn.name, () => {
         name: "Creature 4",
         hp: 10,
       },
-    ] satisfies CreatureInstance<
-      RegistryToCreatureId<typeof registryContext>
-    >[];
+    ] satisfies CreatureInstance<typeof registryContext>[];
 
     const combat = {
       allies: buildCombatSide(["instance-1", "instance-2"]),

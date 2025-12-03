@@ -46,8 +46,10 @@ describe(startCombat.name, () => {
     for (let i = 0; i < iterations; i++) {
       const combatInstance = startCombat(expedition, registryContext);
       combatInstance.enemies.creatures.forEach(
-        (creature: Id | CreatureInstance<Id>) => {
-          enemyIds.add((creature as CreatureInstance<Id>).definitionId);
+        (creature: Id | CreatureInstance<typeof registryContext>) => {
+          enemyIds.add(
+            (creature as CreatureInstance<typeof registryContext>).definitionId
+          );
         }
       );
     }
@@ -88,8 +90,10 @@ describe(startCombat.name, () => {
 
     const creatureCount: Record<Id, number> = {};
     combatInstance.enemies.creatures.forEach(
-      (creature: Id | CreatureInstance<Id>) => {
-        const definitionId = (creature as CreatureInstance<Id>).definitionId;
+      (creature: Id | CreatureInstance<typeof registryContext>) => {
+        const definitionId = (
+          creature as CreatureInstance<typeof registryContext>
+        ).definitionId;
         creatureCount[definitionId] = (creatureCount[definitionId] || 0) + 1;
       }
     );

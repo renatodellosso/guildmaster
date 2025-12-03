@@ -1,7 +1,6 @@
 import { MainRegistryContext } from "@/lib/content/mainRegistryContext";
 import { CreatureInstance } from "@/lib/creature";
 import { Expedition } from "@/lib/expedition";
-import { RegistryToCreatureId } from "@/lib/registry";
 import { getCreature } from "@/lib/utils";
 import { Context } from "@/lib/utilTypes";
 
@@ -41,7 +40,7 @@ export default function ExpeditionDisplay({
 function CreatureDisplay({
   creature,
 }: {
-  creature: CreatureInstance<RegistryToCreatureId<MainRegistryContext>>;
+  creature: CreatureInstance<MainRegistryContext>;
 }) {
   return (
     <li>

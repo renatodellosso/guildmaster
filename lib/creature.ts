@@ -9,19 +9,16 @@ export type CreatureDefinition<
 > = {
   id: RegistryToCreatureId<TRegistryContext>;
   name: string;
-  skills: SkillList<
-    TRegistryContext,
-    [CreatureInstance<RegistryToCreatureId<TRegistryContext>>]
-  >;
+  skills: SkillList<TRegistryContext, [CreatureInstance<TRegistryContext>]>;
   abilities?: OptionalFunc<
     Ability<TRegistryContext>[],
     AbilityFuncParamsWithoutTargets<TRegistryContext>
   >;
 };
 
-export type CreatureInstance<TDefId extends Id> = {
+export type CreatureInstance<TRegistryContext extends RegistryContext> = {
   id: Id;
-  definitionId: TDefId;
+  definitionId: RegistryToCreatureId<TRegistryContext>;
   name: string;
 
   hp: number;
@@ -32,7 +29,7 @@ export function createCreatureInstance<
 >(
   defId: RegistryToCreatureId<TRegistryContext>,
   registry: TRegistryContext
-): CreatureInstance<RegistryToCreatureId<TRegistryContext>> {
+): CreatureInstance<TRegistryContext> {
   return {
     id: randomId(),
     definitionId: defId,

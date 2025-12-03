@@ -1,7 +1,7 @@
 import { Combat } from "./combat";
 import { CreatureInstance } from "./creature";
 import { GameContext } from "./gameContext";
-import { RegistryContext, RegistryToCreatureId } from "./registry";
+import { RegistryContext } from "./registry";
 import { getFromOptionalFunc, Id, OptionalFunc } from "./utilTypes";
 
 export enum AbilityPriority {
@@ -12,8 +12,8 @@ export enum AbilityPriority {
 }
 
 export type AbilityFuncParams<TRegistryContext extends RegistryContext> = [
-  caster: CreatureInstance<RegistryToCreatureId<TRegistryContext>>,
-  targets: CreatureInstance<RegistryToCreatureId<TRegistryContext>>[],
+  caster: CreatureInstance<TRegistryContext>,
+  targets: CreatureInstance<TRegistryContext>[],
   combat: Combat<TRegistryContext>,
   gameContext: GameContext<TRegistryContext>,
   registryContext: TRegistryContext,
@@ -22,7 +22,7 @@ export type AbilityFuncParams<TRegistryContext extends RegistryContext> = [
 export type AbilityFuncParamsWithoutTargets<
   TRegistryContext extends RegistryContext,
 > = [
-  caster: CreatureInstance<RegistryToCreatureId<TRegistryContext>>,
+  caster: CreatureInstance<TRegistryContext>,
   combat: Combat<TRegistryContext>,
   gameContext: GameContext<TRegistryContext>,
   registryContext: TRegistryContext,
@@ -34,13 +34,13 @@ export type Ability<TRegistryContext extends RegistryContext> = {
   activate: (...args: AbilityFuncParams<TRegistryContext>) => void;
   selectTargets: (
     ...args: AbilityFuncParamsWithoutTargets<TRegistryContext>
-  ) => (Id | CreatureInstance<RegistryToCreatureId<TRegistryContext>>)[];
+  ) => (Id | CreatureInstance<TRegistryContext>)[];
   canActivate: OptionalFunc<boolean, AbilityFuncParams<TRegistryContext>>;
   priority: OptionalFunc<AbilityPriority, AbilityFuncParams<TRegistryContext>>;
 };
 
 export function getAbilities<TRegistryContext extends RegistryContext>(
-  creature: CreatureInstance<RegistryToCreatureId<TRegistryContext>>,
+  creature: CreatureInstance<TRegistryContext>,
   combat: Combat<TRegistryContext>,
   gameContext: GameContext<TRegistryContext>,
   registryContext: TRegistryContext
@@ -61,7 +61,7 @@ export function getAbilities<TRegistryContext extends RegistryContext>(
 }
 
 export function getCastableAbilities<TRegistryContext extends RegistryContext>(
-  creature: CreatureInstance<RegistryToCreatureId<TRegistryContext>>,
+  creature: CreatureInstance<TRegistryContext>,
   combat: Combat<TRegistryContext>,
   gameContext: GameContext<TRegistryContext>,
   registryContext: TRegistryContext
@@ -89,8 +89,8 @@ export function getHighestPriorityAbilities<
   TRegistryContext extends RegistryContext,
 >(
   abilities: Ability<TRegistryContext>[],
-  caster: CreatureInstance<RegistryToCreatureId<TRegistryContext>>,
-  targets: CreatureInstance<RegistryToCreatureId<TRegistryContext>>[],
+  caster: CreatureInstance<TRegistryContext>,
+  targets: CreatureInstance<TRegistryContext>[],
   combat: Combat<TRegistryContext>,
   gameContext: GameContext<TRegistryContext>,
   registryContext: TRegistryContext
@@ -131,7 +131,7 @@ export function selectAbilityFromList<TRegistryContext extends RegistryContext>(
 export function selectAbilityForCreature<
   TRegistryContext extends RegistryContext,
 >(
-  creature: CreatureInstance<RegistryToCreatureId<TRegistryContext>>,
+  creature: CreatureInstance<TRegistryContext>,
   combat: Combat<TRegistryContext>,
   gameContext: GameContext<TRegistryContext>,
   registryContext: TRegistryContext

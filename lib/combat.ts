@@ -3,7 +3,6 @@ import { CreatureInstance } from "./creature";
 import { GameContext } from "./gameContext";
 import {
   RegistryContext,
-  RegistryToCreatureId,
   RegistryToRetreatTriggerId,
 } from "./registry";
 import { getCreature } from "./utils";
@@ -28,7 +27,7 @@ export type Combat<TRegistryContext extends RegistryContext> = {
 };
 
 export type CombatSide<TRegistryContext extends RegistryContext> = {
-  creatures: (CreatureInstance<RegistryToCreatureId<TRegistryContext>> | Id)[];
+  creatures: (CreatureInstance<TRegistryContext> | Id)[];
   retreatTriggers: RetreatTriggerInstance<
     RegistryToRetreatTriggerId<TRegistryContext>
   >[];
@@ -39,7 +38,7 @@ export type CombatSide<TRegistryContext extends RegistryContext> = {
 };
 
 function takeTurnForCreature<TRegistryContext extends RegistryContext>(
-  creature: CreatureInstance<RegistryToCreatureId<TRegistryContext>>,
+  creature: CreatureInstance<TRegistryContext>,
   combat: Combat<TRegistryContext>,
   gameContext: GameContext<TRegistryContext>,
   registryContext: TRegistryContext

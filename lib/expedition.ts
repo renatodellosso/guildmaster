@@ -21,20 +21,17 @@ export function startCombat<TRegistryContext extends RegistryContext>(
 
   const encounter = dungeon.encounters.roll();
 
-  const enemies = encounter.reduce(
-    (arr, e) => {
-      for (let i = 0; i < e.count; i++) {
-        arr.push(
-          createCreatureInstance(
-            e.id as RegistryToCreatureId<TRegistryContext>,
-            registryContext
-          )
-        );
-      }
-      return arr;
-    },
-    [] as CreatureInstance<RegistryToCreatureId<TRegistryContext>>[]
-  );
+  const enemies = encounter.reduce((arr, e) => {
+    for (let i = 0; i < e.count; i++) {
+      arr.push(
+        createCreatureInstance(
+          e.id as RegistryToCreatureId<TRegistryContext>,
+          registryContext
+        )
+      );
+    }
+    return arr;
+  }, [] as CreatureInstance<TRegistryContext>[]);
 
   return {
     allies: {
