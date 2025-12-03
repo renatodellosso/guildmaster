@@ -54,7 +54,7 @@ export type RegistryToDungeonId<TRegistryContext extends RegistryContext> =
     : Id;
 
 export function finishRegistry<TId extends Id, TItem extends { id: TId }>(
-  rawRegistry: RawRegistry<TId, TItem>
+  rawRegistry: RawRegistry<TId, TItem>,
 ): Registry<TId, TItem> {
   const finishedRegistry = {} as Registry<TId, TItem>;
 

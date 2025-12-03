@@ -12,7 +12,7 @@ export type RetreatTriggerDefinition<TRegistryContext extends RegistryContext> =
   (
     combat: Combat<TRegistryContext>,
     registryContext: TRegistryContext,
-    data?: unknown
+    data?: unknown,
   ) => boolean;
 
 export type RetreatTriggerInstance<TDefId extends Id> = {
@@ -41,13 +41,13 @@ function takeTurnForCreature<TRegistryContext extends RegistryContext>(
   creature: CreatureInstance<RegistryToCreatureId<TRegistryContext>>,
   combat: Combat<TRegistryContext>,
   gameContext: GameContext<TRegistryContext>,
-  registryContext: TRegistryContext
+  registryContext: TRegistryContext,
 ) {
   const ability = selectAbilityForCreature(
     creature,
     combat,
     gameContext,
-    registryContext
+    registryContext,
   );
 
   if (!ability) {
@@ -58,13 +58,15 @@ function takeTurnForCreature<TRegistryContext extends RegistryContext>(
     creature,
     combat,
     gameContext,
-    registryContext
+    registryContext,
   );
 
   const targets = rawTargets.map((targetOrId) =>
     typeof targetOrId === "string"
       ? gameContext.roster[targetOrId]
-      : (targetOrId as CreatureInstance<RegistryToCreatureId<TRegistryContext>>)
+      : (targetOrId as CreatureInstance<
+          RegistryToCreatureId<TRegistryContext>
+        >),
   );
 
   ability.activate(creature, targets, combat, gameContext, registryContext);
@@ -72,7 +74,7 @@ function takeTurnForCreature<TRegistryContext extends RegistryContext>(
 
 function isEntireSideDead<TRegistryContext extends RegistryContext>(
   side: CombatSide<TRegistryContext>,
-  gameContext: GameContext<TRegistryContext>
+  gameContext: GameContext<TRegistryContext>,
 ): boolean {
   for (const creatureOrId of side.creatures) {
     const creature =
@@ -92,7 +94,7 @@ function isEntireSideDead<TRegistryContext extends RegistryContext>(
 
 export function checkRetreatTriggers<TRegistryContext extends RegistryContext>(
   combat: Combat<TRegistryContext>,
-  registryContext: TRegistryContext
+  registryContext: TRegistryContext,
 ): boolean {
   for (const retreatTriggerInstance of combat.allies.retreatTriggers) {
     const retreatTriggerDef =
@@ -112,7 +114,7 @@ export function handleRetreat<TRegistryContext extends RegistryContext>(
   combat: Combat<TRegistryContext>,
   retreat: () => void,
   gameContext: GameContext<TRegistryContext>,
-  registryContext: TRegistryContext
+  registryContext: TRegistryContext,
 ) {
   if (isEntireSideDead(combat.allies, gameContext)) {
     retreat();
@@ -140,7 +142,7 @@ function takeTurnsForCombatSide<TRegistryContext extends RegistryContext>(
   combat: Combat<TRegistryContext>,
   retreat: () => void,
   gameContext: GameContext<TRegistryContext>,
-  registryContext: TRegistryContext
+  registryContext: TRegistryContext,
 ) {
   for (const creatureOrId of combat.allies.creatures) {
     // Lookup creature instance by ID
@@ -165,7 +167,7 @@ export function takeCombatTurn<TRegistryContext extends RegistryContext>(
   onVictory: () => void,
   onDefeat: () => void,
   gameContext: GameContext<TRegistryContext>,
-  registryContext: TRegistryContext
+  registryContext: TRegistryContext,
 ) {
   takeTurnsForCombatSide(combat, onDefeat, gameContext, registryContext);
 
@@ -183,19 +185,19 @@ export function takeCombatTurn<TRegistryContext extends RegistryContext>(
 export function handleCombatTick<TRegistryContext extends RegistryContext>(
   combat: Combat<TRegistryContext>,
   gameContext: GameContext<TRegistryContext>,
-  registryContext: TRegistryContext
+  registryContext: TRegistryContext,
 ) {
   function onVictory() {
     console.log("Expedition victorious!");
     gameContext.expeditions = gameContext.expeditions.filter(
-      (c) => c.combat !== combat
+      (c) => c.combat !== combat,
     );
   }
 
   function onDefeat() {
     console.log("Expedition defeated!");
     gameContext.expeditions = gameContext.expeditions.filter(
-      (c) => c.combat !== combat
+      (c) => c.combat !== combat,
     );
   }
 

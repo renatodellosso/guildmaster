@@ -16,7 +16,7 @@ export function buildRegistryContext<
   TCreatureId extends Id = Id,
   TRetreatTriggerId extends Id = Id,
 >(
-  registry: Partial<RegistryContext<TCreatureId, TRetreatTriggerId>>
+  registry: Partial<RegistryContext<TCreatureId, TRetreatTriggerId>>,
 ): RegistryContext<TCreatureId, TRetreatTriggerId> {
   return {
     creatures:
@@ -46,7 +46,7 @@ export function buildCombatSide<TRegistryContext extends RegistryContext>(
   creatureInstances: (
     | CreatureInstance<RegistryToCreatureId<TRegistryContext>>
     | Id
-  )[]
+  )[],
 ): CombatSide<TRegistryContext> {
   return {
     creatures: creatureInstances,
@@ -56,7 +56,7 @@ export function buildCombatSide<TRegistryContext extends RegistryContext>(
 }
 
 export function buildGameContext<TRegistryContext extends RegistryContext>(
-  roster: CreatureInstance<RegistryToCreatureId<TRegistryContext>>[] = []
+  roster: CreatureInstance<RegistryToCreatureId<TRegistryContext>>[] = [],
 ): GameContext<TRegistryContext> {
   return {
     roster: roster.reduce(
@@ -64,7 +64,10 @@ export function buildGameContext<TRegistryContext extends RegistryContext>(
         acc[creature.id] = creature;
         return acc;
       },
-      {} as Record<Id, CreatureInstance<RegistryToCreatureId<TRegistryContext>>>
+      {} as Record<
+        Id,
+        CreatureInstance<RegistryToCreatureId<TRegistryContext>>
+      >,
     ),
     expeditions: [],
     lastTick: Date.now(),

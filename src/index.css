@@ -16,6 +16,9 @@ h3 {
   @apply text-lg font-medium mb-2;
 }
 
-button, select, input, textarea {
+button,
+select,
+input,
+textarea {
   @apply border border-white hover:bg-gray-700 active:bg-gray-900 px-1 cursor-pointer;
 }

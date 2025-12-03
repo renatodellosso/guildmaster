@@ -15,7 +15,7 @@ export type Expedition<TRegistryContext extends RegistryContext> = {
 
 export function startCombat<TRegistryContext extends RegistryContext>(
   expedition: Expedition<TRegistryContext>,
-  registryContext: TRegistryContext
+  registryContext: TRegistryContext,
 ): Combat<TRegistryContext> {
   const dungeon = registryContext.dungeons[expedition.dungeonId];
 
@@ -27,13 +27,13 @@ export function startCombat<TRegistryContext extends RegistryContext>(
         arr.push(
           createCreatureInstance(
             e.id as RegistryToCreatureId<TRegistryContext>,
-            registryContext
-          )
+            registryContext,
+          ),
         );
       }
       return arr;
     },
-    [] as CreatureInstance<RegistryToCreatureId<TRegistryContext>>[]
+    [] as CreatureInstance<RegistryToCreatureId<TRegistryContext>>[],
   );
 
   return {
@@ -53,7 +53,7 @@ export function startCombat<TRegistryContext extends RegistryContext>(
 export function createExpedition<TRegistryContext extends RegistryContext>(
   dungeonId: RegistryToDungeonId<TRegistryContext>,
   party: Id[],
-  registryContext: TRegistryContext
+  registryContext: TRegistryContext,
 ): Expedition<TRegistryContext> {
   return {
     dungeonId,
@@ -64,7 +64,7 @@ export function createExpedition<TRegistryContext extends RegistryContext>(
         party,
         combat: {} as Combat<TRegistryContext>,
       },
-      registryContext
+      registryContext,
     ),
   };
 }

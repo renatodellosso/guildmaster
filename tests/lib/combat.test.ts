@@ -60,18 +60,30 @@ describe(takeCombatTurn.name, () => {
 
     const combat = {
       allies: buildCombatSide([
-        { id: "instance-1", definitionId: "creature-1", hp: 10 },
+        {
+          id: "instance-1",
+          definitionId: "creature-1",
+          name: "Creature 1",
+          hp: 10,
+        },
         {
           id: "instance-2",
           definitionId: "creature-1",
+          name: "Creature 2",
           hp: 10,
         },
       ]),
       enemies: buildCombatSide([
-        { id: "instance-3", definitionId: "creature-2", hp: 10 },
+        {
+          id: "instance-3",
+          definitionId: "creature-2",
+          name: "Creature 3",
+          hp: 10,
+        },
         {
           id: "instance-4",
           definitionId: "creature-2",
+          name: "Creature 4",
           hp: 10,
         },
       ]),
@@ -98,7 +110,7 @@ describe(takeCombatTurn.name, () => {
         >,
         combat,
         gameContext,
-        registryContext
+        registryContext,
       );
 
       expect(abilities).toBeDefined();
@@ -111,7 +123,7 @@ describe(takeCombatTurn.name, () => {
         [],
         combat,
         gameContext,
-        registryContext
+        registryContext,
       );
     }
   });
@@ -130,7 +142,7 @@ describe(takeCombatTurn.name, () => {
               activate: (
                 caster: unknown,
                 _targets: unknown,
-                combat: Combat<RegistryContext>
+                combat: Combat<RegistryContext>,
               ) => {
                 expect(combat.allies.creatures).toContain(caster);
               },
@@ -145,10 +157,20 @@ describe(takeCombatTurn.name, () => {
 
     const combat = {
       allies: buildCombatSide([
-        { id: "instance-1", definitionId: "creature-1", hp: 10 },
+        {
+          id: "instance-1",
+          definitionId: "creature-1",
+          name: "Creature 1",
+          hp: 10,
+        },
       ]),
       enemies: buildCombatSide([
-        { id: "instance-2", definitionId: "creature-1", hp: 10 },
+        {
+          id: "instance-2",
+          definitionId: "creature-1",
+          name: "Creature 2",
+          hp: 10,
+        },
       ]),
     } satisfies Combat<typeof registryContext>;
 
@@ -184,12 +206,32 @@ describe(takeCombatTurn.name, () => {
 
     const combat = {
       allies: buildCombatSide([
-        { id: "instance-1", definitionId: "creature-1", hp: 10 },
-        { id: "instance-2", definitionId: "creature-1", hp: 10 },
+        {
+          id: "instance-1",
+          definitionId: "creature-1",
+          name: "Creature 1",
+          hp: 10,
+        },
+        {
+          id: "instance-2",
+          definitionId: "creature-1",
+          name: "Creature 2",
+          hp: 10,
+        },
       ]),
       enemies: buildCombatSide([
-        { id: "instance-3", definitionId: "creature-1", hp: 10 },
-        { id: "instance-4", definitionId: "creature-1", hp: 10 },
+        {
+          id: "instance-3",
+          definitionId: "creature-1",
+          name: "Creature 3",
+          hp: 10,
+        },
+        {
+          id: "instance-4",
+          definitionId: "creature-1",
+          name: "Creature 4",
+          hp: 10,
+        },
       ]),
     } satisfies Combat<typeof registryContext>;
 
@@ -231,10 +273,30 @@ describe(takeCombatTurn.name, () => {
     });
 
     const roster = [
-      { id: "instance-1", definitionId: "creature-1", hp: 10 },
-      { id: "instance-2", definitionId: "creature-1", hp: 10 },
-      { id: "instance-3", definitionId: "creature-1", hp: 10 },
-      { id: "instance-4", definitionId: "creature-1", hp: 10 },
+      {
+        id: "instance-1",
+        definitionId: "creature-1",
+        name: "Creature 1",
+        hp: 10,
+      },
+      {
+        id: "instance-2",
+        definitionId: "creature-1",
+        name: "Creature 2",
+        hp: 10,
+      },
+      {
+        id: "instance-3",
+        definitionId: "creature-1",
+        name: "Creature 3",
+        hp: 10,
+      },
+      {
+        id: "instance-4",
+        definitionId: "creature-1",
+        name: "Creature 4",
+        hp: 10,
+      },
     ] satisfies CreatureInstance<
       RegistryToCreatureId<typeof registryContext>
     >[];
@@ -313,6 +375,7 @@ describe(handleRetreat.name, () => {
           {
             id: "creature-1",
             definitionId: "creature-def-1",
+            name: "Creature",
             hp: 10,
           },
         ],
@@ -335,7 +398,7 @@ describe(handleRetreat.name, () => {
       combat,
       () => {},
       {} as GameContext<typeof registryContext>,
-      registryContext
+      registryContext,
     );
 
     expect(combat.allies.retreatTimer).toBeGreaterThan(-1);
@@ -359,7 +422,7 @@ describe(handleRetreat.name, () => {
       combat,
       handleRetreatCallback,
       {} as MainGameContext,
-      registryContext
+      registryContext,
     );
 
     expect(handleRetreatCallback).toHaveBeenCalled();
@@ -374,6 +437,7 @@ describe(handleRetreat.name, () => {
           {
             id: "creature-1",
             definitionId: "creature-def-1",
+            name: "Fallen Creature",
             hp: 0,
           },
         ],
@@ -389,7 +453,7 @@ describe(handleRetreat.name, () => {
       combat,
       handleRetreatCallback,
       {} as MainGameContext,
-      registryContext
+      registryContext,
     );
 
     expect(handleRetreatCallback).toHaveBeenCalled();

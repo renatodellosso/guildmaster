@@ -1,5 +1,11 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
-import { finishRegistry } from "@/lib/registry";
+import {
+  finishRegistry,
+  RegistryContext,
+  RegistryToCreatureId,
+} from "@/lib/registry";
+import { CreatureDefinition } from "@/lib/creature";
+import { Id } from "@/lib/utilTypes";
 
 describe("RegistryContext", () => {
   it("can be instantiated with specific creature IDs", () => {
@@ -70,5 +76,33 @@ describe(finishRegistry.name, () => {
       goblin: { id: "goblin", name: "Goblin" },
       orc: { id: "orc", name: "Orc" },
     });
+  });
+});
+
+describe("RegistryToCreatureId", () => {
+  it("extracts the creature ID type from a RegistryContext", () => {
+    type MyRegistryContext = Omit<RegistryContext, "creatures"> & {
+      creatures: {
+        goblin: CreatureDefinition;
+        orc: CreatureDefinition;
+      };
+    };
+
+    type CreatureId = RegistryToCreatureId<MyRegistryContext>;
+
+    expectTypeOf<CreatureId>().toEqualTypeOf<"goblin" | "orc">();
+  });
+
+  it("extends Id", () => {
+    type MyRegistryContext = Omit<RegistryContext, "creatures"> & {
+      creatures: {
+        goblin: CreatureDefinition;
+        orc: CreatureDefinition;
+      };
+    };
+
+    type CreatureId = RegistryToCreatureId<MyRegistryContext>;
+
+    expectTypeOf<CreatureId>().toExtend<Id>();
   });
 });

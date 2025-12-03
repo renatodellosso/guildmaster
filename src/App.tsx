@@ -22,6 +22,7 @@ function App() {
   useEffect(() => {
     const save = loadSave<MainRegistryContext>();
     if (save) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setGameContext(save.gameContext);
     } else {
       setGameContext(getDefaultSave().gameContext);
@@ -31,7 +32,7 @@ function App() {
   const { lastSaveAt, lastDelta } = useTick(
     gameContext!,
     setGameContext,
-    mainRegistry
+    mainRegistry,
   );
 
   if (!gameContext) {

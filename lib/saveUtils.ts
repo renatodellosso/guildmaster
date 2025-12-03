@@ -10,14 +10,14 @@ type Save<TRegistryContext extends RegistryContext> = {
 };
 
 export function saveGame<TRegistryContext extends RegistryContext>(
-  gameContext: GameContext<TRegistryContext>
+  gameContext: GameContext<TRegistryContext>,
 ) {
   localStorage.setItem(
     SAVE_KEY,
     JSON.stringify({
       gameContext,
       savedAt: Date.now(),
-    })
+    }),
   );
 }
 

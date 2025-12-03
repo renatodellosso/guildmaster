@@ -9,7 +9,7 @@ export default function useTick<TRegistryContext extends RegistryContext>(
   setGameContext: (context: GameContext<TRegistryContext>) => void,
   registry: TRegistryContext,
   ticksPerSecond: number = 1,
-  saveInterval: number = 10
+  saveInterval: number = 10,
 ) {
   const [, setSaveCounter] = useState(0);
   const [lastSaveAt, setLastSaveAt] = useState<number>();
