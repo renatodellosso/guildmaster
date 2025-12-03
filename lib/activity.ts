@@ -1,6 +1,6 @@
 import { ActivityId } from "./content/activities";
 import {
-  MainGameContext,
+  GameContext,
   MainRegistryContext,
 } from "./content/mainRegistryContext";
 import { CreatureInstance } from "./creature";
@@ -10,11 +10,7 @@ export type ActivityDefinition = {
   id: ActivityId;
   getDescription: OptionalFunc<
     string,
-    [
-      CreatureInstance<MainRegistryContext>,
-      MainGameContext,
-      MainRegistryContext,
-    ]
+    [CreatureInstance<MainRegistryContext>, GameContext, MainRegistryContext]
   >;
 };
 

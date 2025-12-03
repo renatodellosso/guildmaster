@@ -1,7 +1,7 @@
 import { Combat } from "./combat";
+import { creatures } from "./content/creatures";
 import { CreatureInstance } from "./creature";
 import { GameContext } from "./gameContext";
-import { RegistryContext } from "./registry";
 import { getFromOptionalFunc, Id, OptionalFunc } from "./utilTypes";
 
 export enum AbilityPriority {
@@ -11,41 +11,36 @@ export enum AbilityPriority {
   Max = 150,
 }
 
-export type AbilityFuncParams<TRegistryContext extends RegistryContext> = [
-  caster: CreatureInstance<TRegistryContext>,
-  targets: CreatureInstance<TRegistryContext>[],
-  combat: Combat<TRegistryContext>,
-  gameContext: GameContext<TRegistryContext>,
-  registryContext: TRegistryContext,
+export type AbilityFuncParams = [
+  caster: CreatureInstance,
+  targets: CreatureInstance[],
+  combat: Combat,
+  gameContext: GameContext,
 ];
 
-export type AbilityFuncParamsWithoutTargets<
-  TRegistryContext extends RegistryContext,
-> = [
-  caster: CreatureInstance<TRegistryContext>,
-  combat: Combat<TRegistryContext>,
-  gameContext: GameContext<TRegistryContext>,
-  registryContext: TRegistryContext,
+export type AbilityFuncParamsWithoutTargets = [
+  caster: CreatureInstance,
+  combat: Combat,
+  gameContext: GameContext,
 ];
 
-export type Ability<TRegistryContext extends RegistryContext> = {
+export type Ability = {
   name: string;
   description: string;
-  activate: (...args: AbilityFuncParams<TRegistryContext>) => void;
+  activate: (...args: AbilityFuncParams) => void;
   selectTargets: (
-    ...args: AbilityFuncParamsWithoutTargets<TRegistryContext>
-  ) => (Id | CreatureInstance<TRegistryContext>)[];
-  canActivate: OptionalFunc<boolean, AbilityFuncParams<TRegistryContext>>;
-  priority: OptionalFunc<AbilityPriority, AbilityFuncParams<TRegistryContext>>;
+    ...args: AbilityFuncParamsWithoutTargets
+  ) => (Id | CreatureInstance)[];
+  canActivate: OptionalFunc<boolean, AbilityFuncParams>;
+  priority: OptionalFunc<AbilityPriority, AbilityFuncParams>;
 };
 
-export function getAbilities<TRegistryContext extends RegistryContext>(
-  creature: CreatureInstance<TRegistryContext>,
-  combat: Combat<TRegistryContext>,
-  gameContext: GameContext<TRegistryContext>,
-  registryContext: TRegistryContext
-): Ability<TRegistryContext>[] {
-  const creatureDef = registryContext.creatures[creature.definitionId];
+export function getAbilities(
+  creature: CreatureInstance,
+  combat: Combat,
+  gameContext: GameContext
+): Ability[] {
+  const creatureDef = creatures[creature.definitionId];
 
   if (!creatureDef.abilities) {
     return [];
@@ -55,46 +50,29 @@ export function getAbilities<TRegistryContext extends RegistryContext>(
     creatureDef.abilities,
     creature,
     combat,
-    gameContext,
-    registryContext
+    gameContext
   );
 }
 
-export function getCastableAbilities<TRegistryContext extends RegistryContext>(
-  creature: CreatureInstance<TRegistryContext>,
-  combat: Combat<TRegistryContext>,
-  gameContext: GameContext<TRegistryContext>,
-  registryContext: TRegistryContext
-): Ability<TRegistryContext>[] {
-  const allAbilities = getAbilities(
-    creature,
-    combat,
-    gameContext,
-    registryContext
-  );
+export function getCastableAbilities(
+  creature: CreatureInstance,
+  combat: Combat,
+  gameContext: GameContext
+): Ability[] {
+  const allAbilities = getAbilities(creature, combat, gameContext);
 
   return allAbilities.filter((ability) =>
-    getFromOptionalFunc(
-      ability.canActivate,
-      creature,
-      [],
-      combat,
-      gameContext,
-      registryContext
-    )
+    getFromOptionalFunc(ability.canActivate, creature, [], combat, gameContext)
   );
 }
 
-export function getHighestPriorityAbilities<
-  TRegistryContext extends RegistryContext,
->(
-  abilities: Ability<TRegistryContext>[],
-  caster: CreatureInstance<TRegistryContext>,
-  targets: CreatureInstance<TRegistryContext>[],
-  combat: Combat<TRegistryContext>,
-  gameContext: GameContext<TRegistryContext>,
-  registryContext: TRegistryContext
-): Ability<TRegistryContext>[] {
+export function getHighestPriorityAbilities(
+  abilities: Ability[],
+  caster: CreatureInstance,
+  targets: CreatureInstance[],
+  combat: Combat,
+  gameContext: GameContext
+): Ability[] {
   let highestPriority = -Infinity;
 
   const abilitiesWithPriorities = abilities.map((ability) => {
@@ -103,8 +81,7 @@ export function getHighestPriorityAbilities<
       caster,
       targets,
       combat,
-      gameContext,
-      registryContext
+      gameContext
     );
 
     if (priority > highestPriority) {
@@ -119,37 +96,26 @@ export function getHighestPriorityAbilities<
     .map(({ ability }) => ability);
 }
 
-export function selectAbilityFromList<TRegistryContext extends RegistryContext>(
-  abilities: Ability<TRegistryContext>[]
-) {
+export function selectAbilityFromList(abilities: Ability[]) {
   if (abilities.length === 0) {
     return undefined;
   }
   return abilities[Math.floor(Math.random() * abilities.length)];
 }
 
-export function selectAbilityForCreature<
-  TRegistryContext extends RegistryContext,
->(
-  creature: CreatureInstance<TRegistryContext>,
-  combat: Combat<TRegistryContext>,
-  gameContext: GameContext<TRegistryContext>,
-  registryContext: TRegistryContext
-): Ability<TRegistryContext> | undefined {
-  const castableAbilities = getCastableAbilities(
-    creature,
-    combat,
-    gameContext,
-    registryContext
-  );
+export function selectAbilityForCreature(
+  creature: CreatureInstance,
+  combat: Combat,
+  gameContext: GameContext
+): Ability | undefined {
+  const castableAbilities = getCastableAbilities(creature, combat, gameContext);
 
   const highestPriorityAbilities = getHighestPriorityAbilities(
     castableAbilities,
     creature,
     [],
     combat,
-    gameContext,
-    registryContext
+    gameContext
   );
 
   return selectAbilityFromList(highestPriorityAbilities);

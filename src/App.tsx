@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ExpeditionsMenu from "./components/menus/ExpeditionsMenu";
 import {
-  MainGameContext,
+  GameContext,
   mainRegistry,
   MainRegistryContext,
 } from "@/lib/content/mainRegistryContext";
@@ -11,7 +11,7 @@ import RosterMenu from "./components/menus/RosterMenu";
 import { Context } from "@/lib/utilTypes";
 
 function App() {
-  const [gameContext, setGameContext] = useState<MainGameContext>();
+  const [gameContext, setGameContext] = useState<GameContext>();
 
   const context: Context = {
     game: gameContext!,

@@ -1,38 +1,27 @@
 import { Combat } from "./combat";
+import { CreatureDefId } from "./content/creatures";
+import { DungeonId, dungeons } from "./content/dungeons";
 import { createCreatureInstance, CreatureInstance } from "./creature";
 import { GameContext } from "./gameContext";
-import {
-  RegistryContext,
-  RegistryToCreatureId,
-  RegistryToDungeonId,
-} from "./registry";
 import { Id } from "./utilTypes";
 
-export type Expedition<TRegistryContext extends RegistryContext> = {
-  combat: Combat<TRegistryContext>;
-  dungeonId: RegistryToDungeonId<TRegistryContext>;
+export type Expedition = {
+  combat: Combat;
+  dungeonId: DungeonId;
   party: Id[];
 };
 
-export function startCombat<TRegistryContext extends RegistryContext>(
-  expedition: Expedition<TRegistryContext>,
-  registryContext: TRegistryContext
-): Combat<TRegistryContext> {
-  const dungeon = registryContext.dungeons[expedition.dungeonId];
+export function startCombat(expedition: Expedition): Combat {
+  const dungeon = dungeons[expedition.dungeonId];
 
   const encounter = dungeon.encounters.roll();
 
   const enemies = encounter.reduce((arr, e) => {
     for (let i = 0; i < e.count; i++) {
-      arr.push(
-        createCreatureInstance(
-          e.id as RegistryToCreatureId<TRegistryContext>,
-          registryContext
-        )
-      );
+      arr.push(createCreatureInstance(e.id as CreatureDefId));
     }
     return arr;
-  }, [] as CreatureInstance<TRegistryContext>[]);
+  }, [] as CreatureInstance[]);
 
   return {
     allies: {
@@ -48,12 +37,11 @@ export function startCombat<TRegistryContext extends RegistryContext>(
   };
 }
 
-export function createExpedition<TRegistryContext extends RegistryContext>(
-  dungeonId: RegistryToDungeonId<TRegistryContext>,
+export function createExpedition(
+  dungeonId: DungeonId,
   party: Id[],
-  gameContext: GameContext<TRegistryContext>,
-  registryContext: TRegistryContext
-): Expedition<TRegistryContext> {
+  gameContext: GameContext
+): Expedition {
   // Update activities
   for (const creatureId of party) {
     gameContext.roster[creatureId].activity = {
@@ -65,13 +53,10 @@ export function createExpedition<TRegistryContext extends RegistryContext>(
   return {
     dungeonId,
     party,
-    combat: startCombat(
-      {
-        dungeonId,
-        party,
-        combat: {} as Combat<TRegistryContext>,
-      },
-      registryContext
-    ),
+    combat: startCombat({
+      dungeonId,
+      party,
+      combat: {} as Combat,
+    }),
   };
 }

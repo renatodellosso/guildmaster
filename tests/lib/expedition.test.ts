@@ -1,104 +1,76 @@
-import { startCombat } from "@/lib/expedition";
+import { Expedition, startCombat } from "@/lib/expedition";
 import { describe, expect, it } from "vitest";
-import { buildRegistryContext } from "../testUtils";
 import { Table } from "@/lib/table";
 import { Encounter } from "@/lib/dungeon";
-import { RegistryContext } from "@/lib/registry";
 import { CreatureInstance } from "@/lib/creature";
 import { Id } from "@/lib/utilTypes";
 import { Combat } from "@/lib/combat";
-import { MainRegistryContext } from "@/lib/content/mainRegistryContext";
+import { dungeons } from "@/lib/content/dungeons";
 
 describe(startCombat.name, () => {
   it("chooses a random encounter", () => {
-    const registryContext = buildRegistryContext({
-      dungeons: {
-        dungeon1: {
-          id: "dungeon1" as const,
-          name: "Dungeon 1",
-          encounters: new Table<Encounter<RegistryContext>>([
-            {
-              weight: 1,
-              item: [{ id: "creature1", count: 2 }],
-            },
-            {
-              weight: 2,
-              item: [{ id: "creature2" as const, count: 3 }],
-            },
-          ]),
-        },
-      },
-      creatures: {
-        creature1: { id: "creature1", name: "Creature 1", skills: {} },
-        creature2: { id: "creature2", name: "Creature 2", skills: {} },
-      },
-    });
-
-    const expedition = {
-      dungeonId: "dungeon1" as const,
+    const expedition: Expedition = {
+      dungeonId: "bandit_camp",
       party: ["hero1", "hero2"],
-      combat: {} as Combat<MainRegistryContext>,
+      combat: {} as Combat,
     };
 
     const enemyIds = new Set<Id>();
 
     const iterations = 100;
     for (let i = 0; i < iterations; i++) {
-      const combatInstance = startCombat(expedition, registryContext);
+      const combatInstance = startCombat(expedition);
       combatInstance.enemies.creatures.forEach(
-        (creature: Id | CreatureInstance<typeof registryContext>) => {
-          enemyIds.add(
-            (creature as CreatureInstance<typeof registryContext>).definitionId
-          );
+        (creature: Id | CreatureInstance) => {
+          enemyIds.add((creature as CreatureInstance).definitionId);
         }
       );
     }
 
-    expect(enemyIds.size).toBe(Object.keys(registryContext.creatures).length);
+    const possibleEnemyIds = new Set<Id>();
+    dungeons[expedition.dungeonId].encounters.items.forEach((encounter) => {
+      encounter.item.forEach((entry) => {
+        possibleEnemyIds.add(entry.id);
+      });
+    });
+
+    expect(enemyIds.size).toBe(possibleEnemyIds.size);
   });
 
   it("creates the correct number of enemies", () => {
-    const registryContext = buildRegistryContext({
-      dungeons: {
-        dungeon1: {
-          id: "dungeon1" as const,
-          name: "Dungeon 1",
-          encounters: new Table<Encounter<RegistryContext>>([
-            {
-              weight: 1,
-              item: [
-                { id: "creature1" as const, count: 2 },
-                { id: "creature2" as const, count: 3 },
-              ],
-            },
-          ]),
-        },
-      },
-      creatures: {
-        creature1: { id: "creature1", name: "Creature 1", skills: {} },
-        creature2: { id: "creature2", name: "Creature 2", skills: {} },
-      },
-    });
-
-    const expedition = {
-      dungeonId: "dungeon1" as const,
+    const expedition: Expedition = {
+      dungeonId: "bandit_camp",
       party: ["hero1", "hero2"],
-      combat: {} as Combat<MainRegistryContext>,
+      combat: {} as Combat,
     };
 
-    const combatInstance = startCombat(expedition, registryContext);
+    dungeons[expedition.dungeonId].encounters = new Table<Encounter>([
+      {
+        item: [
+          {
+            id: "human",
+            count: 5,
+          },
+          {
+            id: "goblin",
+            count: 2,
+          },
+        ],
+        weight: 1,
+      },
+    ]);
+
+    const combatInstance = startCombat(expedition);
 
     const creatureCount: Record<Id, number> = {};
     combatInstance.enemies.creatures.forEach(
-      (creature: Id | CreatureInstance<typeof registryContext>) => {
-        const definitionId = (
-          creature as CreatureInstance<typeof registryContext>
-        ).definitionId;
+      (creature: Id | CreatureInstance) => {
+        const definitionId = (creature as CreatureInstance).definitionId;
         creatureCount[definitionId] = (creatureCount[definitionId] || 0) + 1;
       }
     );
 
-    expect(creatureCount["creature1"]).toBe(2);
-    expect(creatureCount["creature2"]).toBe(3);
+    expect(creatureCount["human"]).toBe(5);
+    expect(creatureCount["goblin"]).toBe(2);
   });
 });

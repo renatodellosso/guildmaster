@@ -1,4 +1,3 @@
-import { RegistryContext } from "./registry";
 import { OptionalFunc } from "./utilTypes";
 
 export enum SkillId {
@@ -7,9 +6,6 @@ export enum SkillId {
   Magic = "magic",
 }
 
-export type SkillList<
-  TRegistryContext extends RegistryContext,
-  TArgs extends unknown[] = [],
-> = {
-  [key in SkillId]?: OptionalFunc<number, [TRegistryContext, ...TArgs]>;
+export type SkillList<TArgs extends unknown[] = []> = {
+  [key in SkillId]?: OptionalFunc<number, TArgs>;
 };

@@ -4,9 +4,9 @@ import { useCallback, useEffect, useState } from "react";
 import { tick } from "../tick";
 import { saveGame } from "../saveUtils";
 
-export default function useTick<TRegistryContext extends RegistryContext>(
-  gameContext: GameContext<TRegistryContext>,
-  setGameContext: (context: GameContext<TRegistryContext>) => void,
+export default function useTick(
+  gameContext: GameContext,
+  setGameContext: (context: GameContext) => void,
   registry: TRegistryContext,
   ticksPerSecond: number = 1,
   saveInterval: number = 10

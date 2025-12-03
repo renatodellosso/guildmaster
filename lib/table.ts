@@ -4,7 +4,7 @@ type TableItem<T> = {
 };
 
 export class Table<T> {
-  private items: TableItem<T>[];
+  items: TableItem<T>[];
   private totalWeight: number;
 
   constructor(items: TableItem<T>[]) {

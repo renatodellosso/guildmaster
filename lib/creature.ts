@@ -1,45 +1,34 @@
 import { Ability, AbilityFuncParamsWithoutTargets } from "./ability";
 import { ActivityInstance } from "./activity";
-import { RegistryContext, RegistryToCreatureId } from "./registry";
+import { CreatureDefId, creatures } from "./content/creatures";
 import { SkillList } from "./skills";
 import { randomId } from "./utils";
 import { Id, OptionalFunc } from "./utilTypes";
 
-export type CreatureDefinition<
-  TRegistryContext extends RegistryContext = RegistryContext,
-> = {
-  id: RegistryToCreatureId<TRegistryContext>;
+export type CreatureDefinition = {
+  id: CreatureDefId;
   name: string;
-  skills: SkillList<TRegistryContext, [CreatureInstance<TRegistryContext>]>;
-  abilities?: OptionalFunc<
-    Ability<TRegistryContext>[],
-    AbilityFuncParamsWithoutTargets<TRegistryContext>
-  >;
+  skills: SkillList<[CreatureInstance]>;
+  abilities?: OptionalFunc<Ability[], AbilityFuncParamsWithoutTargets>;
 };
 
-export type CreatureInstance<TRegistryContext extends RegistryContext> = {
+export type CreatureInstance = {
   id: Id;
-  definitionId: RegistryToCreatureId<TRegistryContext>;
+  definitionId: CreatureDefId;
   name: string;
 
   hp: number;
 };
 
-export type AdventurerInstance<TRegistryContext extends RegistryContext> =
-  CreatureInstance<TRegistryContext> & {
-    activity: ActivityInstance;
-  };
+export type AdventurerInstance = CreatureInstance & {
+  activity: ActivityInstance;
+};
 
-export function createCreatureInstance<
-  TRegistryContext extends RegistryContext,
->(
-  defId: RegistryToCreatureId<TRegistryContext>,
-  registry: TRegistryContext
-): CreatureInstance<TRegistryContext> {
+export function createCreatureInstance(defId: CreatureDefId): CreatureInstance {
   return {
     id: randomId(),
     definitionId: defId,
-    name: registry.creatures[defId].name,
+    name: creatures[defId].name,
     hp: 100,
   };
 }

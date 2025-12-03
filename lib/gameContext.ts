@@ -1,13 +1,12 @@
 import { AdventurerInstance } from "./creature";
 import { Expedition } from "./expedition";
-import { RegistryContext } from "./registry";
 import { Id } from "./utilTypes";
 
-export type GameContext<TRegistryContext extends RegistryContext> = {
+export type GameContext = {
   lastTick: number;
 
   roster: {
-    [id: Id]: AdventurerInstance<TRegistryContext>;
+    [id: Id]: AdventurerInstance;
   };
-  expeditions: Expedition<TRegistryContext>[];
+  expeditions: Expedition[];
 };

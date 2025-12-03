@@ -12,7 +12,7 @@ import { buildRegistryContext } from "../testUtils";
 import { GameContext } from "@/lib/gameContext";
 import { Combat } from "@/lib/combat";
 import {
-  MainGameContext,
+  GameContext,
   MainRegistryContext,
 } from "@/lib/content/mainRegistryContext";
 import { CreatureInstance } from "@/lib/creature";
@@ -175,7 +175,7 @@ describe(getHighestPriorityAbilities.name, () => {
       {} as CreatureInstance<MainRegistryContext>,
       [],
       {} as Combat<MainRegistryContext>,
-      {} as MainGameContext,
+      {} as GameContext,
       {} as MainRegistryContext
     );
 

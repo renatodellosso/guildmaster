@@ -5,17 +5,10 @@ import {
   handleRetreat,
   takeCombatTurn,
 } from "@/lib/combat";
-import { RegistryContext, RegistryToCreatureId } from "@/lib/registry";
 import { getFromOptionalFunc, Id } from "@/lib/utilTypes";
 import { describe, expect, it, vi } from "vitest";
-import {
-  buildCombatSide,
-  buildGameContext,
-  buildRegistryContext,
-} from "../testUtils";
+import { buildCombatSide, buildGameContext } from "../testUtils";
 import { AdventurerInstance, CreatureInstance } from "@/lib/creature";
-import { MainGameContext } from "@/lib/content/mainRegistryContext";
-import { GameContext } from "@/lib/gameContext";
 
 function failTest() {
   throw new Error("This function should not have been called");
@@ -23,52 +16,17 @@ function failTest() {
 
 describe(takeCombatTurn.name, () => {
   it("takes a turn for each creature", () => {
-    const registryContext = buildRegistryContext({
-      creatures: {
-        "creature-1": {
-          id: "creature-1",
-          name: "Creature 1",
-          skills: {},
-          abilities: [
-            {
-              name: "No Op",
-              description: "Does nothing",
-              activate: vi.fn(),
-              selectTargets: () => [],
-              canActivate: true,
-              priority: 0,
-            },
-          ],
-        },
-        "creature-2": {
-          id: "creature-2",
-          name: "Creature 2",
-          skills: {},
-          abilities: [
-            {
-              name: "No Op",
-              description: "Does nothing",
-              activate: vi.fn(),
-              selectTargets: () => [],
-              canActivate: true,
-              priority: 0,
-            },
-          ],
-        },
-      },
-    });
-
     const combat = {
       allies: buildCombatSide([
         {
           id: "instance-1",
-          definitionId: "creature-1",
+          definitionId: "human",
           name: "Creature 1",
           hp: 10,
         },
         {
           id: "instance-2",
-          definitionId: "creature-1",
+          definitionId: "human",
           name: "Creature 2",
           hp: 10,
         },
@@ -76,34 +34,34 @@ describe(takeCombatTurn.name, () => {
       enemies: buildCombatSide([
         {
           id: "instance-3",
-          definitionId: "creature-2",
+          definitionId: "goblin",
           name: "Creature 3",
           hp: 10,
         },
         {
           id: "instance-4",
-          definitionId: "creature-2",
+          definitionId: "goblin",
           name: "Creature 4",
           hp: 10,
         },
       ]),
-    } satisfies Combat<typeof registryContext>;
+    } satisfies Combat;
 
-    const gameContext = buildGameContext<typeof registryContext>([]);
+    const gameContext = buildGameContext([]);
 
-    takeCombatTurn(combat, failTest, failTest, gameContext, registryContext);
+    takeCombatTurn(combat, failTest, failTest, gameContext);
 
     for (const creature of [
       ...combat.allies.creatures,
       ...combat.enemies.creatures,
     ]) {
       const defId: RegistryToCreatureId<typeof registryContext> = (
-        creature as CreatureInstance<typeof registryContext>
+        creature as CreatureInstance
       ).definitionId;
       const creatureDef = registryContext.creatures[defId];
       const abilities = getFromOptionalFunc(
         creatureDef.abilities,
-        creature as CreatureInstance<typeof registryContext>,
+        creature as CreatureInstance,
         combat,
         gameContext,
         registryContext
@@ -168,7 +126,7 @@ describe(takeCombatTurn.name, () => {
           hp: 10,
         },
       ]),
-    } satisfies Combat<typeof registryContext>;
+    } satisfies Combat;
 
     const gameContext = buildGameContext<typeof registryContext>([]);
 
@@ -229,7 +187,7 @@ describe(takeCombatTurn.name, () => {
           hp: 10,
         },
       ]),
-    } satisfies Combat<typeof registryContext>;
+    } satisfies Combat;
 
     const gameContext = buildGameContext<typeof registryContext>([]);
 
@@ -310,7 +268,7 @@ describe(takeCombatTurn.name, () => {
     const combat = {
       allies: buildCombatSide(["instance-1", "instance-2"]),
       enemies: buildCombatSide(["instance-3", "instance-4"]),
-    } satisfies Combat<typeof registryContext>;
+    } satisfies Combat;
 
     const gameContext = buildGameContext<typeof registryContext>(roster);
 
@@ -338,7 +296,7 @@ describe(checkRetreatTriggers.name, () => {
       },
     });
 
-    const combat: Combat<typeof registryContext> = {
+    const combat: Combat = {
       allies: {
         creatures: [],
         retreatTriggers: [
@@ -375,7 +333,7 @@ describe(handleRetreat.name, () => {
       },
     });
 
-    const combat: Combat<typeof registryContext> = {
+    const combat: Combat = {
       allies: {
         creatures: [
           {
@@ -427,7 +385,7 @@ describe(handleRetreat.name, () => {
     handleRetreat(
       combat,
       handleRetreatCallback,
-      {} as MainGameContext,
+      {} as GameContext,
       registryContext
     );
 
@@ -437,7 +395,7 @@ describe(handleRetreat.name, () => {
   it("calls the retreat callback immediately if all allies are dead", () => {
     const registryContext = buildRegistryContext({});
 
-    const combat: Combat<typeof registryContext> = {
+    const combat: Combat = {
       allies: {
         creatures: [
           {
@@ -458,7 +416,7 @@ describe(handleRetreat.name, () => {
     handleRetreat(
       combat,
       handleRetreatCallback,
-      {} as MainGameContext,
+      {} as GameContext,
       registryContext
     );
 

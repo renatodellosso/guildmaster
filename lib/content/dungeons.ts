@@ -1,14 +1,13 @@
 import { DungeonDefinition, Encounter } from "../dungeon";
 import { finishRegistry, RawRegistry } from "../registry";
 import { Table } from "../table";
-import { MainRegistryContext } from "./mainRegistryContext";
 
 export type DungeonId = "bandit_camp";
 
 export const rawDungeons = {
   bandit_camp: {
     name: "Bandit Camp",
-    encounters: new Table<Encounter<MainRegistryContext>>([
+    encounters: new Table<Encounter>([
       {
         item: [
           {
@@ -20,9 +19,8 @@ export const rawDungeons = {
       },
     ]),
   },
-} satisfies RawRegistry<DungeonId, DungeonDefinition<MainRegistryContext>>;
+} satisfies RawRegistry<DungeonId, DungeonDefinition>;
 
-export const dungeons = finishRegistry<
-  DungeonId,
-  DungeonDefinition<MainRegistryContext>
->(rawDungeons);
+export const dungeons = finishRegistry<DungeonId, DungeonDefinition>(
+  rawDungeons
+);

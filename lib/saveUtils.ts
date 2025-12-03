@@ -4,14 +4,12 @@ import { RegistryContext } from "./registry";
 
 const SAVE_KEY = "guildmaster_save";
 
-type Save<TRegistryContext extends RegistryContext> = {
-  gameContext: GameContext<TRegistryContext>;
+type Save = {
+  gameContext: GameContext;
   savedAt: number;
 };
 
-export function saveGame<TRegistryContext extends RegistryContext>(
-  gameContext: GameContext<TRegistryContext>
-) {
+export function saveGame(gameContext: GameContext) {
   localStorage.setItem(
     SAVE_KEY,
     JSON.stringify({
@@ -21,9 +19,7 @@ export function saveGame<TRegistryContext extends RegistryContext>(
   );
 }
 
-export function loadSave<
-  TRegistryContext extends RegistryContext,
->(): Save<TRegistryContext> {
+export function loadSave<TRegistryContext extends RegistryContext>(): Save {
   const savedData = localStorage.getItem(SAVE_KEY);
   if (!savedData) {
     return getDefaultSave();

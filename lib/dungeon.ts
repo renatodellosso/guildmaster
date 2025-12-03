@@ -1,17 +1,14 @@
-import {
-  RegistryContext,
-  RegistryToCreatureId,
-  RegistryToDungeonId,
-} from "./registry";
+import { CreatureDefId } from "./content/creatures";
+import { DungeonId } from "./content/dungeons";
 import { Table } from "./table";
 
-export type DungeonDefinition<TRegistryContext extends RegistryContext> = {
-  id: RegistryToDungeonId<TRegistryContext>;
+export type DungeonDefinition = {
+  id: DungeonId;
   name: string;
-  encounters: Table<Encounter<TRegistryContext>>;
+  encounters: Table<Encounter>;
 };
 
-export type Encounter<TRegistryContext extends RegistryContext> = {
-  id: RegistryToCreatureId<TRegistryContext>;
+export type Encounter = {
+  id: CreatureDefId;
   count: number;
 }[];

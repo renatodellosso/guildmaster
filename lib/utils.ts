@@ -13,8 +13,8 @@ export function randomId(): Id {
 
 export function getCreature<
   TRegistryContext extends RegistryContext,
-  TCreature extends CreatureInstance<TRegistryContext>,
->(creatureId: TCreature | Id, gameContext: GameContext<TRegistryContext>) {
+  TCreature extends CreatureInstance,
+>(creatureId: TCreature | Id, gameContext: GameContext) {
   if (typeof creatureId === "string") {
     return gameContext.roster[creatureId];
   } else {
