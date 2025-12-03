@@ -110,7 +110,7 @@ describe(takeCombatTurn.name, () => {
         >,
         combat,
         gameContext,
-        registryContext,
+        registryContext
       );
 
       expect(abilities).toBeDefined();
@@ -123,7 +123,7 @@ describe(takeCombatTurn.name, () => {
         [],
         combat,
         gameContext,
-        registryContext,
+        registryContext
       );
     }
   });
@@ -142,7 +142,7 @@ describe(takeCombatTurn.name, () => {
               activate: (
                 caster: unknown,
                 _targets: unknown,
-                combat: Combat<RegistryContext>,
+                combat: Combat<RegistryContext>
               ) => {
                 expect(combat.allies.creatures).toContain(caster);
               },
@@ -398,7 +398,7 @@ describe(handleRetreat.name, () => {
       combat,
       () => {},
       {} as GameContext<typeof registryContext>,
-      registryContext,
+      registryContext
     );
 
     expect(combat.allies.retreatTimer).toBeGreaterThan(-1);
@@ -422,7 +422,7 @@ describe(handleRetreat.name, () => {
       combat,
       handleRetreatCallback,
       {} as MainGameContext,
-      registryContext,
+      registryContext
     );
 
     expect(handleRetreatCallback).toHaveBeenCalled();
@@ -453,7 +453,7 @@ describe(handleRetreat.name, () => {
       combat,
       handleRetreatCallback,
       {} as MainGameContext,
-      registryContext,
+      registryContext
     );
 
     expect(handleRetreatCallback).toHaveBeenCalled();

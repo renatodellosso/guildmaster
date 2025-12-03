@@ -31,7 +31,7 @@ export function createCreatureInstance<
   TRegistryContext extends RegistryContext,
 >(
   defId: RegistryToCreatureId<TRegistryContext>,
-  registry: TRegistryContext,
+  registry: TRegistryContext
 ): CreatureInstance<RegistryToCreatureId<TRegistryContext>> {
   return {
     id: randomId(),

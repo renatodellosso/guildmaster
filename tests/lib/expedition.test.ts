@@ -48,7 +48,7 @@ describe(startCombat.name, () => {
       combatInstance.enemies.creatures.forEach(
         (creature: Id | CreatureInstance<Id>) => {
           enemyIds.add((creature as CreatureInstance<Id>).definitionId);
-        },
+        }
       );
     }
 
@@ -91,7 +91,7 @@ describe(startCombat.name, () => {
       (creature: Id | CreatureInstance<Id>) => {
         const definitionId = (creature as CreatureInstance<Id>).definitionId;
         creatureCount[definitionId] = (creatureCount[definitionId] || 0) + 1;
-      },
+      }
     );
 
     expect(creatureCount["creature1"]).toBe(2);

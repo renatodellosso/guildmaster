@@ -19,7 +19,7 @@ export default function StartExpeditionMenu({
   const [party, setParty] = useState<Id[]>([]);
 
   const availablePartyMembers = Object.values(context.game.roster).filter(
-    (member) => member.hp > 0 && !party.includes(member.id),
+    (member) => member.hp > 0 && !party.includes(member.id)
   );
 
   const maxPartySize = getMaxPartySize(context.game, context.registry);
@@ -46,7 +46,7 @@ export default function StartExpeditionMenu({
     }
 
     context.game.expeditions.push(
-      createExpedition(dungeonId, party, context.registry),
+      createExpedition(dungeonId, party, context.registry)
     );
     context.updateGameState();
 
@@ -122,7 +122,7 @@ function PartyMemberSelector({
       onChange={(e) => {
         const selectedName = e.target.value;
         const selected = availableMembers.find(
-          (member) => member.name === selectedName,
+          (member) => member.name === selectedName
         );
 
         if (!selected) {

@@ -32,7 +32,7 @@ function App() {
   const { lastSaveAt, lastDelta } = useTick(
     gameContext!,
     setGameContext,
-    mainRegistry,
+    mainRegistry
   );
 
   if (!gameContext) {

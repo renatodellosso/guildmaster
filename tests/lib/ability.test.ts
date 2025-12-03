@@ -24,7 +24,7 @@ describe("Ability", () => {
       caster: unknown,
       targets: unknown,
       combat: unknown,
-      registryContext: unknown,
+      registryContext: unknown
     ) => number;
 
     type Priority = Ability<MainRegistryContext>["priority"];
@@ -78,7 +78,7 @@ describe(getAbilities.name, () => {
       },
       {} as Combat<typeof registryContext>,
       {} as GameContext<typeof registryContext>,
-      registryContext,
+      registryContext
     );
 
     expect(abilities).toEqual([ability]);
@@ -133,7 +133,7 @@ describe(getCastableAbilities.name, () => {
       },
       {} as Combat<typeof registryContext>,
       {} as GameContext<typeof registryContext>,
-      registryContext,
+      registryContext
     );
 
     expect(castableAbilities).toEqual([ability1]);
@@ -177,7 +177,7 @@ describe(getHighestPriorityAbilities.name, () => {
       [],
       {} as Combat<MainRegistryContext>,
       {} as MainGameContext,
-      {} as MainRegistryContext,
+      {} as MainRegistryContext
     );
 
     expect(highestPriorityAbilities).toEqual([ability1, ability3]);
@@ -262,7 +262,7 @@ describe(selectAbilityForCreature.name, () => {
       },
       {} as Combat<typeof registryContext>,
       {} as GameContext<typeof registryContext>,
-      registryContext,
+      registryContext
     );
 
     expectTypeOf(selectedAbility).toExtend<
@@ -292,7 +292,7 @@ describe(selectAbilityForCreature.name, () => {
       },
       {} as Combat<typeof registryContext>,
       {} as GameContext<typeof registryContext>,
-      registryContext,
+      registryContext
     );
 
     expect(selectedAbility).toBeUndefined();
@@ -337,7 +337,7 @@ describe(selectAbilityForCreature.name, () => {
       },
       {} as Combat<typeof registryContext>,
       {} as GameContext<typeof registryContext>,
-      registryContext,
+      registryContext
     );
 
     expectTypeOf(selectedAbility).toExtend<
@@ -385,7 +385,7 @@ describe(selectAbilityForCreature.name, () => {
       },
       {} as Combat<typeof registryContext>,
       {} as GameContext<typeof registryContext>,
-      registryContext,
+      registryContext
     );
 
     expectTypeOf(selectedAbility).toExtend<
