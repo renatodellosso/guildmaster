@@ -1,3 +1,4 @@
+import { createCreatureInstance } from "./creature";
 import { GameContext } from "./gameContext";
 
 const SAVE_KEY = "guildmaster_save";
@@ -31,22 +32,28 @@ export function clearSave() {
 }
 
 export function getDefaultSave(): Save {
-  return {
-    savedAt: Date.now(),
-    gameContext: {
-      lastTick: Date.now(),
-      roster: {
-        "creature-1": {
-          id: "creature-1",
-          definitionId: "human",
-          name: "Test",
-          activity: {
-            definitionId: "resting",
-          },
-          hp: 10,
-        },
+  const context: GameContext = {
+    lastTick: Date.now(),
+    roster: {},
+    expeditions: [],
+  };
+
+  const creatures = Array.from({ length: 3 }).map(() =>
+    createCreatureInstance("human", context)
+  );
+
+  creatures.forEach((creature, index) => {
+    creature.name = `Adventurer ${index + 1}`;
+    context.roster[creature.id] = {
+      ...creature,
+      activity: {
+        definitionId: "resting",
       },
-      expeditions: [],
-    },
+    };
+  });
+
+  return {
+    gameContext: context,
+    savedAt: Date.now(),
   };
 }

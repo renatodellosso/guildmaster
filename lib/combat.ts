@@ -1,6 +1,7 @@
 import { selectAbilityForCreature } from "./ability";
 import { RetreatTriggerId, retreatTriggers } from "./content/retreatTriggers";
 import { AdventurerInstance, CreatureInstance } from "./creature";
+import { Expedition, startCombat } from "./expedition";
 import { GameContext } from "./gameContext";
 import { getCreature } from "./utils";
 import { Id } from "./utilTypes";
@@ -38,6 +39,10 @@ function takeTurnForCreature(
   combat: Combat,
   gameContext: GameContext
 ) {
+  if (creature.hp <= 0) {
+    return;
+  }
+
   const ability = selectAbilityForCreature(creature, combat, gameContext);
 
   if (!ability) {
@@ -141,21 +146,22 @@ export function takeCombatTurn(
   combat.enemies = tmp;
 }
 
-export function handleCombatTick(combat: Combat, gameContext: GameContext) {
+export function handleCombatTick(
+  expedition: Expedition,
+  gameContext: GameContext
+) {
   function onVictory() {
     console.log("Expedition victorious!");
-    gameContext.expeditions = gameContext.expeditions.filter(
-      (c) => c.combat !== combat
-    );
+    expedition.combat = startCombat(expedition, gameContext);
   }
 
   function onDefeat() {
     console.log("Expedition defeated!");
     gameContext.expeditions = gameContext.expeditions.filter(
-      (c) => c.combat !== combat
+      (c) => c.combat !== expedition.combat
     );
 
-    for (const creatureOrId of combat.allies.creatures) {
+    for (const creatureOrId of expedition.combat.allies.creatures) {
       const creature = getCreature(
         creatureOrId,
         gameContext
@@ -166,5 +172,5 @@ export function handleCombatTick(combat: Combat, gameContext: GameContext) {
     }
   }
 
-  takeCombatTurn(combat, onVictory, onDefeat, gameContext);
+  takeCombatTurn(expedition.combat, onVictory, onDefeat, gameContext);
 }

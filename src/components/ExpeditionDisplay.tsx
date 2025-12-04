@@ -14,7 +14,11 @@ export default function ExpeditionDisplay({
 
   return (
     <div>
-      <strong>Allies</strong>
+      <strong>
+        Allies{" "}
+        {combat.allies.retreatTimer > -1 &&
+          ` (Retreating in ${combat.allies.retreatTimer} turns)`}
+      </strong>
       <ul>
         {combat.allies.creatures.map((creatureId) => {
           const creature = getCreature(creatureId, context.game);
@@ -23,7 +27,11 @@ export default function ExpeditionDisplay({
           );
         })}
       </ul>
-      <strong>Enemies</strong>
+      <strong>
+        Enemies{" "}
+        {combat.enemies.retreatTimer > -1 &&
+          ` (Retreating in ${combat.enemies.retreatTimer} turns)`}
+      </strong>
       <ul>
         {combat.enemies.creatures.map((creatureId) => {
           const creature = getCreature(creatureId, context.game);

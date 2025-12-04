@@ -1,5 +1,4 @@
 import { Combat } from "./combat";
-import { CreatureDefId } from "./content/creatures";
 import { DungeonId, dungeons } from "./content/dungeons";
 import { createCreatureInstance, CreatureInstance } from "./creature";
 import { GameContext } from "./gameContext";
@@ -11,14 +10,20 @@ export type Expedition = {
   party: Id[];
 };
 
-export function startCombat(expedition: Expedition): Combat {
+/**
+ * @returns the new combat
+ */
+export function startCombat(
+  expedition: Expedition,
+  gameContext: GameContext
+): Combat {
   const dungeon = dungeons[expedition.dungeonId];
 
   const encounter = dungeon.encounters.roll();
 
   const enemies = encounter.reduce((arr, e) => {
     for (let i = 0; i < e.count; i++) {
-      arr.push(createCreatureInstance(e.id as CreatureDefId));
+      arr.push(createCreatureInstance(e.id, gameContext));
     }
     return arr;
   }, [] as CreatureInstance[]);
@@ -53,10 +58,13 @@ export function createExpedition(
   return {
     dungeonId,
     party,
-    combat: startCombat({
-      dungeonId,
-      party,
-      combat: {} as Combat,
-    }),
+    combat: startCombat(
+      {
+        dungeonId,
+        party,
+        combat: {} as Combat,
+      },
+      gameContext
+    ),
   };
 }

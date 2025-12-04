@@ -1,4 +1,5 @@
 import { CreatureDefinition } from "../creature";
+import { takeDamage } from "../creatureUtils";
 import { finishRegistry, RawRegistry } from "../registry";
 import { chooseRandom } from "../utils";
 import { Id } from "../utilTypes";
@@ -8,6 +9,7 @@ export type CreatureDefId = "human" | "goblin";
 const rawCreatures = {
   human: {
     name: "Human",
+    maxHealth: 100,
     skills: {},
     abilities: [
       {
@@ -15,8 +17,7 @@ const rawCreatures = {
         description: "Punch an enemy",
         activate: (caster, targets) => {
           if (targets.length === 0 || !targets[0]) return;
-          console.log("Activating Punch on", targets, "by", caster);
-          targets[0].hp -= caster.hp / 4;
+          takeDamage(targets[0], caster.hp / 4);
         },
         canActivate: () => true,
         selectTargets: (_caster, combat) => [
@@ -28,6 +29,7 @@ const rawCreatures = {
   },
   goblin: {
     name: "Goblin",
+    maxHealth: 80,
     skills: {},
     abilities: [
       {
@@ -35,8 +37,7 @@ const rawCreatures = {
         description: "Slash an enemy",
         activate: (caster, targets) => {
           if (targets.length === 0 || !targets[0]) return;
-          console.log("Activating Slash on", targets, "by", caster);
-          targets[0].hp -= caster.hp / 3;
+          takeDamage(targets[0], caster.hp / 3);
         },
         canActivate: () => true,
         selectTargets: (_caster, combat) => [

@@ -1,5 +1,5 @@
 import { activities } from "@/lib/content/activities";
-import { creatures } from "@/lib/content/creatures";
+import { getMaxHealth } from "@/lib/creatureUtils";
 import { Context, getFromOptionalFunc } from "@/lib/utilTypes";
 
 export default function RosterMenu({ context }: { context: Context }) {
@@ -9,9 +9,10 @@ export default function RosterMenu({ context }: { context: Context }) {
       <ul>
         {Object.values(context.game.roster).map((creature) => (
           <li key={String(creature.id)}>
-            {creatures[creature.definitionId].name} (HP: {creature.hp}) -{" "}
+            {creature.name} (HP: {creature.hp}/
+            {getMaxHealth(creature, context.game)}) -{" "}
             {getFromOptionalFunc(
-              activities[creature.activity.definitionId].getDescription,
+              activities[creature.activity.definitionId].description,
               creature,
               context.game
             )}

@@ -5,7 +5,8 @@ import { OptionalFunc } from "./utilTypes";
 
 export type ActivityDefinition = {
   id: ActivityId;
-  getDescription: OptionalFunc<string, [CreatureInstance, GameContext]>;
+  description: OptionalFunc<string, [CreatureInstance, GameContext]>;
+  tick?: (creature: CreatureInstance, gameContext: GameContext) => void;
 };
 
 export type ActivityInstance = {
