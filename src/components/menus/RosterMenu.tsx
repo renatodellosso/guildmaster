@@ -1,4 +1,5 @@
 import { activities } from "@/lib/content/activities";
+import { creatures } from "@/lib/content/creatures";
 import { Context, getFromOptionalFunc } from "@/lib/utilTypes";
 
 export default function RosterMenu({ context }: { context: Context }) {
@@ -8,13 +9,12 @@ export default function RosterMenu({ context }: { context: Context }) {
       <ul>
         {Object.values(context.game.roster).map((creature) => (
           <li key={String(creature.id)}>
-            {context.registry.creatures[creature.definitionId].name} (HP:{" "}
+            {creatures[creature.definitionId].name} (HP:{" "}
             {creature.hp}) -{" "}
             {getFromOptionalFunc(
               activities[creature.activity.definitionId].getDescription,
               creature,
-              context.game,
-              context.registry
+              context.game
             )}
           </li>
         ))}

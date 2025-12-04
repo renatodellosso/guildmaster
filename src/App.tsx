@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import ExpeditionsMenu from "./components/menus/ExpeditionsMenu";
-import {
-  GameContext,
-  mainRegistry,
-  MainRegistryContext,
-} from "@/lib/content/mainRegistryContext";
+import { GameContext } from "@/lib/gameContext";
 import useTick from "@/lib/hooks/useTick";
 import { clearSave, getDefaultSave, loadSave } from "@/lib/saveUtils";
 import RosterMenu from "./components/menus/RosterMenu";
@@ -16,11 +12,10 @@ function App() {
   const context: Context = {
     game: gameContext!,
     updateGameState: () => setGameContext({ ...gameContext! }),
-    registry: mainRegistry,
   };
 
   useEffect(() => {
-    const save = loadSave<MainRegistryContext>();
+    const save = loadSave();
     if (save) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setGameContext(save.gameContext);
@@ -29,11 +24,7 @@ function App() {
     }
   }, []);
 
-  const { lastSaveAt, lastDelta } = useTick(
-    gameContext!,
-    setGameContext,
-    mainRegistry
-  );
+  const { lastSaveAt, lastDelta } = useTick(gameContext!, setGameContext);
 
   if (!gameContext) {
     return <div>Loading...</div>;

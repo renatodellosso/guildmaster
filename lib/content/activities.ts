@@ -1,5 +1,6 @@
 import { ActivityDefinition } from "../activity";
 import { finishRegistry, RawRegistry } from "../registry";
+import { dungeons } from "./dungeons";
 
 export type ActivityId = "resting" | "onExpedition";
 
@@ -8,13 +9,13 @@ const rawActivities = {
     getDescription: "Resting",
   },
   onExpedition: {
-    getDescription: (creature, gameContext, registryContext) => {
+    getDescription: (creature, gameContext) => {
       const expedition = gameContext.expeditions.find((expedition) =>
         expedition.party.includes(creature.id)
       );
 
       const dungeonName = expedition
-        ? registryContext.dungeons[expedition.dungeonId].name
+        ? dungeons[expedition.dungeonId].name
         : "an unknown location";
 
       return `On Expedition in ${dungeonName}`;

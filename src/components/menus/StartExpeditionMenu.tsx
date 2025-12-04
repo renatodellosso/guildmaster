@@ -1,8 +1,7 @@
-import { MainRegistryContext } from "@/lib/content/mainRegistryContext";
+import { DungeonId, dungeons } from "@/lib/content/dungeons";
 import { CreatureInstance } from "@/lib/creature";
 import { createExpedition } from "@/lib/expedition";
 import { getMaxPartySize } from "@/lib/gameStats";
-import { RegistryToDungeonId } from "@/lib/registry";
 import { Context, Id } from "@/lib/utilTypes";
 import { useState } from "react";
 
@@ -13,8 +12,7 @@ export default function StartExpeditionMenu({
   context: Context;
   onStartExpedition: () => void;
 }) {
-  const [dungeonId, setDungeonId] =
-    useState<RegistryToDungeonId<MainRegistryContext>>();
+  const [dungeonId, setDungeonId] = useState<DungeonId>();
   const [error, setError] = useState<string>();
   const [party, setParty] = useState<Id[]>([]);
 
@@ -22,14 +20,14 @@ export default function StartExpeditionMenu({
     (member) => member.hp > 0 && !party.includes(member.id)
   );
 
-  const maxPartySize = getMaxPartySize(context.game, context.registry);
+  const maxPartySize = getMaxPartySize(context.game);
 
   function start() {
     if (!dungeonId) {
       setError("No dungeon selected");
       return;
     }
-    const dungeon = context.registry.dungeons[dungeonId];
+    const dungeon = dungeons[dungeonId];
     if (!dungeon) {
       setError("Invalid dungeon selected");
       return;
@@ -46,7 +44,7 @@ export default function StartExpeditionMenu({
     }
 
     context.game.expeditions.push(
-      createExpedition(dungeonId, party, context.game, context.registry)
+      createExpedition(dungeonId, party, context.game)
     );
     context.updateGameState();
 
@@ -62,7 +60,7 @@ export default function StartExpeditionMenu({
           onChange={(e) => setDungeonId(e.target.value as typeof dungeonId)}
         >
           <option value="">Select a dungeon</option>
-          {Object.values(context.registry.dungeons).map((dungeon, index) => (
+          {Object.values(dungeons).map((dungeon, index) => (
             <option key={index} value={String(dungeon.id)}>
               {dungeon.name}
             </option>
@@ -111,7 +109,7 @@ function PartyMemberSelector({
   currentText,
   onChange,
 }: {
-  availableMembers: CreatureInstance<MainRegistryContext>[];
+  availableMembers: CreatureInstance[];
   currentText: string;
   onChange: (newSelected: Id) => void;
 }) {

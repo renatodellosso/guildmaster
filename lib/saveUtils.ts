@@ -1,6 +1,4 @@
-import { MainRegistryContext } from "./content/mainRegistryContext";
 import { GameContext } from "./gameContext";
-import { RegistryContext } from "./registry";
 
 const SAVE_KEY = "guildmaster_save";
 
@@ -19,7 +17,7 @@ export function saveGame(gameContext: GameContext) {
   );
 }
 
-export function loadSave<TRegistryContext extends RegistryContext>(): Save {
+export function loadSave(): Save {
   const savedData = localStorage.getItem(SAVE_KEY);
   if (!savedData) {
     return getDefaultSave();
@@ -32,7 +30,7 @@ export function clearSave() {
   localStorage.removeItem(SAVE_KEY);
 }
 
-export function getDefaultSave(): Save<MainRegistryContext> {
+export function getDefaultSave(): Save {
   return {
     savedAt: Date.now(),
     gameContext: {

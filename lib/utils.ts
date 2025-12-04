@@ -1,6 +1,5 @@
 import { CreatureInstance } from "./creature";
 import { GameContext } from "./gameContext";
-import { RegistryContext } from "./registry";
 import { Id } from "./utilTypes";
 
 export function chooseRandom<T>(arr: T[]): T {
@@ -11,10 +10,10 @@ export function randomId(): Id {
   return Math.random().toString(36).substring(2, 10);
 }
 
-export function getCreature<
-  TRegistryContext extends RegistryContext,
-  TCreature extends CreatureInstance,
->(creatureId: TCreature | Id, gameContext: GameContext) {
+export function getCreature<TCreature extends CreatureInstance>(
+  creatureId: TCreature | Id,
+  gameContext: GameContext
+) {
   if (typeof creatureId === "string") {
     return gameContext.roster[creatureId];
   } else {

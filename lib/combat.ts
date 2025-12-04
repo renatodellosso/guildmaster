@@ -5,10 +5,13 @@ import { GameContext } from "./gameContext";
 import { getCreature } from "./utils";
 import { Id } from "./utilTypes";
 
-export type RetreatTriggerDefinition = (
-  combat: Combat,
-  data?: unknown
-) => boolean;
+export type RetreatTriggerDefinition = {
+  shouldRetreat: (combat: Combat, data?: unknown) => boolean;
+  /**
+   * Not specified = true
+   */
+  canSelect?: boolean;
+};
 
 export type RetreatTriggerInstance<TDefId extends Id> = {
   id: Id;
@@ -35,21 +38,13 @@ function takeTurnForCreature(
   combat: Combat,
   gameContext: GameContext
 ) {
-  const ability = selectAbilityForCreature(
-    creature,
-    combat,
-    gameContext
-  );
+  const ability = selectAbilityForCreature(creature, combat, gameContext);
 
   if (!ability) {
     return;
   }
 
-  const rawTargets = ability.selectTargets(
-    creature,
-    combat,
-    gameContext
-  );
+  const rawTargets = ability.selectTargets(creature, combat, gameContext);
 
   const targets = rawTargets.map((targetOrId) =>
     getCreature(targetOrId, gameContext)
@@ -75,7 +70,7 @@ export function checkRetreatTriggers(combat: Combat): boolean {
     const retreatTriggerDef =
       retreatTriggers[retreatTriggerInstance.definitionId];
 
-    if (retreatTriggerDef(combat, retreatTriggerInstance.data)) {
+    if (retreatTriggerDef.shouldRetreat(combat, retreatTriggerInstance.data)) {
       return true;
     }
   }

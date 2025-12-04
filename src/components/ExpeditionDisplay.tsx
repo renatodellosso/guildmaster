@@ -1,4 +1,3 @@
-import { MainRegistryContext } from "@/lib/content/mainRegistryContext";
 import { CreatureInstance } from "@/lib/creature";
 import { Expedition } from "@/lib/expedition";
 import { getCreature } from "@/lib/utils";
@@ -8,7 +7,7 @@ export default function ExpeditionDisplay({
   expedition,
   context,
 }: {
-  expedition: Expedition<MainRegistryContext>;
+  expedition: Expedition;
   context: Context;
 }) {
   const combat = expedition.combat;
@@ -37,11 +36,7 @@ export default function ExpeditionDisplay({
   );
 }
 
-function CreatureDisplay({
-  creature,
-}: {
-  creature: CreatureInstance<MainRegistryContext>;
-}) {
+function CreatureDisplay({ creature }: { creature: CreatureInstance }) {
   return (
     <li>
       {creature.name} - HP: {creature.hp}
