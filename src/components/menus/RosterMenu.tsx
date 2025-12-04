@@ -9,8 +9,7 @@ export default function RosterMenu({ context }: { context: Context }) {
       <ul>
         {Object.values(context.game.roster).map((creature) => (
           <li key={String(creature.id)}>
-            {creatures[creature.definitionId].name} (HP:{" "}
-            {creature.hp}) -{" "}
+            {creatures[creature.definitionId].name} (HP: {creature.hp}) -{" "}
             {getFromOptionalFunc(
               activities[creature.activity.definitionId].getDescription,
               creature,
