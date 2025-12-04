@@ -1,10 +1,10 @@
 import { OptionalFunc } from "./utilTypes";
 
 export enum SkillId {
-  Melee = "melee",
-  Ranged = "ranged",
-  Magic = "magic",
-  Endurance = "endurance",
+  Melee = "Melee",
+  Ranged = "Ranged",
+  Magic = "Magic",
+  Endurance = "Endurance",
 }
 
 export type SkillList<TArgs extends unknown[] = []> = {

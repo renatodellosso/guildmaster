@@ -1,4 +1,5 @@
 import { createCreatureInstance } from "./creature";
+import { randomName } from "./creatureUtils";
 import { GameContext } from "./gameContext";
 
 const SAVE_KEY = "guildmaster_save";
@@ -42,8 +43,8 @@ export function getDefaultSave(): Save {
     createCreatureInstance("human", context)
   );
 
-  creatures.forEach((creature, index) => {
-    creature.name = `Adventurer ${index + 1}`;
+  creatures.forEach((creature) => {
+    creature.name = randomName();
     context.roster[creature.id] = {
       ...creature,
       xp: 0,

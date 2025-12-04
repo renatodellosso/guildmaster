@@ -3,7 +3,7 @@ import { creatures } from "./content/creatures";
 import { CreatureInstance } from "./creature";
 import { GameContext } from "./gameContext";
 import { SkillId } from "./skills";
-import { getCreature } from "./utils";
+import { chooseRandom, getCreature } from "./utils";
 import { getFromOptionalFunc } from "./utilTypes";
 
 export function getMaxHealth(
@@ -18,6 +18,10 @@ export function getMaxHealth(
   );
 
   maxHp += 5 * getSkill(SkillId.Endurance, creature);
+
+  if ("level" in creature && typeof creature.level === "number") {
+    maxHp += creature.level * 10;
+  }
 
   return maxHp;
 }
@@ -93,7 +97,8 @@ export function onDie(
 }
 
 export function getXpForNextLevel(level: number): number {
-  return 100 * Math.pow(1.1, level);
+  if (level <= 0) return 100;
+  return getXpForNextLevel(level - 1) + 100 * Math.pow(1.1, level);
 }
 
 export function getSkill(skill: SkillId, creature: CreatureInstance): number {
@@ -110,4 +115,43 @@ export function getSkill(skill: SkillId, creature: CreatureInstance): number {
   }
 
   return val;
+}
+
+export function randomName(): string {
+  const prefixes = [
+    "Gor",
+    "Zan",
+    "Mor",
+    "Tar",
+    "Lun",
+    "Vor",
+    "Fen",
+    "Rag",
+    "Dru",
+    "Kal",
+  ];
+  const middles = ["an", "en", "in", "or", "ur", "el", "al", "ir", "ar", "es"];
+  const suffixes = [
+    "thar",
+    "gorn",
+    "dil",
+    "mar",
+    "nus",
+    "rak",
+    "zor",
+    "lin",
+    "dus",
+    "fen",
+  ];
+
+  let name = chooseRandom(prefixes);
+
+  const middleCount = Math.random() < 0.5 ? 0 : Math.random() < 0.5 ? 1 : 2;
+  for (let i = 0; i < middleCount; i++) {
+    name += chooseRandom(middles);
+  }
+
+  name += chooseRandom(suffixes);
+
+  return name;
 }
