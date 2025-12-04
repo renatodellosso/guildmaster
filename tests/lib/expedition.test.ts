@@ -6,6 +6,7 @@ import { CreatureInstance } from "@/lib/creature";
 import { Id } from "@/lib/utilTypes";
 import { Combat } from "@/lib/combat";
 import { dungeons } from "@/lib/content/dungeons";
+import { GameContext } from "@/lib/gameContext";
 
 describe(startCombat.name, () => {
   it("chooses a random encounter", () => {
@@ -19,7 +20,10 @@ describe(startCombat.name, () => {
 
     const iterations = 100;
     for (let i = 0; i < iterations; i++) {
-      const combatInstance = startCombat(expedition);
+      const combatInstance = startCombat(
+        expedition,
+        {} as unknown as GameContext
+      );
       combatInstance.enemies.creatures.forEach(
         (creature: Id | CreatureInstance) => {
           enemyIds.add((creature as CreatureInstance).definitionId);
@@ -60,7 +64,10 @@ describe(startCombat.name, () => {
       },
     ]);
 
-    const combatInstance = startCombat(expedition);
+    const combatInstance = startCombat(
+      expedition,
+      {} as unknown as GameContext
+    );
 
     const creatureCount: Record<Id, number> = {};
     combatInstance.enemies.creatures.forEach(
