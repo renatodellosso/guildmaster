@@ -13,6 +13,7 @@ export type CreatureProvider = {
     number,
     [CreatureInstance, number, GameContext]
   >;
+  xpValue?: OptionalFunc<number, [CreatureInstance, GameContext]>;
 };
 
 type DefProvider = MakeRequired<CreatureProvider, "maxHealth">;
@@ -34,6 +35,11 @@ export type CreatureInstance = {
 
 export type AdventurerInstance = CreatureInstance & {
   activity: ActivityInstance;
+  xp: number;
+  level: number;
+  skills: Partial<{
+    [key in keyof SkillList]: number;
+  }>;
 };
 
 export function createCreatureInstance(

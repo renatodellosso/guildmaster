@@ -11,7 +11,7 @@ export const rawDungeons = {
       {
         item: [
           {
-            id: "human",
+            id: "goblin",
             count: 3,
           },
         ],

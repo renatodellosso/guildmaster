@@ -174,3 +174,22 @@ export function handleCombatTick(
 
   takeCombatTurn(expedition.combat, onVictory, onDefeat, gameContext);
 }
+
+export function chooseRandomLivingTarget(
+  side: CombatSide,
+  gameContext: GameContext
+): [CreatureInstance] | [] {
+  const livingCreatures = side.creatures
+    .filter((creatureOrId) => {
+      const creature = getCreature(creatureOrId, gameContext);
+      return creature.hp > 0;
+    })
+    .map((creatureOrId) => getCreature(creatureOrId, gameContext));
+
+  if (livingCreatures.length === 0) {
+    return [];
+  }
+
+  const randomIndex = Math.floor(Math.random() * livingCreatures.length);
+  return [livingCreatures[randomIndex]];
+}

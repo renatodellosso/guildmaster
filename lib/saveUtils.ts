@@ -46,9 +46,12 @@ export function getDefaultSave(): Save {
     creature.name = `Adventurer ${index + 1}`;
     context.roster[creature.id] = {
       ...creature,
+      xp: 0,
+      level: 0,
       activity: {
         definitionId: "resting",
       },
+      skills: {},
     };
   });
 

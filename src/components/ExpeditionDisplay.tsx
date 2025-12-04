@@ -1,5 +1,7 @@
 import { CreatureInstance } from "@/lib/creature";
+import { getMaxHealth } from "@/lib/creatureUtils";
 import { Expedition } from "@/lib/expedition";
+import { formatInt } from "@/lib/format";
 import { getCreature } from "@/lib/utils";
 import { Context } from "@/lib/utilTypes";
 
@@ -23,7 +25,7 @@ export default function ExpeditionDisplay({
         {combat.allies.creatures.map((creatureId) => {
           const creature = getCreature(creatureId, context.game);
           return (
-            <CreatureDisplay key={String(creature.id)} creature={creature} />
+            <CreatureDisplay key={String(creature.id)} creature={creature} context={context} />
           );
         })}
       </ul>
@@ -36,7 +38,7 @@ export default function ExpeditionDisplay({
         {combat.enemies.creatures.map((creatureId) => {
           const creature = getCreature(creatureId, context.game);
           return (
-            <CreatureDisplay key={String(creature.id)} creature={creature} />
+            <CreatureDisplay key={String(creature.id)} creature={creature} context={context} />
           );
         })}
       </ul>
@@ -44,10 +46,17 @@ export default function ExpeditionDisplay({
   );
 }
 
-function CreatureDisplay({ creature }: { creature: CreatureInstance }) {
+function CreatureDisplay({
+  creature,
+  context,
+}: {
+  creature: CreatureInstance;
+  context: Context;
+}) {
   return (
     <li>
-      {creature.name} - HP: {creature.hp}
+      {creature.name} - HP: {formatInt(creature.hp)}/
+      {formatInt(getMaxHealth(creature, context.game))}
     </li>
   );
 }

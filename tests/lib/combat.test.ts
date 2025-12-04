@@ -201,6 +201,9 @@ describe(takeCombatTurn.name, () => {
           definitionId: "resting",
         },
         hp: 10,
+        xp: 0,
+        level: 1,
+        skills: {},
       },
       {
         id: "instance-2",
@@ -210,6 +213,9 @@ describe(takeCombatTurn.name, () => {
           definitionId: "resting",
         },
         hp: 10,
+        xp: 0,
+        level: 1,
+        skills: {},
       },
       {
         id: "instance-3",
@@ -219,6 +225,9 @@ describe(takeCombatTurn.name, () => {
           definitionId: "resting",
         },
         hp: 10,
+        xp: 0,
+        level: 1,
+        skills: {},
       },
       {
         id: "instance-4",
@@ -228,6 +237,9 @@ describe(takeCombatTurn.name, () => {
           definitionId: "resting",
         },
         hp: 10,
+        xp: 0,
+        level: 1,
+        skills: {},
       },
     ] satisfies AdventurerInstance[];
 
