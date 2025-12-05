@@ -1,9 +1,8 @@
 import { AbilityPriority } from "../abilityPriority";
+import { attack } from "../abilityTemplates";
 import { ClassDefinition } from "../class";
-import { chooseRandomLivingTarget } from "../combat";
-import { getSkill, takeDamage, takeManaDamage } from "../creatureUtils";
+import { getSkill } from "../creatureUtils";
 import { DamageType } from "../damage";
-import { addToExpeditionLog } from "../expedition";
 import { finishRegistry, RawRegistry } from "../registry";
 import { SkillId } from "../skills";
 import { AbilityId } from "./abilityId";
@@ -35,35 +34,21 @@ const rawClasses = {
     maxMana: (_creature, _prev, _gameContext, source) =>
       30 + ((source as number) - 1) * 5,
     abilities: [
-      {
+      attack({
         id: AbilityId.ManaBolt,
         name: "Mana Bolt",
         description: "Hurl a bolt of magical energy at your target.",
-        canActivate: (caster) => caster.mana >= 5,
-        selectTargets: (_caster, expedition, gameContext) =>
-          chooseRandomLivingTarget(expedition.combat.enemies, gameContext),
-        activate: (caster, targets, expedition, gameContext) => {
-          takeManaDamage(caster, 5);
-
-          const damage = 10 + getSkill(SkillId.Magic, caster, gameContext);
-          const damageTaken = takeDamage(
-            targets[0],
-            [
-              {
-                type: DamageType.Force,
-                amount: damage,
-              },
-            ],
-            gameContext
-          );
-
-          addToExpeditionLog(
-            expedition,
-            `${caster.name} hits ${targets[0].name} with Mana Bolt for ${damageTaken} damage.`
-          );
-        },
+        damage: [
+          {
+            type: DamageType.Force,
+            amount: 10,
+          },
+        ],
+        range: 3,
+        manaCost: 5,
         priority: AbilityPriority.Medium,
-      },
+        skill: SkillId.Magic,
+      }),
     ],
   },
 } satisfies RawRegistry<ClassId, ClassDefinition>;

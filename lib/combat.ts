@@ -206,3 +206,24 @@ export function chooseRandomLivingTarget(
   const randomIndex = Math.floor(Math.random() * livingCreatures.length);
   return [livingCreatures[randomIndex]];
 }
+
+export function chooseRandomLivingTargetWithinRange(
+  side: CombatSide,
+  gameContext: GameContext,
+  maxRange: number
+): [CreatureInstance] | [] {
+  const livingCreatures = side.creatures
+    .filter((creatureOrId) => {
+      const creature = getCreature(creatureOrId, gameContext);
+      return creature.hp > 0;
+    })
+    .slice(0, maxRange)
+    .map((creatureOrId) => getCreature(creatureOrId, gameContext));
+
+  if (livingCreatures.length === 0) {
+    return [];
+  }
+
+  const randomIndex = Math.floor(Math.random() * livingCreatures.length);
+  return [livingCreatures[randomIndex]];
+}

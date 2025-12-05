@@ -1,15 +1,12 @@
 import { AbilityId } from "./abilityId";
-import { chooseRandomLivingTarget } from "../combat";
 import { CreatureDefinition } from "../creature";
-import { getSkill, takeDamage } from "../creatureUtils";
 import { DropTableEntry } from "../drops";
-import { addToExpeditionLog } from "../expedition";
-import { formatDamage } from "../format";
 import { finishRegistry, RawRegistry } from "../registry";
 import { SkillId } from "../skills";
 import { Table } from "../table";
 import { Id } from "../utilTypes";
 import { DamageType } from "../damage";
+import { attack } from "../abilityTemplates";
 import { chance } from "../utils";
 
 export type CreatureDefId = "human" | "goblin";
@@ -21,34 +18,18 @@ const rawCreatures = {
     xpValue: 10,
     skills: {},
     abilities: [
-      {
+      attack({
         id: AbilityId.Punch,
         name: "Punch",
-        description: "Punch an enemy",
-        activate: (caster, targets, expedition, gameContext) => {
-          if (targets.length === 0 || !targets[0]) return;
-          const damage = takeDamage(
-            targets[0],
-            [
-              {
-                type: DamageType.Bludgeoning,
-                amount: 5 + getSkill(SkillId.Melee, caster, gameContext),
-              },
-            ],
-            gameContext,
-            expedition
-          );
-
-          addToExpeditionLog(
-            expedition,
-            `${caster.name} punches ${targets[0].name} for ${formatDamage(damage)} damage.`
-          );
-        },
-        canActivate: () => true,
-        selectTargets: (_caster, expedition, gameContext) =>
-          chooseRandomLivingTarget(expedition.combat.enemies, gameContext),
-        priority: 0,
-      },
+        description: "Punch an enemy with a fist.",
+        damage: [
+          {
+            type: DamageType.Bludgeoning,
+            amount: 5,
+          },
+        ],
+        range: 1,
+      }),
     ],
   },
   goblin: {
@@ -72,43 +53,27 @@ const rawCreatures = {
       ]),
     },
     abilities: [
-      {
+      attack({
         id: AbilityId.Slash,
         name: "Slash",
-        description: "Slash an enemy",
-        activate: (caster, targets, expedition, gameContext) => {
-          if (targets.length === 0 || !targets[0]) return;
-          const damage = takeDamage(
-            targets[0],
-            [
-              {
-                type: DamageType.Slashing,
-                amount:
-                  caster.hp / 20 + getSkill(SkillId.Melee, caster, gameContext),
-              },
-            ],
-            gameContext,
-            expedition
-          );
-
-          if (damage.length > 0 && chance(0.2)) {
-            targets[0].statusEffects.push({
+        description: "Slash an enemy with a crude blade.",
+        damage: [
+          {
+            type: DamageType.Slashing,
+            amount: 8,
+          },
+        ],
+        range: 1,
+        onDealDamage: (_caster, target) => {
+          if (chance(0.3)) {
+            target.statusEffects.push({
               definitionId: "poisoned",
               duration: 3,
               strength: 1,
             });
           }
-
-          addToExpeditionLog(
-            expedition,
-            `${caster.name} slashes ${targets[0].name} for ${formatDamage(damage)} damage!`
-          );
         },
-        canActivate: () => true,
-        selectTargets: (_caster, expedition, gameContext) =>
-          chooseRandomLivingTarget(expedition.combat.enemies, gameContext),
-        priority: 0,
-      },
+      }),
     ],
   },
 } satisfies RawRegistry<Id, CreatureDefinition>;
