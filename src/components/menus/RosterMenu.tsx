@@ -13,22 +13,34 @@ export default function RosterMenu({ context }: { context: Context }) {
       <h1>Roster Menu</h1>
       <div className="flex">
         <div className="flex flex-col overflow-y-scroll">
-          {Object.values(context.game.roster).map((creature) => (
-            <button
-              key={String(creature.id)}
-              onClick={() => setSelectedId(creature.id)}
-            >
-              {creature.name} (HP: {formatInt(creature.hp)}/
-              {formatInt(getMaxHealth(creature, context.game))}, XP:{" "}
-              {formatInt(creature.xp)}/
-              {formatInt(getXpForNextLevel(creature.level))}) -{" "}
-              {getFromOptionalFunc(
-                activities[creature.activity.definitionId].description,
-                creature,
-                context.game
-              )}
-            </button>
-          ))}
+          {Object.values(context.game.roster).map((creature) => {
+            const xpForNextLevel = getXpForNextLevel(creature.level);
+
+            return (
+              <button
+                key={String(creature.id)}
+                onClick={() => setSelectedId(creature.id)}
+              >
+                {creature.name} (HP: {formatInt(creature.hp)}/
+                {formatInt(getMaxHealth(creature, context.game))}, XP:{" "}
+                <span
+                  className={
+                    creature.xp >= xpForNextLevel
+                      ? "font-bold text-green-600"
+                      : ""
+                  }
+                >
+                  {formatInt(creature.xp)}/{formatInt(xpForNextLevel)}
+                </span>
+                ) -{" "}
+                {getFromOptionalFunc(
+                  activities[creature.activity.definitionId].description,
+                  creature,
+                  context.game
+                )}
+              </button>
+            );
+          })}
         </div>
         {selectedId && context.game.roster[selectedId] ? (
           <AdventurerDisplay

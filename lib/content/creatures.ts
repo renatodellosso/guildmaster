@@ -21,7 +21,7 @@ const rawCreatures = {
           if (targets.length === 0 || !targets[0]) return;
           takeDamage(
             targets[0],
-            caster.hp / 4 + getSkill(SkillId.Melee, caster),
+            5 + getSkill(SkillId.Melee, caster),
             gameContext,
             combat
           );
@@ -46,7 +46,7 @@ const rawCreatures = {
           if (targets.length === 0 || !targets[0]) return;
           takeDamage(
             targets[0],
-            caster.hp / 3 + getSkill(SkillId.Magic, caster),
+            caster.hp / 5 + getSkill(SkillId.Magic, caster),
             gameContext,
             combat
           );
