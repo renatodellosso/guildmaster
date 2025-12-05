@@ -2,9 +2,11 @@ import { items } from "@/lib/content/items";
 import { formatInt } from "@/lib/format";
 import { Inventory } from "@/lib/inventory";
 import { Context } from "@/lib/utilTypes";
+import { ItemTooltip } from "./ItemTooltip";
 
 export default function InventoryDisplay({
   inventory,
+  context,
 }: {
   inventory: Inventory;
   context: Context;
@@ -24,7 +26,11 @@ export default function InventoryDisplay({
             const item = items[instance.definitionId];
             return (
               <tr key={index}>
-                <td>{item.name}</td>
+                <td>
+                  <ItemTooltip itemInstance={instance} context={context}>
+                    {item.name}
+                  </ItemTooltip>
+                </td>
                 <td className="text-right">{formatInt(instance.amount)}</td>
                 <td className="text-right">
                   {formatInt(item.value * instance.amount)} (

@@ -9,6 +9,7 @@ import { SkillId } from "@/lib/skills";
 import { EquipmentDefinition, EquipmentSlot, isEquipment } from "@/lib/item";
 import { items } from "@/lib/content/items";
 import { addToInventory, removeFromInventory } from "@/lib/inventory";
+import { ItemTooltip } from "./ItemTooltip";
 
 export function AdventurerDisplay({
   adventurer,
@@ -72,12 +73,6 @@ export function AdventurerDisplay({
       <div className="w-1/8">
         <strong>Equipment:</strong>
         <table>
-          <thead>
-            <tr>
-              <th>Slot</th>
-              <th>Item</th>
-            </tr>
-          </thead>
           <tbody>
             {Object.values(EquipmentSlot).map((slot) => (
               <EquipmentSelect
@@ -170,32 +165,38 @@ function EquipmentSelect({
     <tr>
       <td>{titleCase(slot)}:</td>
       <td>
-        <select
-          onChange={handleChange}
-          defaultValue={adventurer.equipment[slot] ? -1 : undefined}
-          className="min-w-full"
+        <ItemTooltip
+          itemInstance={adventurer.equipment[slot]}
+          context={context}
         >
-          <option value={"none"}>None</option>
-          {slot in adventurer.equipment && adventurer.equipment[slot] && (
-            <option value={-1}>
-              {
-                (
-                  items[
-                    adventurer.equipment[slot].definitionId
-                  ] as EquipmentDefinition
-                )?.name
-              }
-            </option>
-          )}
-          {availableEquipment.map((item, index) => {
-            const def = items[item.definitionId] as EquipmentDefinition;
-            return (
-              <option value={index} key={index}>
-                {def.name}
+          <select
+            onChange={handleChange}
+            defaultValue={adventurer.equipment[slot] ? -1 : undefined}
+            className="min-w-full"
+          >
+            <option value={"none"}>None</option>
+            {slot in adventurer.equipment && adventurer.equipment[slot] && (
+              <option value={-1}>
+                {
+                  (
+                    items[
+                      adventurer.equipment[slot].definitionId
+                    ] as EquipmentDefinition
+                  )?.name
+                }{" "}
+                (equipped)
               </option>
-            );
-          })}
-        </select>
+            )}
+            {availableEquipment.map((item, index) => {
+              const def = items[item.definitionId] as EquipmentDefinition;
+              return (
+                <option value={index} key={index}>
+                  {def.name}
+                </option>
+              );
+            })}
+          </select>
+        </ItemTooltip>
       </td>
     </tr>
   );
