@@ -18,18 +18,8 @@ export function OfflineProgressWindow({
     const ticksToProcess = Math.floor(deltaSeconds);
     setTicksRemaining(ticksToProcess);
 
-    const blockSize = 1000; // Number of ticks to process per block
-
+    const blockSize = 1000; // Number of ticks to process per render
     let ticksProcessed = 0;
-    function processTick() {
-      if (ticksProcessed < ticksToProcess) {
-        tick(context.game);
-        context.updateGameState();
-      } else {
-        context.updateGameState();
-        finish();
-      }
-    }
 
     function processBlock() {
       for (let i = 0; i < blockSize && ticksProcessed < ticksToProcess; i++) {
