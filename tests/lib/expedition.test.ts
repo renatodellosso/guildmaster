@@ -14,7 +14,7 @@ describe(startCombat.name, () => {
       dungeonId: "bandit_camp",
       party: ["hero1", "hero2"],
       combat: {} as Combat,
-      inventory: { items: [] },
+      inventory: [],
     };
 
     const enemyIds = new Set<Id>();
@@ -47,7 +47,7 @@ describe(startCombat.name, () => {
       dungeonId: "bandit_camp",
       party: ["hero1", "hero2"],
       combat: {} as Combat,
-      inventory: { items: [] },
+      inventory: [],
     };
 
     dungeons[expedition.dungeonId].encounters = new Table<Encounter>([

@@ -49,6 +49,10 @@ const rawCreatures = {
           weight: 1,
           item: { definitionId: "coin", amount: [1, 5] },
         },
+        {
+          weight: 0.1,
+          item: { definitionId: "shieldBauble", amount: 1 },
+        },
       ]),
     },
     abilities: [

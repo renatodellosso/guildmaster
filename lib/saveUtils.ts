@@ -37,6 +37,7 @@ export function getDefaultSave(): Save {
     lastTick: Date.now(),
     roster: {},
     expeditions: [],
+    inventory: [],
   };
 
   const creatures = Array.from({ length: 3 }).map(() =>

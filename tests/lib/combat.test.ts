@@ -7,16 +7,12 @@ import {
 } from "@/lib/combat";
 import { getFromOptionalFunc, Id } from "@/lib/utilTypes";
 import { describe, expect, it, vi } from "vitest";
-import { buildCombatSide, buildGameContext } from "../testUtils";
+import { buildAdventurerInstance, buildCombatSide, buildCreatureInstance, buildGameContext, failTest } from "../testUtils";
 import { AdventurerInstance, CreatureInstance } from "@/lib/creature";
 import { CreatureDefId, creatures } from "@/lib/content/creatures";
 import { GameContext } from "@/lib/gameContext";
 import { AbilityPriority } from "@/lib/ability";
 import { Expedition } from "@/lib/expedition";
-
-function failTest() {
-  throw new Error("This function should not have been called");
-}
 
 describe(takeCombatTurn.name, () => {
   it("takes a turn for each creature", () => {
@@ -33,32 +29,32 @@ describe(takeCombatTurn.name, () => {
 
     const combat = {
       allies: buildCombatSide([
-        {
+        buildCreatureInstance({
           id: "instance-1",
           definitionId: "human",
           name: "Creature 1",
           hp: 10,
-        },
-        {
+        }),
+        buildCreatureInstance({
           id: "instance-2",
           definitionId: "human",
           name: "Creature 2",
           hp: 10,
-        },
+        }),
       ]),
       enemies: buildCombatSide([
-        {
+        buildCreatureInstance({
           id: "instance-3",
           definitionId: "human",
           name: "Creature 3",
           hp: 10,
-        },
-        {
+        }),
+        buildCreatureInstance({
           id: "instance-4",
           definitionId: "human",
           name: "Creature 4",
           hp: 10,
-        },
+        }),
       ]),
     } satisfies Combat;
 
@@ -105,20 +101,20 @@ describe(takeCombatTurn.name, () => {
   it("always has the creature in the allies during its turn", () => {
     const combat = {
       allies: buildCombatSide([
-        {
+        buildCreatureInstance({
           id: "instance-1",
           definitionId: "human",
           name: "Creature 1",
           hp: 10,
-        },
+        }),
       ]),
       enemies: buildCombatSide([
-        {
+        buildCreatureInstance({
           id: "instance-2",
           definitionId: "human",
           name: "Creature 2",
           hp: 10,
-        },
+        }),
       ]),
     } satisfies Combat;
 
@@ -145,32 +141,32 @@ describe(takeCombatTurn.name, () => {
 
     const combat = {
       allies: buildCombatSide([
-        {
+        buildCreatureInstance({
           id: "instance-1",
           definitionId: "human",
           name: "Creature 1",
           hp: 10,
-        },
-        {
+        }),
+        buildCreatureInstance({
           id: "instance-2",
           definitionId: "human",
           name: "Creature 2",
           hp: 10,
-        },
+        }),
       ]),
       enemies: buildCombatSide([
-        {
+        buildCreatureInstance({
           id: "instance-3",
           definitionId: "human",
           name: "Creature 3",
           hp: 10,
-        },
-        {
+        }),
+        buildCreatureInstance({
           id: "instance-4",
           definitionId: "human",
           name: "Creature 4",
           hp: 10,
-        },
+        }),
       ]),
     } satisfies Combat;
 
@@ -203,7 +199,7 @@ describe(takeCombatTurn.name, () => {
     ];
 
     const roster = [
-      {
+      buildAdventurerInstance({
         id: "instance-1",
         definitionId: "human",
         name: "Creature 1",
@@ -214,8 +210,8 @@ describe(takeCombatTurn.name, () => {
         xp: 0,
         level: 1,
         skills: {},
-      },
-      {
+      }),
+      buildAdventurerInstance({
         id: "instance-2",
         definitionId: "human",
         name: "Creature 2",
@@ -226,8 +222,8 @@ describe(takeCombatTurn.name, () => {
         xp: 0,
         level: 1,
         skills: {},
-      },
-      {
+      }),
+      buildAdventurerInstance({
         id: "instance-3",
         definitionId: "human",
         name: "Creature 3",
@@ -238,8 +234,8 @@ describe(takeCombatTurn.name, () => {
         xp: 0,
         level: 1,
         skills: {},
-      },
-      {
+      }),
+      buildAdventurerInstance({
         id: "instance-4",
         definitionId: "human",
         name: "Creature 4",
@@ -250,7 +246,7 @@ describe(takeCombatTurn.name, () => {
         xp: 0,
         level: 1,
         skills: {},
-      },
+      }),
     ] satisfies AdventurerInstance[];
 
     const combat = {
@@ -302,12 +298,12 @@ describe(handleRetreat.name, () => {
     const combat: Combat = {
       allies: {
         creatures: [
-          {
+          buildCreatureInstance({
             id: "creature-1",
             definitionId: "human",
             name: "Creature",
             hp: 10,
-          },
+          }),
         ],
         retreatTriggers: [
           {
@@ -350,12 +346,12 @@ describe(handleRetreat.name, () => {
     const combat: Combat = {
       allies: {
         creatures: [
-          {
+          buildAdventurerInstance({
             id: "creature-1",
             definitionId: "human",
             name: "Fallen Creature",
             hp: 0,
-          },
+          }),
         ],
         retreatTriggers: [],
         retreatTimer: -1,

@@ -17,6 +17,7 @@ export function buildGameContext(
   roster: AdventurerInstance[] = []
 ): GameContext {
   return {
+    lastTick: Date.now(),
     roster: roster.reduce(
       (acc, creature) => {
         acc[creature.id] = creature;
@@ -25,6 +26,36 @@ export function buildGameContext(
       {} as Record<Id, AdventurerInstance>
     ),
     expeditions: [],
-    lastTick: Date.now(),
+    inventory: [],
+  };
+}
+
+export function failTest() {
+  throw new Error("This function should not have been called");
+}
+
+export function buildCreatureInstance(
+  creature: Partial<CreatureInstance>
+): CreatureInstance {
+  return {
+    id: "human",
+    definitionId: "human",
+    name: "Test Creature",
+    hp: 10,
+    equipment: {},
+    ...creature,
+  };
+}
+
+export function buildAdventurerInstance(
+  creature: Partial<AdventurerInstance>
+): AdventurerInstance {
+  return {
+    ...buildCreatureInstance(creature),
+    activity: { definitionId: "resting" },
+    xp: 0,
+    level: 1,
+    skills: {},
+    ...creature,
   };
 }

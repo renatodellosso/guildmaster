@@ -11,6 +11,7 @@ import { CreatureInstance } from "@/lib/creature";
 import { creatures } from "@/lib/content/creatures";
 import { GameContext } from "@/lib/gameContext";
 import { Expedition } from "@/lib/expedition";
+import { buildCreatureInstance } from "../testUtils";
 
 describe("Ability", () => {
   it("allows arbitrary priority functions", () => {
@@ -62,12 +63,12 @@ describe(getCastableAbilities.name, () => {
     creatures.human.abilities = [ability1, ability2];
 
     const castableAbilities = getCastableAbilities(
-      {
+      buildCreatureInstance({
         definitionId: "human",
         id: "instance-1",
         name: "Test Creature",
         hp: 10,
-      },
+      }),
       {} as Expedition,
       {} as GameContext
     );
@@ -180,12 +181,12 @@ describe(selectAbilityForCreature.name, () => {
     creatures.human.abilities = abilities;
 
     const selectedAbility = selectAbilityForCreature(
-      {
+      buildCreatureInstance({
         definitionId: "human",
         id: "instance-1",
         name: "Test Creature",
         hp: 10,
-      },
+      }),
       {} as Expedition,
       {} as GameContext
     );
@@ -198,12 +199,12 @@ describe(selectAbilityForCreature.name, () => {
     creatures.human.abilities = [];
 
     const selectedAbility = selectAbilityForCreature(
-      {
+      buildCreatureInstance({
         definitionId: "human",
         id: "instance-1",
         name: "Test Creature",
         hp: 10,
-      },
+      }),
       {} as Expedition,
       {} as GameContext
     );
@@ -233,12 +234,12 @@ describe(selectAbilityForCreature.name, () => {
     creatures.human.abilities = [ability1, ability2];
 
     const selectedAbility = selectAbilityForCreature(
-      {
+      buildCreatureInstance({
         definitionId: "human",
         id: "instance-1",
         name: "Test Creature",
         hp: 10,
-      },
+      }),
       {} as Expedition,
       {} as GameContext
     );
@@ -269,12 +270,12 @@ describe(selectAbilityForCreature.name, () => {
     creatures.human.abilities = [ability1, ability2];
 
     const selectedAbility = selectAbilityForCreature(
-      {
+      buildCreatureInstance({
         definitionId: "human",
         id: "instance-1",
         name: "Test Creature",
         hp: 10,
-      },
+      }),
       {} as Expedition,
       {} as GameContext
     );

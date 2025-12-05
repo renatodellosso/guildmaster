@@ -1,10 +1,10 @@
-import { items } from "@/lib/content/items";
 import { CreatureInstance } from "@/lib/creature";
 import { getMaxHealth } from "@/lib/creatureUtils";
 import { Expedition } from "@/lib/expedition";
 import { formatInt } from "@/lib/format";
 import { getCreature } from "@/lib/utils";
 import { Context } from "@/lib/utilTypes";
+import InventoryDisplay from "./InventoryDisplay";
 
 export default function ExpeditionDisplay({
   expedition,
@@ -53,13 +53,7 @@ export default function ExpeditionDisplay({
       </ul>
       <div>
         <strong>Inventory:</strong>
-        <ul>
-          {expedition.inventory.items.map((item) => (
-            <li key={item.definitionId}>
-              {items[item.definitionId].name}: {formatInt(item.amount)}
-            </li>
-          ))}
-        </ul>
+        <InventoryDisplay inventory={expedition.inventory} context={context} />
       </div>
     </div>
   );

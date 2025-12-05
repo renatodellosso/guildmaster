@@ -4,6 +4,7 @@ import { CreatureDefId, creatures } from "./content/creatures";
 import { getMaxHealth } from "./creatureUtils";
 import { Drops } from "./drops";
 import { GameContext } from "./gameContext";
+import { EquipmentSlot, ItemInstance } from "./item";
 import { SkillList } from "./skills";
 import { randomId } from "./utils";
 import { Id, MakeRequired, OptionalFunc } from "./utilTypes";
@@ -14,8 +15,6 @@ export type CreatureProvider = {
     number,
     [CreatureInstance, number, GameContext]
   >;
-  xpValue?: OptionalFunc<number, [CreatureInstance, GameContext]>;
-  drops?: Drops;
 };
 
 type DefProvider = MakeRequired<CreatureProvider, "maxHealth">;
@@ -25,6 +24,8 @@ export type CreatureDefinition = DefProvider & {
   name: string;
   skills: SkillList<[CreatureInstance]>;
   abilities?: OptionalFunc<Ability[], AbilityFuncParamsWithoutTargets>;
+  drops?: Drops;
+  xpValue?: OptionalFunc<number, [CreatureInstance, GameContext]>;
 };
 
 export type CreatureInstance = {
@@ -33,6 +34,8 @@ export type CreatureInstance = {
   name: string;
 
   hp: number;
+
+  equipment: { [slot in EquipmentSlot]?: ItemInstance };
 };
 
 export type AdventurerInstance = CreatureInstance & {
@@ -53,6 +56,7 @@ export function createCreatureInstance(
     definitionId: defId,
     name: creatures[defId].name,
     hp: 0,
+    equipment: {},
   };
 
   creature.hp = getMaxHealth(creature, gameContext);

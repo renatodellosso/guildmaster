@@ -42,3 +42,8 @@ textarea {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+td,
+th {
+  @apply px-1;
+}

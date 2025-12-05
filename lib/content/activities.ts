@@ -1,5 +1,4 @@
 import { ActivityDefinition } from "../activity";
-import { getHealthRegen, heal } from "../creatureUtils";
 import { finishRegistry, RawRegistry } from "../registry";
 import { dungeons } from "./dungeons";
 

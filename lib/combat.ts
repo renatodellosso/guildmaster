@@ -3,6 +3,7 @@ import { RetreatTriggerId, retreatTriggers } from "./content/retreatTriggers";
 import { AdventurerInstance, CreatureInstance } from "./creature";
 import { Expedition, startCombat } from "./expedition";
 import { GameContext } from "./gameContext";
+import { addToInventory } from "./inventory";
 import { getCreature } from "./utils";
 import { Id } from "./utilTypes";
 
@@ -153,6 +154,10 @@ export function handleCombatTick(
 ) {
   function onVictory() {
     console.log("Expedition victorious!");
+
+    addToInventory(gameContext.inventory, expedition.inventory);
+    expedition.inventory = [];
+
     expedition.combat = startCombat(expedition, gameContext);
   }
 

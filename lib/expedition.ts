@@ -60,7 +60,7 @@ export function createExpedition(
   const expedition: Expedition = {
     dungeonId,
     party,
-    inventory: { items: [] },
+    inventory: [],
     combat: undefined as unknown as Combat,
   };
 

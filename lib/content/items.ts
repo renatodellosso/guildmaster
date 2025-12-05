@@ -1,7 +1,9 @@
 import { ItemDefinition } from "../item";
 import { finishRegistry, RawRegistry } from "../registry";
+import { EquipmentId, rawEquipments } from "./equipments";
 
-export type ItemId = "coin";
+type RawItemId = "coin";
+export type ItemId = RawItemId | EquipmentId;
 
 const rawItems = {
   coin: {
@@ -9,6 +11,11 @@ const rawItems = {
     description: "A shiny gold coin.",
     value: 1,
   },
-} satisfies RawRegistry<ItemId, ItemDefinition>;
+} satisfies RawRegistry<RawItemId, ItemDefinition>;
 
-export const items = finishRegistry<ItemId, ItemDefinition>(rawItems);
+const rawAllItems: RawRegistry<ItemId, ItemDefinition> = {
+  ...rawItems,
+  ...rawEquipments,
+};
+
+export const items = finishRegistry<ItemId, ItemDefinition>(rawAllItems);

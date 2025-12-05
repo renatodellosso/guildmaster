@@ -5,6 +5,7 @@ import useTick from "@/lib/hooks/useTick";
 import { clearSave, getDefaultSave, loadSave } from "@/lib/saveUtils";
 import RosterMenu from "./components/menus/RosterMenu";
 import { Context } from "@/lib/utilTypes";
+import InventoryDisplay from "./components/InventoryDisplay";
 
 function App() {
   const [gameContext, setGameContext] = useState<GameContext>();
@@ -53,6 +54,10 @@ function App() {
       </div>
       <ExpeditionsMenu context={context} />
       <RosterMenu context={context} />
+      <div>
+        <h1>Inventory</h1>
+        <InventoryDisplay inventory={gameContext.inventory} context={context} />
+      </div>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { ItemId } from "./content/items";
+import { CreatureProvider } from "./creature";
 
 export type ItemDefinition = {
   id: ItemId;
@@ -11,6 +12,17 @@ export type ItemInstance = {
   definitionId: ItemId;
   amount: number;
 };
+
+export enum EquipmentSlot {
+  Weapon = "weapon",
+  Armor = "armor",
+  Accessory = "accessory",
+}
+
+export type EquipmentDefinition = ItemDefinition &
+  CreatureProvider & {
+    slot: EquipmentSlot;
+  };
 
 export function areItemsEqual(
   itemA: ItemInstance,
