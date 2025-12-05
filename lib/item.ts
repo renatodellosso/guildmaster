@@ -1,4 +1,4 @@
-import { ItemId } from "./content/items";
+import { ItemId, items } from "./content/items";
 import { CreatureProvider } from "./creature";
 
 export type ItemDefinition = {
@@ -41,4 +41,12 @@ export function areItemsEqual(
   }
 
   return true;
+}
+
+export function isEquipment(item: ItemInstance): boolean {
+  if (!(item.definitionId in items)) {
+    return false;
+  }
+  const def = items[item.definitionId];
+  return "slot" in def;
 }

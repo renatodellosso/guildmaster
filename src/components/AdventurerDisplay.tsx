@@ -1,12 +1,14 @@
 import { activities } from "@/lib/content/activities";
 import { AdventurerInstance } from "@/lib/creature";
 import { getXpForNextLevel, getMaxHealth, getSkill } from "@/lib/creatureUtils";
-import { formatInt } from "@/lib/format";
-import { getFromOptionalFunc } from "@/lib/utilTypes";
+import { formatInt, titleCase } from "@/lib/format";
+import { Context, getFromOptionalFunc } from "@/lib/utilTypes";
 import { useEffect, useState } from "react";
-import { Context } from "vm";
 import { LevelUpMenu } from "./menus/LevelUpMenu";
 import { SkillId } from "@/lib/skills";
+import { EquipmentDefinition, EquipmentSlot, isEquipment } from "@/lib/item";
+import { items } from "@/lib/content/items";
+import { addToInventory, removeFromInventory } from "@/lib/inventory";
 
 export function AdventurerDisplay({
   adventurer,
@@ -58,7 +60,7 @@ export function AdventurerDisplay({
         )}
       </div>
       <div>
-        Skills:
+        <strong>Skills:</strong>
         <ul>
           {Object.values(SkillId).map((skillId) => (
             <li key={skillId}>
@@ -66,6 +68,28 @@ export function AdventurerDisplay({
             </li>
           ))}
         </ul>
+      </div>
+      <div className="w-1/8">
+        <strong>Equipment:</strong>
+        <table>
+          <thead>
+            <tr>
+              <th>Slot</th>
+              <th>Item</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.values(EquipmentSlot).map((slot) => (
+              <EquipmentSelect
+                adventurer={adventurer}
+                slot={slot}
+                context={context}
+                /* Key needs to include adventurer ID so it always rerenders */
+                key={`equipment-select-${slot}-${String(adventurer.id)}`}
+              />
+            ))}
+          </tbody>
+        </table>
       </div>
     </>
   );
@@ -75,5 +99,104 @@ export function AdventurerDisplay({
       <h2>{adventurer.name}</h2>
       {body}
     </div>
+  );
+}
+
+function EquipmentSelect({
+  adventurer,
+  slot,
+  context,
+}: {
+  adventurer: AdventurerInstance;
+  slot: EquipmentSlot;
+  context: Context;
+}) {
+  console.log(
+    "Rendering EquipmentSelect for slot:",
+    slot,
+    "on",
+    adventurer.name
+  );
+
+  const availableEquipment = context.game.inventory
+    .filter(isEquipment)
+    .filter((item) => {
+      const def = items[item.definitionId] as EquipmentDefinition;
+      return def.slot === slot;
+    });
+
+  function handleChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    const value = event.target.value;
+    console.log("Selected value:", value);
+    if (value === "none") {
+      if (slot in adventurer.equipment && adventurer.equipment[slot]) {
+        addToInventory(context.game.inventory, {
+          ...adventurer.equipment[slot]!,
+          amount: 1,
+        });
+        delete adventurer.equipment[slot];
+
+        context.updateGameState();
+      }
+      return;
+    }
+
+    const index = parseInt(value);
+    if (index === -1) {
+      return;
+    }
+
+    if (slot in adventurer.equipment && adventurer.equipment[slot]) {
+      addToInventory(context.game.inventory, {
+        ...adventurer.equipment[slot]!,
+        amount: 1,
+      });
+    }
+
+    adventurer.equipment[slot] = {
+      ...availableEquipment[index],
+      amount: 1,
+    };
+
+    removeFromInventory(context.game.inventory, {
+      ...availableEquipment[index],
+      amount: 1,
+    });
+
+    context.updateGameState();
+  }
+
+  return (
+    <tr>
+      <td>{titleCase(slot)}:</td>
+      <td>
+        <select
+          onChange={handleChange}
+          defaultValue={adventurer.equipment[slot] ? -1 : undefined}
+          className="min-w-full"
+        >
+          <option value={"none"}>None</option>
+          {slot in adventurer.equipment && adventurer.equipment[slot] && (
+            <option value={-1}>
+              {
+                (
+                  items[
+                    adventurer.equipment[slot].definitionId
+                  ] as EquipmentDefinition
+                )?.name
+              }
+            </option>
+          )}
+          {availableEquipment.map((item, index) => {
+            const def = items[item.definitionId] as EquipmentDefinition;
+            return (
+              <option value={index} key={index}>
+                {def.name}
+              </option>
+            );
+          })}
+        </select>
+      </td>
+    </tr>
   );
 }

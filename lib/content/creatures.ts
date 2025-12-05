@@ -38,7 +38,7 @@ const rawCreatures = {
   goblin: {
     name: "Goblin",
     maxHealth: 80,
-    xpValue: 20,
+    xpValue: 50,
     skills: {
       [SkillId.Magic]: 1,
     },
@@ -50,7 +50,7 @@ const rawCreatures = {
           item: { definitionId: "coin", amount: [1, 5] },
         },
         {
-          weight: 0.1,
+          weight: 9.1,
           item: { definitionId: "shieldBauble", amount: 1 },
         },
       ]),

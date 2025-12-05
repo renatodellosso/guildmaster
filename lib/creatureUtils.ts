@@ -94,7 +94,7 @@ export function onDie(
     for (const enemyId of enemies.creatures) {
       const enemy = getCreature(enemyId, gameContext);
       if ("xp" in enemy && typeof enemy.xp === "number") {
-        enemy.xp += xpValue;
+        enemy.xp += xpValue / enemies.creatures.length;
       }
     }
   }
