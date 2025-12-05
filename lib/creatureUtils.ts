@@ -1,23 +1,56 @@
 import { creatures } from "./content/creatures";
-import { CreatureInstance } from "./creature";
+import { items } from "./content/items";
+import {
+  AdventurerInstance,
+  CreatureInstance,
+  CreatureProvider,
+} from "./creature";
 import { rollDrops } from "./drops";
 import { Expedition } from "./expedition";
 import { GameContext } from "./gameContext";
 import { addToInventory } from "./inventory";
+import { EquipmentDefinition } from "./item";
 import { SkillId } from "./skills";
 import { chooseRandom, getCreature } from "./utils";
 import { getFromOptionalFunc } from "./utilTypes";
+
+function getProviders(creature: CreatureInstance): CreatureProvider[] {
+  const providers: CreatureProvider[] = [creatures[creature.definitionId]];
+
+  if ("equipment" in creature && typeof creature.equipment === "object") {
+    const equipment = creature.equipment as AdventurerInstance["equipment"];
+    for (const itemInstance of Object.values(equipment)) {
+      if (!itemInstance) continue;
+
+      const equipmentDef = items[
+        itemInstance.definitionId
+      ] as EquipmentDefinition;
+
+      providers.push(equipmentDef);
+    }
+  }
+
+  return providers;
+}
 
 export function getMaxHealth(
   creature: CreatureInstance,
   gameContext: GameContext
 ): number {
-  let maxHp = getFromOptionalFunc(
-    creatures[creature.definitionId].maxHealth,
-    creature,
-    0,
-    gameContext
-  );
+  const providers = getProviders(creature);
+
+  let maxHp = 0;
+
+  for (const provider of providers) {
+    if (provider.maxHealth) {
+      maxHp += getFromOptionalFunc(
+        provider.maxHealth,
+        creature,
+        maxHp,
+        gameContext
+      );
+    }
+  }
 
   maxHp += 5 * getSkill(SkillId.Endurance, creature);
 
@@ -32,15 +65,19 @@ export function getHealthRegen(
   creature: CreatureInstance,
   gameContext: GameContext
 ): number {
+  const providers = getProviders(creature);
+
   let regen = 1;
 
-  if (creatures[creature.definitionId].healthRegenWhileResting) {
-    regen = getFromOptionalFunc(
-      creatures[creature.definitionId].healthRegenWhileResting!,
-      creature,
-      regen,
-      gameContext
-    );
+  for (const provider of providers) {
+    if (provider.healthRegen) {
+      regen += getFromOptionalFunc(
+        provider.healthRegen,
+        creature,
+        regen,
+        gameContext
+      );
+    }
   }
 
   return regen;
@@ -153,6 +190,15 @@ export function randomName(): string {
     "lin",
     "dus",
     "fen",
+    "ia",
+    "is",
+    "ara",
+    "ora",
+    "ine",
+    "isa",
+    "isia",
+    "iri",
+    "i",
   ];
 
   let name = chooseRandom(prefixes);

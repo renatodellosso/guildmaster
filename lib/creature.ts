@@ -11,10 +11,7 @@ import { Id, MakeRequired, OptionalFunc } from "./utilTypes";
 
 export type CreatureProvider = {
   maxHealth?: OptionalFunc<number, [CreatureInstance, number, GameContext]>;
-  healthRegenWhileResting?: OptionalFunc<
-    number,
-    [CreatureInstance, number, GameContext]
-  >;
+  healthRegen?: OptionalFunc<number, [CreatureInstance, number, GameContext]>;
 };
 
 type DefProvider = MakeRequired<CreatureProvider, "maxHealth">;
