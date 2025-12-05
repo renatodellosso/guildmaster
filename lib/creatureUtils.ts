@@ -202,8 +202,27 @@ export function randomName(): string {
     "Rag",
     "Dru",
     "Kal",
+    "An",
+    "El",
+    "Il",
+    "Es",
+    "Or",
+    "En",
   ];
-  const middles = ["an", "en", "in", "or", "ur", "el", "al", "ir", "ar", "es"];
+  const middles = [
+    "an",
+    "en",
+    "in",
+    "or",
+    "ur",
+    "el",
+    "al",
+    "ir",
+    "ar",
+    "es",
+    "end",
+    "ist",
+  ];
   const suffixes = [
     "thar",
     "gorn",
@@ -226,6 +245,8 @@ export function randomName(): string {
     "i",
     "a",
     "s",
+    "ist",
+    "isk",
   ];
 
   let name = chooseRandom(prefixes);
