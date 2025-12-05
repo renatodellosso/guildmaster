@@ -18,15 +18,27 @@ export function OfflineProgressWindow({
     const ticksToProcess = Math.floor(deltaSeconds);
     setTicksRemaining(ticksToProcess);
 
+    const blockSize = 1000; // Number of ticks to process per block
+
     let ticksProcessed = 0;
     function processTick() {
       if (ticksProcessed < ticksToProcess) {
         tick(context.game);
         context.updateGameState();
+      } else {
+        context.updateGameState();
+        finish();
+      }
+    }
 
+    function processBlock() {
+      for (let i = 0; i < blockSize && ticksProcessed < ticksToProcess; i++) {
+        tick(context.game);
         ticksProcessed++;
-        setTicksRemaining(ticksToProcess - ticksProcessed);
-        const id = setTimeout(processTick, 0); // Yield to the main thread
+      }
+      setTicksRemaining(ticksToProcess - ticksProcessed);
+      if (ticksProcessed < ticksToProcess) {
+        const id = setTimeout(processBlock, 0); // Yield to the main thread
         setTimeoutId(id);
       } else {
         context.updateGameState();
@@ -34,15 +46,21 @@ export function OfflineProgressWindow({
       }
     }
 
-    processTick();
+    processBlock();
   }, []);
+
+  const hoursRemaining = Math.floor(ticksRemaining / 3600);
+  const minutesRemaining = Math.floor((ticksRemaining % 3600) / 60);
+  const secondsRemaining = ticksRemaining % 60;
 
   return (
     <div>
       <h1>Processing Offline Progress...</h1>
       <div>
         Ticks Remaining:{" "}
-        {ticksRemaining >= 0 ? ticksRemaining : "Calculating..."}
+        {ticksRemaining >= 0
+          ? `${ticksRemaining} (${hoursRemaining}h ${minutesRemaining}m ${secondsRemaining}s)`
+          : "Calculating..."}
       </div>
       <button
         onClick={() => {
