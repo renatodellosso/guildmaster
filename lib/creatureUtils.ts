@@ -224,6 +224,8 @@ export function randomName(): string {
     "isia",
     "iri",
     "i",
+    "a",
+    "s",
   ];
 
   let name = chooseRandom(prefixes);

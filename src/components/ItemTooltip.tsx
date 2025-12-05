@@ -45,6 +45,7 @@ export function ItemTooltip({
       <div>
         Value: {itemDef.value * itemInstance.amount} ({itemDef.value} each)
       </div>
+      <p>{itemDef.description}</p>
       {equipmentDetails}
     </>
   );
