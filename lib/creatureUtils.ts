@@ -16,12 +16,12 @@ import { SkillId } from "./skills";
 import { chooseRandom, getCreature } from "./utils";
 import { getFromOptionalFunc } from "./utilTypes";
 
-type ProviderWithSource = {
+export type ProviderWithSource = {
   def: CreatureProvider;
   source: CreatureProviderSource;
 };
 
-function getProviders(creature: CreatureInstance): ProviderWithSource[] {
+export function getProviders(creature: CreatureInstance): ProviderWithSource[] {
   const providers: ProviderWithSource[] = [
     { def: creatures[creature.definitionId], source: creature },
   ];

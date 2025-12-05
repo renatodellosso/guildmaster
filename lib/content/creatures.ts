@@ -1,3 +1,4 @@
+import { AbilityId } from "./abilityId";
 import { chooseRandomLivingTarget } from "../combat";
 import { CreatureDefinition } from "../creature";
 import { getSkill, takeDamage } from "../creatureUtils";
@@ -19,6 +20,7 @@ const rawCreatures = {
     skills: {},
     abilities: [
       {
+        id: AbilityId.Punch,
         name: "Punch",
         description: "Punch an enemy",
         activate: (caster, targets, expedition, gameContext) => {
@@ -64,6 +66,7 @@ const rawCreatures = {
     },
     abilities: [
       {
+        id: AbilityId.Slash,
         name: "Slash",
         description: "Slash an enemy",
         activate: (caster, targets, expedition, gameContext) => {

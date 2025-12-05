@@ -1,5 +1,6 @@
-import { creatures } from "./content/creatures";
-import { CreatureInstance } from "./creature";
+import { AbilityId } from "./content/abilityId";
+import { CreatureInstance, CreatureProviderSource } from "./creature";
+import { getProviders } from "./creatureUtils";
 import { Expedition } from "./expedition";
 import { GameContext } from "./gameContext";
 import { getFromOptionalFunc, Id, OptionalFunc } from "./utilTypes";
@@ -22,9 +23,12 @@ export type AbilityFuncParamsWithoutTargets = [
   caster: CreatureInstance,
   expedition: Expedition,
   gameContext: GameContext,
+  source: CreatureProviderSource,
 ];
 
 export type Ability = {
+  id: AbilityId;
+  overridePriority?: number;
   name: string;
   description: string;
   activate: (...args: AbilityFuncParams) => void;
@@ -35,33 +39,61 @@ export type Ability = {
   priority: OptionalFunc<AbilityPriority, AbilityFuncParams>;
 };
 
+export type AbilityWithSource = {
+  ability: Ability;
+  source: CreatureProviderSource;
+};
+
 export function getAbilities(
   creature: CreatureInstance,
   expedition: Expedition,
   gameContext: GameContext
-): Ability[] {
-  const creatureDef = creatures[creature.definitionId];
+): AbilityWithSource[] {
+  const providers = getProviders(creature);
 
-  if (!creatureDef.abilities) {
-    return [];
+  const abilities: {
+    [id in AbilityId]?: AbilityWithSource;
+  } = {};
+
+  for (const provider of providers) {
+    if (!provider.def.abilities) {
+      continue;
+    }
+
+    const providerAbilities = getFromOptionalFunc(
+      provider.def.abilities,
+      creature,
+      expedition,
+      gameContext,
+      provider.source
+    );
+
+    for (const ability of providerAbilities) {
+      const currPriority =
+        abilities[ability.id]?.ability.overridePriority ?? -Infinity;
+      const newPriority = ability.overridePriority ?? -Infinity;
+
+      if (abilities[ability.id] && newPriority <= currPriority) {
+        continue;
+      }
+
+      abilities[ability.id] = {
+        ability,
+        source: provider.source,
+      };
+    }
   }
 
-  return getFromOptionalFunc(
-    creatureDef.abilities,
-    creature,
-    expedition,
-    gameContext
-  );
+  return Object.values(abilities);
 }
-
 export function getCastableAbilities(
   creature: CreatureInstance,
   expedition: Expedition,
   gameContext: GameContext
-): Ability[] {
+): AbilityWithSource[] {
   const allAbilities = getAbilities(creature, expedition, gameContext);
 
-  return allAbilities.filter((ability) =>
+  return allAbilities.filter(({ ability }) =>
     getFromOptionalFunc(
       ability.canActivate,
       creature,
@@ -73,17 +105,17 @@ export function getCastableAbilities(
 }
 
 export function getHighestPriorityAbilities(
-  abilities: Ability[],
+  abilities: AbilityWithSource[],
   caster: CreatureInstance,
   targets: CreatureInstance[],
   expedition: Expedition,
   gameContext: GameContext
-): Ability[] {
+): AbilityWithSource[] {
   let highestPriority = -Infinity;
 
   const abilitiesWithPriorities = abilities.map((ability) => {
     const priority = getFromOptionalFunc(
-      ability.priority,
+      ability.ability.priority,
       caster,
       targets,
       expedition,
@@ -102,7 +134,7 @@ export function getHighestPriorityAbilities(
     .map(({ ability }) => ability);
 }
 
-export function selectAbilityFromList(abilities: Ability[]) {
+export function selectAbilityFromList(abilities: AbilityWithSource[]) {
   if (abilities.length === 0) {
     return undefined;
   }
@@ -113,7 +145,7 @@ export function selectAbilityForCreature(
   creature: CreatureInstance,
   expedition: Expedition,
   gameContext: GameContext
-): Ability | undefined {
+): { ability: Ability; source: CreatureProviderSource } | undefined {
   const castableAbilities = getCastableAbilities(
     creature,
     expedition,

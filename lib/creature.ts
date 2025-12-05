@@ -26,6 +26,7 @@ export type CreatureProvider = {
       [CreatureInstance, number, GameContext, CreatureProviderSource]
     >;
   }>;
+  abilities?: OptionalFunc<Ability[], AbilityFuncParamsWithoutTargets>;
 };
 
 type DefProvider = MakeRequired<CreatureProvider, "maxHealth">;
@@ -34,7 +35,6 @@ export type CreatureDefinition = DefProvider & {
   id: CreatureDefId;
   name: string;
   skills: SkillList<[CreatureInstance]>;
-  abilities?: OptionalFunc<Ability[], AbilityFuncParamsWithoutTargets>;
   drops?: Drops;
   xpValue?: OptionalFunc<number, [CreatureInstance, GameContext]>;
 };

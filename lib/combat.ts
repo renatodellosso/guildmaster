@@ -50,13 +50,18 @@ function takeTurnForCreature(
     return;
   }
 
-  const rawTargets = ability.selectTargets(creature, expedition, gameContext);
+  const rawTargets = ability.ability.selectTargets(
+    creature,
+    expedition,
+    gameContext,
+    ability.source
+  );
 
   const targets = rawTargets.map((targetOrId) =>
     getCreature(targetOrId, gameContext)
   );
 
-  ability.activate(creature, targets, expedition, gameContext);
+  ability.ability.activate(creature, targets, expedition, gameContext);
 }
 
 function isEntireSideDead(side: CombatSide, gameContext: GameContext): boolean {

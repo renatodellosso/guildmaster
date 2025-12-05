@@ -7,17 +7,25 @@ import {
 } from "@/lib/combat";
 import { getFromOptionalFunc, Id } from "@/lib/utilTypes";
 import { describe, expect, it, vi } from "vitest";
-import { buildAdventurerInstance, buildCombatSide, buildCreatureInstance, buildGameContext, failTest } from "../testUtils";
+import {
+  buildAdventurerInstance,
+  buildCombatSide,
+  buildCreatureInstance,
+  buildGameContext,
+  failTest,
+} from "../testUtils";
 import { AdventurerInstance, CreatureInstance } from "@/lib/creature";
 import { CreatureDefId, creatures } from "@/lib/content/creatures";
 import { GameContext } from "@/lib/gameContext";
 import { AbilityPriority } from "@/lib/ability";
 import { Expedition } from "@/lib/expedition";
+import { AbilityId } from "@/lib/content/abilityId";
 
 describe(takeCombatTurn.name, () => {
   it("takes a turn for each creature", () => {
     creatures.human.abilities = [
       {
+        id: AbilityId.Punch,
         name: "Basic Attack",
         activate: vi.fn(),
         description: "",
@@ -81,7 +89,8 @@ describe(takeCombatTurn.name, () => {
         {
           combat,
         } as unknown as Expedition,
-        gameContext
+        gameContext,
+        creature as CreatureInstance
       );
 
       expect(abilities).toBeDefined();
@@ -128,6 +137,7 @@ describe(takeCombatTurn.name, () => {
 
     creatures.human.abilities = [
       {
+        id: AbilityId.Punch,
         name: "Basic Attack",
         activate: vi.fn((creature) => {
           actionOrder.push(creature.id);
@@ -187,6 +197,7 @@ describe(takeCombatTurn.name, () => {
 
     creatures.human.abilities = [
       {
+        id: AbilityId.Punch,
         name: "Basic Attack",
         activate: vi.fn((creature) => {
           actionOrder.push(creature.id);

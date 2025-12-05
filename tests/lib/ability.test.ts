@@ -1,17 +1,19 @@
 import {
   Ability,
   AbilityPriority,
+  AbilityWithSource,
   getCastableAbilities,
   getHighestPriorityAbilities,
   selectAbilityForCreature,
   selectAbilityFromList,
 } from "@/lib/ability";
 import { describe, expect, expectTypeOf, it } from "vitest";
-import { CreatureInstance } from "@/lib/creature";
+import { CreatureInstance, CreatureProviderSource } from "@/lib/creature";
 import { creatures } from "@/lib/content/creatures";
 import { GameContext } from "@/lib/gameContext";
 import { Expedition } from "@/lib/expedition";
 import { buildCreatureInstance } from "../testUtils";
+import { AbilityId } from "@/lib/content/abilityId";
 
 describe("Ability", () => {
   it("allows arbitrary priority functions", () => {
@@ -40,9 +42,10 @@ describe(getCastableAbilities.name, () => {
   it("returns only castable abilities", () => {
     type CastableAbilities = ReturnType<typeof getCastableAbilities>;
 
-    expectTypeOf<CastableAbilities>().toEqualTypeOf<Ability[]>();
+    expectTypeOf<CastableAbilities>().toEqualTypeOf<AbilityWithSource[]>();
 
-    const ability1 = {
+    const ability1: Ability = {
+      id: AbilityId.Punch,
       name: "Castable Ability",
       description: "A castable ability",
       activate: () => {},
@@ -51,7 +54,8 @@ describe(getCastableAbilities.name, () => {
       priority: 50,
     };
 
-    const ability2 = {
+    const ability2: Ability = {
+      id: AbilityId.Punch,
       name: "Non-Castable Ability",
       description: "A non-castable ability",
       activate: () => {},
@@ -73,13 +77,14 @@ describe(getCastableAbilities.name, () => {
       {} as GameContext
     );
 
-    expect(castableAbilities).toEqual([ability1]);
+    expect(castableAbilities.map((a) => a.ability)).toEqual([ability1]);
   });
 });
 
 describe(getHighestPriorityAbilities.name, () => {
   it("returns abilities with the highest priority", () => {
-    const ability1 = {
+    const ability1: Ability = {
+      id: AbilityId.Punch,
       name: "Ability 1",
       description: "First ability",
       activate: () => {},
@@ -88,7 +93,8 @@ describe(getHighestPriorityAbilities.name, () => {
       priority: AbilityPriority.High,
     };
 
-    const ability2 = {
+    const ability2: Ability = {
+      id: AbilityId.Punch,
       name: "Ability 2",
       description: "Second ability",
       activate: () => {},
@@ -97,7 +103,8 @@ describe(getHighestPriorityAbilities.name, () => {
       priority: AbilityPriority.Medium,
     };
 
-    const ability3 = {
+    const ability3: Ability = {
+      id: AbilityId.Punch,
       name: "Ability 3",
       description: "Third ability",
       activate: () => {},
@@ -106,7 +113,10 @@ describe(getHighestPriorityAbilities.name, () => {
       priority: AbilityPriority.High,
     };
 
-    const abilities = [ability1, ability2, ability3];
+    const abilities = [ability1, ability2, ability3].map((ability) => ({
+      ability,
+      source: undefined as unknown as CreatureProviderSource,
+    }));
 
     const highestPriorityAbilities = getHighestPriorityAbilities(
       abilities,
@@ -116,13 +126,17 @@ describe(getHighestPriorityAbilities.name, () => {
       {} as GameContext
     );
 
-    expect(highestPriorityAbilities).toEqual([ability1, ability3]);
+    expect(highestPriorityAbilities.map((a) => a.ability)).toEqual([
+      ability1,
+      ability3,
+    ]);
   });
 });
 
 describe(selectAbilityFromList.name, () => {
   it("selects an ability from a list", () => {
-    const ability1 = {
+    const ability1: Ability = {
+      id: AbilityId.Punch,
       name: "Ability 1",
       description: "First ability",
       activate: () => {},
@@ -131,7 +145,8 @@ describe(selectAbilityFromList.name, () => {
       priority: AbilityPriority.High,
     };
 
-    const ability2 = {
+    const ability2: Ability = {
+      id: AbilityId.Punch,
       name: "Ability 2",
       description: "Second ability",
       activate: () => {},
@@ -140,15 +155,18 @@ describe(selectAbilityFromList.name, () => {
       priority: AbilityPriority.High,
     };
 
-    const abilities = [ability1, ability2];
+    const abilities = [ability1, ability2].map((ability) => ({
+      ability,
+      source: undefined as unknown as CreatureProviderSource,
+    }));
 
     const selectedAbility = selectAbilityFromList(abilities);
 
-    expect(abilities).toContain(selectedAbility!);
+    expect(abilities).toContain(selectedAbility);
   });
 
   it("returns undefined for an empty list", () => {
-    const abilities: Ability[] = [];
+    const abilities: AbilityWithSource[] = [];
 
     const selectedAbility = selectAbilityFromList(abilities);
 
@@ -158,7 +176,8 @@ describe(selectAbilityFromList.name, () => {
 
 describe(selectAbilityForCreature.name, () => {
   it("selects an ability for a creature", () => {
-    const ability1 = {
+    const ability1: Ability = {
+      id: AbilityId.Punch,
       name: "Ability 1",
       description: "First ability",
       activate: () => {},
@@ -167,7 +186,8 @@ describe(selectAbilityForCreature.name, () => {
       priority: AbilityPriority.High,
     };
 
-    const ability2 = {
+    const ability2: Ability = {
+      id: AbilityId.Punch,
       name: "Ability 2",
       description: "Second ability",
       activate: () => {},
@@ -191,8 +211,8 @@ describe(selectAbilityForCreature.name, () => {
       {} as GameContext
     );
 
-    expectTypeOf(selectedAbility).toExtend<Ability | undefined>();
-    expect(abilities).toContain(selectedAbility!);
+    expectTypeOf(selectedAbility).toExtend<AbilityWithSource | undefined>();
+    expect(abilities).toContain(selectedAbility!.ability);
   });
 
   it("returns undefined if the creature has no abilities", () => {
@@ -213,7 +233,8 @@ describe(selectAbilityForCreature.name, () => {
   });
 
   it("only selects castable abilities", () => {
-    const ability1 = {
+    const ability1: Ability = {
+      id: AbilityId.Punch,
       name: "Castable Ability",
       description: "A castable ability",
       activate: () => {},
@@ -222,7 +243,8 @@ describe(selectAbilityForCreature.name, () => {
       priority: AbilityPriority.High,
     };
 
-    const ability2 = {
+    const ability2: Ability = {
+      id: AbilityId.Punch,
       name: "Non-Castable Ability",
       description: "A non-castable ability",
       activate: () => {},
@@ -244,12 +266,13 @@ describe(selectAbilityForCreature.name, () => {
       {} as GameContext
     );
 
-    expectTypeOf(selectedAbility).toExtend<Ability | undefined>();
-    expect(selectedAbility).toEqual(ability1);
+    expectTypeOf(selectedAbility).toExtend<AbilityWithSource | undefined>();
+    expect(selectedAbility?.ability).toEqual(ability1);
   });
 
   it("only selects abilities with the highest priority", () => {
-    const ability1 = {
+    const ability1: Ability = {
+      id: AbilityId.Punch,
       name: "High Priority Ability",
       description: "A high priority ability",
       activate: () => {},
@@ -258,7 +281,8 @@ describe(selectAbilityForCreature.name, () => {
       priority: AbilityPriority.High,
     };
 
-    const ability2 = {
+    const ability2: Ability = {
+      id: AbilityId.Punch,
       name: "Low Priority Ability",
       description: "A low priority ability",
       activate: () => {},
@@ -280,7 +304,7 @@ describe(selectAbilityForCreature.name, () => {
       {} as GameContext
     );
 
-    expectTypeOf(selectedAbility).toExtend<Ability | undefined>();
-    expect(selectedAbility).toEqual(ability1);
+    expectTypeOf(selectedAbility).toExtend<AbilityWithSource | undefined>();
+    expect(selectedAbility?.ability).toEqual(ability1);
   });
 });
