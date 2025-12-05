@@ -2,7 +2,7 @@ import { items } from "@/lib/content/items";
 import { formatInt } from "@/lib/format";
 import { Inventory } from "@/lib/inventory";
 import { Context } from "@/lib/utilTypes";
-import { ItemTooltip } from "./ItemTooltip";
+import ItemTooltip from "./ItemTooltip";
 
 export default function InventoryDisplay({
   inventory,

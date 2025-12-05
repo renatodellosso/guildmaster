@@ -9,7 +9,9 @@ import { SkillId } from "@/lib/skills";
 import { EquipmentDefinition, EquipmentSlot, isEquipment } from "@/lib/item";
 import { items } from "@/lib/content/items";
 import { addToInventory, removeFromInventory } from "@/lib/inventory";
-import { ItemTooltip } from "./ItemTooltip";
+import ItemTooltip from "./ItemTooltip";
+import { getAbilities } from "@/lib/ability";
+import AbilityDescription from "./AbilityDescription";
 
 export function AdventurerDisplay({
   adventurer,
@@ -24,6 +26,8 @@ export function AdventurerDisplay({
   useEffect(() => {
     setLevelUpMenuOpen(false);
   }, [adventurer.id]);
+
+  const abilities = getAbilities(adventurer, undefined, context.game);
 
   const body = levelUpMenuOpen ? (
     <LevelUpMenu
@@ -85,6 +89,16 @@ export function AdventurerDisplay({
             ))}
           </tbody>
         </table>
+      </div>
+      <div>
+        <strong>Abilities:</strong>
+        {abilities.length === 0 && <p>No abilities.</p>}
+        {abilities.map((ability) => (
+          <AbilityDescription
+            ability={ability}
+            key={ability.ability.id}
+          />
+        ))}
       </div>
     </>
   );

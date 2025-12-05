@@ -5,8 +5,9 @@ import { ReactNode } from "react";
 import { Tooltip } from "./Tooltip";
 import { formatBonus, titleCase } from "@/lib/format";
 import { CreatureInstance } from "@/lib/creature";
+import AbilityDescription from "./AbilityDescription";
 
-export function ItemTooltip({
+export default function ItemTooltip({
   children,
   itemInstance,
   creature,
@@ -108,6 +109,16 @@ function EquipmentDetails({
     ...skills,
   };
 
+  const abilities =
+    equipmentDef.abilities &&
+    getFromOptionalFunc(
+      equipmentDef.abilities,
+      creature!,
+      undefined,
+      context.game,
+      itemInstance
+    );
+
   return (
     <>
       {Object.entries(stats).map(([statName, stat]) => {
@@ -118,6 +129,20 @@ function EquipmentDetails({
           </div>
         );
       })}
+      {abilities && (
+        <div>
+          <strong>Abilities:</strong>
+          {abilities.map((ability) => (
+            <AbilityDescription
+              ability={{
+                ability: ability,
+                source: itemInstance,
+              }}
+              key={ability.id}
+            />
+          ))}
+        </div>
+      )}
     </>
   );
 }

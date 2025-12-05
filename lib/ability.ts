@@ -15,13 +15,13 @@ export enum AbilityPriority {
 export type AbilityFuncParams = [
   caster: CreatureInstance,
   targets: CreatureInstance[],
-  expedition: Expedition,
+  expedition: Expedition | undefined,
   gameContext: GameContext,
 ];
 
 export type AbilityFuncParamsWithoutTargets = [
   caster: CreatureInstance,
-  expedition: Expedition,
+  expedition: Expedition | undefined,
   gameContext: GameContext,
   source: CreatureProviderSource,
 ];
@@ -46,7 +46,7 @@ export type AbilityWithSource = {
 
 export function getAbilities(
   creature: CreatureInstance,
-  expedition: Expedition,
+  expedition: Expedition | undefined,
   gameContext: GameContext
 ): AbilityWithSource[] {
   const providers = getProviders(creature);
