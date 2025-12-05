@@ -17,6 +17,59 @@ export const rawDungeons = {
         ],
         weight: 1,
       },
+      {
+        item: [
+          {
+            id: "bandit",
+            count: 2,
+          },
+        ],
+        weight: 1,
+      },
+      {
+        item: [
+          {
+            id: "goblin",
+            count: 1,
+          },
+          {
+            id: "bandit",
+            count: 1,
+          },
+        ],
+        weight: 1,
+      },
+      {
+        item: [
+          {
+            id: "bandit_archer",
+            count: 2,
+          },
+        ],
+        weight: 1,
+      },
+      {
+        item: [
+          {
+            id: "bandit_archer",
+            count: 3,
+          },
+        ],
+        weight: 1,
+      },
+      {
+        item: [
+          {
+            id: "bandit",
+            count: 1,
+          },
+          {
+            id: "bandit_archer",
+            count: 1,
+          },
+        ],
+        weight: 1,
+      },
     ]),
   },
 } satisfies RawRegistry<DungeonId, DungeonDefinition>;

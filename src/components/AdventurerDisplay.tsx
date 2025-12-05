@@ -141,17 +141,23 @@ export function AdventurerDisplay({
   const classList = (
     <span>
       (
-      {Object.entries(adventurer.classes).map(([classId, level]) => (
-        <ClassTooltip
-          key={classId}
-          classId={classId as ClassId}
-          creature={adventurer}
-          context={context}
-          level={level}
-        >
-          {classes[classId as ClassId].name} {level}
-        </ClassTooltip>
-      ))}
+      {Object.entries(adventurer.classes)
+        .map(([classId, level]) => (
+          <ClassTooltip
+            key={classId}
+            classId={classId as ClassId}
+            creature={adventurer}
+            context={context}
+            level={level}
+          >
+            {classes[classId as ClassId].name} {level}
+          </ClassTooltip>
+        ))
+        .reduce((prev, curr) => (
+          <>
+            {prev}, {curr}
+          </>
+        ))}
       )
     </span>
   );

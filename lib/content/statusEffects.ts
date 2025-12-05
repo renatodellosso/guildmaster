@@ -1,10 +1,10 @@
 import { getMaxHealth, takeDamage } from "../creatureUtils";
-import { DamageType } from "../damage";
+import { DamageType, DamageTypeGroups } from "../damage";
 import { formatPercent } from "../format";
 import { RawRegistry, finishRegistry } from "../registry";
 import { StatusEffectDefinition, StatusEffectInstance } from "../statusEffect";
 
-export type StatusEffectId = "poisoned";
+export type StatusEffectId = "poisoned" | "ward";
 
 const rawStatusEffects = {
   poisoned: {
@@ -25,6 +25,19 @@ const rawStatusEffects = {
         ],
         gameContext
       );
+    },
+  },
+  ward: {
+    name: "Ward",
+    description: (_creature, instance, _gameContext) =>
+      `Reduces incoming magic damage by ${formatPercent(
+        0.1 * instance.strength
+      )}.`,
+    resistances: (_creature, _gameContext, source) => {
+      return {
+        [DamageTypeGroups.All]:
+          1 - Math.pow(0.9, (source as StatusEffectInstance).strength),
+      };
     },
   },
 } satisfies RawRegistry<StatusEffectId, StatusEffectDefinition>;

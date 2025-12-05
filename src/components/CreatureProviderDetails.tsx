@@ -90,7 +90,7 @@ export default function CreatureProviderDetails({
           ))}
         </div>
       )}
-      {abilities && (
+      {abilities && abilities.length > 0 && (
         <div>
           <strong>Abilities:</strong>
           {abilities.map((ability) => (

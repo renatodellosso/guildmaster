@@ -10,7 +10,7 @@ export default function RosterMenu({ context }: { context: Context }) {
 
   return (
     <div>
-      <h1>Roster Menu</h1>
+      <h1>Roster</h1>
       <div className="flex">
         <div className="flex flex-col overflow-y-scroll">
           {Object.values(context.game.roster).map((creature) => {

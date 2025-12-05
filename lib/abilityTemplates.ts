@@ -2,6 +2,7 @@ import { Ability } from "./ability";
 import { AbilityPriority } from "./abilityPriority";
 import { chooseRandomLivingTargetWithinRange } from "./combat";
 import { AbilityId } from "./content/abilityId";
+import { StatusEffectId } from "./content/statusEffects";
 import { CreatureInstance } from "./creature";
 import { getSkill, takeDamage } from "./creatureUtils";
 import { Damage } from "./damage";
@@ -74,6 +75,55 @@ export function attack(params: {
         `${caster.name} uses ${params!.name} on ${targets[0].name} for ${formatDamage(
           damageTaken
         )} damage.`
+      );
+    },
+    priority: params.priority,
+  };
+}
+
+export function applyStatusEffect(params: {
+  id: AbilityId;
+  name: string;
+  description: string;
+  statusEffectId: StatusEffectId;
+  duration: number;
+  strength?: number;
+  manaCost?: number;
+  priority?: AbilityPriority;
+  side: "ally" | "enemy";
+}): Ability {
+  params.manaCost = params.manaCost ?? 0;
+  params.priority = params.priority ?? AbilityPriority.Low;
+  params.strength = params.strength ?? 1;
+
+  return {
+    id: params.id,
+    name: params.name,
+    description: params.description,
+    canActivate: (caster) => caster.mana >= (params!.manaCost ?? 0),
+    selectTargets: (_caster, expedition, gameContext) => {
+      const potentialTargets =
+        params!.side === "ally"
+          ? expedition.combat.allies
+          : expedition.combat.enemies;
+      return chooseRandomLivingTargetWithinRange(
+        potentialTargets,
+        gameContext,
+        3
+      );
+    },
+    activate: (caster, targets, expedition) => {
+      if (targets.length === 0 || !targets[0]) return;
+
+      targets[0].statusEffects.push({
+        definitionId: params!.statusEffectId,
+        duration: params!.duration,
+        strength: params!.strength!,
+      });
+
+      addToExpeditionLog(
+        expedition,
+        `${caster.name} uses ${params!.name} on ${targets[0].name}, applying ${params!.statusEffectId} for ${params!.duration} turns.`
       );
     },
     priority: params.priority,

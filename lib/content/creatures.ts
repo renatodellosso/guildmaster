@@ -9,7 +9,7 @@ import { DamageType } from "../damage";
 import { attack } from "../abilityTemplates";
 import { chance } from "../utils";
 
-export type CreatureDefId = "human" | "goblin";
+export type CreatureDefId = "human" | "goblin" | "bandit" | "bandit_archer";
 
 const rawCreatures = {
   human: {
@@ -75,6 +75,76 @@ const rawCreatures = {
         },
       }),
     ],
+  },
+  bandit: {
+    name: "Bandit",
+    maxHealth: 80,
+    xpValue: 75,
+    skills: {
+      [SkillId.Melee]: 2,
+    },
+    abilities: [
+      attack({
+        id: AbilityId.Slash,
+        name: "Slash",
+        description: "Slash an enemy with a crude blade.",
+        damage: [
+          {
+            type: DamageType.Slashing,
+            amount: 12,
+          },
+        ],
+        range: 1,
+      }),
+    ],
+    drops: {
+      chance: 0.2,
+      table: new Table<DropTableEntry>([
+        {
+          weight: 1,
+          item: { definitionId: "longsword", amount: 1 },
+        },
+        {
+          weight: 4,
+          item: { definitionId: "coin", amount: [5, 15] },
+        },
+      ]),
+    },
+  },
+  bandit_archer: {
+    name: "Bandit Archer",
+    maxHealth: 70,
+    xpValue: 90,
+    skills: {
+      [SkillId.Ranged]: 3,
+    },
+    abilities: [
+      attack({
+        id: AbilityId.Arrow,
+        name: "Arrow Shot",
+        description: "Shoot an arrow at an enemy.",
+        damage: [
+          {
+            type: DamageType.Piercing,
+            amount: 15,
+          },
+        ],
+        range: 3,
+      }),
+    ],
+    drops: {
+      chance: 0.25,
+      table: new Table<DropTableEntry>([
+        {
+          weight: 1,
+          item: { definitionId: "shortbow", amount: 1 },
+        },
+        {
+          weight: 3,
+          item: { definitionId: "coin", amount: [10, 20] },
+        },
+      ]),
+    },
   },
 } satisfies RawRegistry<Id, CreatureDefinition>;
 

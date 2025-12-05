@@ -1,5 +1,5 @@
 import { AbilityPriority } from "../abilityPriority";
-import { attack } from "../abilityTemplates";
+import { applyStatusEffect, attack } from "../abilityTemplates";
 import { ClassDefinition } from "../class";
 import { getSkill } from "../creatureUtils";
 import { DamageType } from "../damage";
@@ -7,7 +7,7 @@ import { finishRegistry, RawRegistry } from "../registry";
 import { SkillId } from "../skills";
 import { AbilityId } from "./abilityId";
 
-export type ClassId = "thug" | "wizard";
+export type ClassId = "thug" | "wizard" | "abjurer";
 
 const rawClasses = {
   thug: {
@@ -50,6 +50,33 @@ const rawClasses = {
         skill: SkillId.Magic,
       }),
     ],
+  },
+  abjurer: {
+    name: "Abjurer",
+    description:
+      "A protective spellcaster who specializes in defensive magic and wards.",
+    canSelect: (creature, gameContext) =>
+      getSkill(SkillId.Endurance, creature, gameContext) >= 2 &&
+      creature.classes["wizard"] !== undefined &&
+      creature.classes["wizard"] > 1,
+    maxHealth: (creature, _prev, _gameContext, source) =>
+      (source as number) * 3 +
+      getSkill(SkillId.Magic, creature, _gameContext) * 5,
+    abilities: (_creature, _prev, _gameContext, source) =>
+      (source as number) >= 2
+        ? [
+            applyStatusEffect({
+              id: AbilityId.Ward,
+              name: "Ward",
+              description:
+                "Create a magical ward that reduces incoming magic damage.",
+              statusEffectId: "ward",
+              duration: 2 + Math.floor((source as number) / 2),
+              manaCost: 8,
+              side: "ally",
+            }),
+          ]
+        : [],
   },
 } satisfies RawRegistry<ClassId, ClassDefinition>;
 

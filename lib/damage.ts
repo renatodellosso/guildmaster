@@ -14,6 +14,7 @@ export enum DamageType {
 }
 
 export enum DamageTypeGroups {
+  All = "all",
   Physical = "physical",
   Elemental = "elemental",
   Magical = "magical",
@@ -93,6 +94,10 @@ export function matchesDamageType(
   damageType: DamageType,
   filterType: DamageTypeOrGroup
 ): boolean {
+  if (filterType === DamageTypeGroups.All) {
+    return true;
+  }
+
   if (damageType === filterType) {
     return true;
   }
