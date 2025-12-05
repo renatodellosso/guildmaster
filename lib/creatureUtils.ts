@@ -1,7 +1,9 @@
-import { Combat } from "./combat";
 import { creatures } from "./content/creatures";
 import { CreatureInstance } from "./creature";
+import { rollDrops } from "./drops";
+import { Expedition } from "./expedition";
 import { GameContext } from "./gameContext";
+import { addToInventory } from "./inventory";
 import { SkillId } from "./skills";
 import { chooseRandom, getCreature } from "./utils";
 import { getFromOptionalFunc } from "./utilTypes";
@@ -26,7 +28,7 @@ export function getMaxHealth(
   return maxHp;
 }
 
-export function getHealthRegenWhileResting(
+export function getHealthRegen(
   creature: CreatureInstance,
   gameContext: GameContext
 ): number {
@@ -59,40 +61,49 @@ export function takeDamage(
   creature: CreatureInstance,
   amount: number,
   gameContext: GameContext,
-  combat?: Combat
+  expedition?: Expedition
 ): void {
   const originalHp = creature.hp;
 
   creature.hp = Math.max(creature.hp - amount, 0);
 
   if (originalHp > 0 && creature.hp === 0) {
-    onDie(creature, gameContext, combat);
+    onDie(creature, gameContext, expedition);
   }
 }
 
 export function onDie(
   creature: CreatureInstance,
   gameContext: GameContext,
-  combat?: Combat
+  expedition?: Expedition
 ): void {
   const def = creatures[creature.definitionId];
   const xpValue = def.xpValue
     ? getFromOptionalFunc(def.xpValue, creature, gameContext)
     : 0;
 
-  if (!xpValue || !combat) return;
+  if (!expedition) return;
 
-  // Find other side of combat
-  const enemies = combat.allies.creatures.includes(creature)
-    ? combat.enemies
-    : combat.allies;
+  if (xpValue) {
+    // Find other side of combat
+    const enemies = expedition.combat.allies.creatures.includes(creature)
+      ? expedition.combat.enemies
+      : expedition.combat.allies;
 
-  // Distribute XP to all alive creatures on other side
-  for (const enemyId of enemies.creatures) {
-    const enemy = getCreature(enemyId, gameContext);
-    if ("xp" in enemy && typeof enemy.xp === "number") {
-      enemy.xp += xpValue;
+    // Distribute XP to all alive creatures on other side
+    for (const enemyId of enemies.creatures) {
+      const enemy = getCreature(enemyId, gameContext);
+      if ("xp" in enemy && typeof enemy.xp === "number") {
+        enemy.xp += xpValue;
+      }
     }
+  }
+
+  if (def.drops) {
+    const drops = def.drops;
+    const droppedItems = rollDrops(drops);
+
+    addToInventory(expedition.inventory, droppedItems);
   }
 }
 

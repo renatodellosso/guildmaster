@@ -2,6 +2,7 @@ import { Ability, AbilityFuncParamsWithoutTargets } from "./ability";
 import { ActivityInstance } from "./activity";
 import { CreatureDefId, creatures } from "./content/creatures";
 import { getMaxHealth } from "./creatureUtils";
+import { Drops } from "./drops";
 import { GameContext } from "./gameContext";
 import { SkillList } from "./skills";
 import { randomId } from "./utils";
@@ -14,6 +15,7 @@ export type CreatureProvider = {
     [CreatureInstance, number, GameContext]
   >;
   xpValue?: OptionalFunc<number, [CreatureInstance, GameContext]>;
+  drops?: Drops;
 };
 
 type DefProvider = MakeRequired<CreatureProvider, "maxHealth">;

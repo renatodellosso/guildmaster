@@ -1,5 +1,5 @@
 import { ActivityDefinition } from "../activity";
-import { getHealthRegenWhileResting, heal } from "../creatureUtils";
+import { getHealthRegen, heal } from "../creatureUtils";
 import { finishRegistry, RawRegistry } from "../registry";
 import { dungeons } from "./dungeons";
 
@@ -8,10 +8,7 @@ export type ActivityId = "resting" | "onExpedition";
 const rawActivities = {
   resting: {
     description: "Resting",
-    tick: (creature, gameContext) => {
-      const regen = getHealthRegenWhileResting(creature, gameContext);
-      heal(creature, regen, gameContext);
-    },
+    healthRegenMultiplier: 2,
   },
   onExpedition: {
     description: (creature, gameContext) => {
@@ -25,6 +22,7 @@ const rawActivities = {
 
       return `On Expedition in ${dungeonName}`;
     },
+    healthRegenMultiplier: 0,
   },
 } satisfies RawRegistry<ActivityId, ActivityDefinition>;
 

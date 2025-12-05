@@ -2,12 +2,14 @@ import { Combat } from "./combat";
 import { DungeonId, dungeons } from "./content/dungeons";
 import { createCreatureInstance, CreatureInstance } from "./creature";
 import { GameContext } from "./gameContext";
+import { Inventory } from "./inventory";
 import { Id } from "./utilTypes";
 
 export type Expedition = {
   combat: Combat;
   dungeonId: DungeonId;
   party: Id[];
+  inventory: Inventory;
 };
 
 /**
@@ -55,16 +57,14 @@ export function createExpedition(
     };
   }
 
-  return {
+  const expedition: Expedition = {
     dungeonId,
     party,
-    combat: startCombat(
-      {
-        dungeonId,
-        party,
-        combat: {} as Combat,
-      },
-      gameContext
-    ),
+    inventory: { items: [] },
+    combat: undefined as unknown as Combat,
   };
+
+  expedition.combat = startCombat(expedition, gameContext);
+
+  return expedition;
 }

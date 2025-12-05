@@ -1,13 +1,13 @@
-type TableItem<T> = {
+export type TableEntry<T> = {
   weight: number;
   item: T;
 };
 
 export class Table<T> {
-  items: TableItem<T>[];
+  items: TableEntry<T>[];
   private totalWeight: number;
 
-  constructor(items: TableItem<T>[]) {
+  constructor(items: TableEntry<T>[]) {
     this.items = items;
     this.totalWeight = items.reduce((sum, item) => sum + item.weight, 0);
   }
@@ -16,10 +16,10 @@ export class Table<T> {
     const roll = Math.random() * this.totalWeight;
     let cumulativeWeight = 0;
 
-    for (const tableItem of this.items) {
-      cumulativeWeight += tableItem.weight;
+    for (const TableEntry of this.items) {
+      cumulativeWeight += TableEntry.weight;
       if (roll < cumulativeWeight) {
-        return tableItem.item;
+        return TableEntry.item;
       }
     }
 

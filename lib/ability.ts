@@ -1,6 +1,6 @@
-import { Combat } from "./combat";
 import { creatures } from "./content/creatures";
 import { CreatureInstance } from "./creature";
+import { Expedition } from "./expedition";
 import { GameContext } from "./gameContext";
 import { getFromOptionalFunc, Id, OptionalFunc } from "./utilTypes";
 
@@ -14,13 +14,13 @@ export enum AbilityPriority {
 export type AbilityFuncParams = [
   caster: CreatureInstance,
   targets: CreatureInstance[],
-  combat: Combat,
+  expedition: Expedition,
   gameContext: GameContext,
 ];
 
 export type AbilityFuncParamsWithoutTargets = [
   caster: CreatureInstance,
-  combat: Combat,
+  expedition: Expedition,
   gameContext: GameContext,
 ];
 
@@ -37,7 +37,7 @@ export type Ability = {
 
 export function getAbilities(
   creature: CreatureInstance,
-  combat: Combat,
+  expedition: Expedition,
   gameContext: GameContext
 ): Ability[] {
   const creatureDef = creatures[creature.definitionId];
@@ -49,20 +49,26 @@ export function getAbilities(
   return getFromOptionalFunc(
     creatureDef.abilities,
     creature,
-    combat,
+    expedition,
     gameContext
   );
 }
 
 export function getCastableAbilities(
   creature: CreatureInstance,
-  combat: Combat,
+  expedition: Expedition,
   gameContext: GameContext
 ): Ability[] {
-  const allAbilities = getAbilities(creature, combat, gameContext);
+  const allAbilities = getAbilities(creature, expedition, gameContext);
 
   return allAbilities.filter((ability) =>
-    getFromOptionalFunc(ability.canActivate, creature, [], combat, gameContext)
+    getFromOptionalFunc(
+      ability.canActivate,
+      creature,
+      [],
+      expedition,
+      gameContext
+    )
   );
 }
 
@@ -70,7 +76,7 @@ export function getHighestPriorityAbilities(
   abilities: Ability[],
   caster: CreatureInstance,
   targets: CreatureInstance[],
-  combat: Combat,
+  expedition: Expedition,
   gameContext: GameContext
 ): Ability[] {
   let highestPriority = -Infinity;
@@ -80,7 +86,7 @@ export function getHighestPriorityAbilities(
       ability.priority,
       caster,
       targets,
-      combat,
+      expedition,
       gameContext
     );
 
@@ -105,16 +111,20 @@ export function selectAbilityFromList(abilities: Ability[]) {
 
 export function selectAbilityForCreature(
   creature: CreatureInstance,
-  combat: Combat,
+  expedition: Expedition,
   gameContext: GameContext
 ): Ability | undefined {
-  const castableAbilities = getCastableAbilities(creature, combat, gameContext);
+  const castableAbilities = getCastableAbilities(
+    creature,
+    expedition,
+    gameContext
+  );
 
   const highestPriorityAbilities = getHighestPriorityAbilities(
     castableAbilities,
     creature,
     [],
-    combat,
+    expedition,
     gameContext
   );
 

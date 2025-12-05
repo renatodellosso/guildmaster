@@ -12,6 +12,7 @@ import { AdventurerInstance, CreatureInstance } from "@/lib/creature";
 import { CreatureDefId, creatures } from "@/lib/content/creatures";
 import { GameContext } from "@/lib/gameContext";
 import { AbilityPriority } from "@/lib/ability";
+import { Expedition } from "@/lib/expedition";
 
 function failTest() {
   throw new Error("This function should not have been called");
@@ -63,7 +64,14 @@ describe(takeCombatTurn.name, () => {
 
     const gameContext = buildGameContext([]);
 
-    takeCombatTurn(combat, failTest, failTest, gameContext);
+    takeCombatTurn(
+      {
+        combat,
+      } as Expedition,
+      failTest,
+      failTest,
+      gameContext
+    );
 
     for (const creature of [
       ...combat.allies.creatures,
@@ -74,7 +82,9 @@ describe(takeCombatTurn.name, () => {
       const abilities = getFromOptionalFunc(
         creatureDef.abilities,
         creature as CreatureInstance,
-        combat,
+        {
+          combat,
+        } as unknown as Expedition,
         gameContext
       );
 
@@ -86,7 +96,7 @@ describe(takeCombatTurn.name, () => {
       expect(ability!.activate).toHaveBeenCalledWith(
         creature,
         [],
-        combat,
+        { combat },
         gameContext
       );
     }
@@ -114,7 +124,7 @@ describe(takeCombatTurn.name, () => {
 
     const gameContext = buildGameContext([]);
 
-    takeCombatTurn(combat, failTest, failTest, gameContext);
+    takeCombatTurn({ combat } as Expedition, failTest, failTest, gameContext);
   });
 
   it("takes turns in order", () => {
@@ -166,7 +176,7 @@ describe(takeCombatTurn.name, () => {
 
     const gameContext = buildGameContext([]);
 
-    takeCombatTurn(combat, failTest, failTest, gameContext);
+    takeCombatTurn({ combat } as Expedition, failTest, failTest, gameContext);
 
     expect(actionOrder).toEqual([
       "instance-1",
@@ -250,7 +260,7 @@ describe(takeCombatTurn.name, () => {
 
     const gameContext = buildGameContext(roster);
 
-    takeCombatTurn(combat, failTest, failTest, gameContext);
+    takeCombatTurn({ combat } as Expedition, failTest, failTest, gameContext);
 
     expect(actionOrder).toEqual([
       "instance-1",

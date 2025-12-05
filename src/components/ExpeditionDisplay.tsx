@@ -1,3 +1,4 @@
+import { items } from "@/lib/content/items";
 import { CreatureInstance } from "@/lib/creature";
 import { getMaxHealth } from "@/lib/creatureUtils";
 import { Expedition } from "@/lib/expedition";
@@ -25,7 +26,11 @@ export default function ExpeditionDisplay({
         {combat.allies.creatures.map((creatureId) => {
           const creature = getCreature(creatureId, context.game);
           return (
-            <CreatureDisplay key={String(creature.id)} creature={creature} context={context} />
+            <CreatureDisplay
+              key={String(creature.id)}
+              creature={creature}
+              context={context}
+            />
           );
         })}
       </ul>
@@ -38,10 +43,24 @@ export default function ExpeditionDisplay({
         {combat.enemies.creatures.map((creatureId) => {
           const creature = getCreature(creatureId, context.game);
           return (
-            <CreatureDisplay key={String(creature.id)} creature={creature} context={context} />
+            <CreatureDisplay
+              key={String(creature.id)}
+              creature={creature}
+              context={context}
+            />
           );
         })}
       </ul>
+      <div>
+        <strong>Inventory:</strong>
+        <ul>
+          {expedition.inventory.items.map((item) => (
+            <li key={item.definitionId}>
+              {items[item.definitionId].name}: {formatInt(item.amount)}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }

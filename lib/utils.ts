@@ -6,6 +6,14 @@ export function chooseRandom<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+/**
+ * Inclusive
+ */
+export function randRange(range: [number, number]): number {
+  const [min, max] = range;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 export function randomId(): Id {
   return Math.random().toString(36).substring(2, 10);
 }

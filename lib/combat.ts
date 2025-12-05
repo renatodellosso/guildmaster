@@ -36,26 +36,26 @@ export type CombatSide = {
 
 function takeTurnForCreature(
   creature: CreatureInstance,
-  combat: Combat,
+  expedition: Expedition,
   gameContext: GameContext
 ) {
   if (creature.hp <= 0) {
     return;
   }
 
-  const ability = selectAbilityForCreature(creature, combat, gameContext);
+  const ability = selectAbilityForCreature(creature, expedition, gameContext);
 
   if (!ability) {
     return;
   }
 
-  const rawTargets = ability.selectTargets(creature, combat, gameContext);
+  const rawTargets = ability.selectTargets(creature, expedition, gameContext);
 
   const targets = rawTargets.map((targetOrId) =>
     getCreature(targetOrId, gameContext)
   );
 
-  ability.activate(creature, targets, combat, gameContext);
+  ability.activate(creature, targets, expedition, gameContext);
 }
 
 function isEntireSideDead(side: CombatSide, gameContext: GameContext): boolean {
@@ -111,35 +111,36 @@ export function handleRetreat(
  * Takes turns for all creatures on the ally side of the combat.
  */
 function takeTurnsForCombatSide(
-  combat: Combat,
+  expedition: Expedition,
   retreat: () => void,
   gameContext: GameContext
 ) {
-  for (const creatureOrId of combat.allies.creatures) {
+  for (const creatureOrId of expedition.combat.allies.creatures) {
     const creature = getCreature(creatureOrId, gameContext);
 
-    takeTurnForCreature(creature, combat, gameContext);
+    takeTurnForCreature(creature, expedition, gameContext);
   }
 
-  handleRetreat(combat, retreat, gameContext);
+  handleRetreat(expedition.combat, retreat, gameContext);
 }
 
 /**
  * Takes a full round of combat, with both sides taking their turns.
  */
 export function takeCombatTurn(
-  combat: Combat,
+  expedition: Expedition,
   onVictory: () => void,
   onDefeat: () => void,
   gameContext: GameContext
 ) {
-  takeTurnsForCombatSide(combat, onDefeat, gameContext);
+  const combat = expedition.combat;
+  takeTurnsForCombatSide(expedition, onDefeat, gameContext);
 
   let tmp = combat.allies;
   combat.allies = combat.enemies;
   combat.enemies = tmp;
 
-  takeTurnsForCombatSide(combat, onVictory, gameContext);
+  takeTurnsForCombatSide(expedition, onVictory, gameContext);
 
   tmp = combat.allies;
   combat.allies = combat.enemies;
@@ -172,7 +173,7 @@ export function handleCombatTick(
     }
   }
 
-  takeCombatTurn(expedition.combat, onVictory, onDefeat, gameContext);
+  takeCombatTurn(expedition, onVictory, onDefeat, gameContext);
 }
 
 export function chooseRandomLivingTarget(

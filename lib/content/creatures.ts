@@ -1,8 +1,10 @@
 import { chooseRandomLivingTarget } from "../combat";
 import { CreatureDefinition } from "../creature";
 import { getSkill, takeDamage } from "../creatureUtils";
+import { DropTableEntry } from "../drops";
 import { finishRegistry, RawRegistry } from "../registry";
 import { SkillId } from "../skills";
+import { Table } from "../table";
 import { Id } from "../utilTypes";
 
 export type CreatureDefId = "human" | "goblin";
@@ -17,18 +19,18 @@ const rawCreatures = {
       {
         name: "Punch",
         description: "Punch an enemy",
-        activate: (caster, targets, combat, gameContext) => {
+        activate: (caster, targets, expedition, gameContext) => {
           if (targets.length === 0 || !targets[0]) return;
           takeDamage(
             targets[0],
             5 + getSkill(SkillId.Melee, caster),
             gameContext,
-            combat
+            expedition
           );
         },
         canActivate: () => true,
-        selectTargets: (_caster, combat, gameContext) =>
-          chooseRandomLivingTarget(combat.enemies, gameContext),
+        selectTargets: (_caster, expedition, gameContext) =>
+          chooseRandomLivingTarget(expedition.combat.enemies, gameContext),
         priority: 0,
       },
     ],
@@ -37,23 +39,34 @@ const rawCreatures = {
     name: "Goblin",
     maxHealth: 80,
     xpValue: 20,
-    skills: {},
+    skills: {
+      [SkillId.Magic]: 1,
+    },
+    drops: {
+      chance: 0.5,
+      table: new Table<DropTableEntry>([
+        {
+          weight: 1,
+          item: { definitionId: "coin", amount: [1, 5] },
+        },
+      ]),
+    },
     abilities: [
       {
         name: "Slash",
         description: "Slash an enemy",
-        activate: (caster, targets, combat, gameContext) => {
+        activate: (caster, targets, expedition, gameContext) => {
           if (targets.length === 0 || !targets[0]) return;
           takeDamage(
             targets[0],
-            caster.hp / 5 + getSkill(SkillId.Magic, caster),
+            caster.hp / 20 + getSkill(SkillId.Magic, caster),
             gameContext,
-            combat
+            expedition
           );
         },
         canActivate: () => true,
-        selectTargets: (_caster, combat, gameContext) =>
-          chooseRandomLivingTarget(combat.enemies, gameContext),
+        selectTargets: (_caster, expedition, gameContext) =>
+          chooseRandomLivingTarget(expedition.combat.enemies, gameContext),
         priority: 0,
       },
     ],

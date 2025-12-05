@@ -7,10 +7,10 @@ import {
   selectAbilityFromList,
 } from "@/lib/ability";
 import { describe, expect, expectTypeOf, it } from "vitest";
-import { Combat } from "@/lib/combat";
 import { CreatureInstance } from "@/lib/creature";
 import { creatures } from "@/lib/content/creatures";
 import { GameContext } from "@/lib/gameContext";
+import { Expedition } from "@/lib/expedition";
 
 describe("Ability", () => {
   it("allows arbitrary priority functions", () => {
@@ -68,7 +68,7 @@ describe(getCastableAbilities.name, () => {
         name: "Test Creature",
         hp: 10,
       },
-      {} as Combat,
+      {} as Expedition,
       {} as GameContext
     );
 
@@ -111,7 +111,7 @@ describe(getHighestPriorityAbilities.name, () => {
       abilities,
       {} as CreatureInstance,
       [],
-      {} as Combat,
+      {} as Expedition,
       {} as GameContext
     );
 
@@ -186,7 +186,7 @@ describe(selectAbilityForCreature.name, () => {
         name: "Test Creature",
         hp: 10,
       },
-      {} as Combat,
+      {} as Expedition,
       {} as GameContext
     );
 
@@ -204,7 +204,7 @@ describe(selectAbilityForCreature.name, () => {
         name: "Test Creature",
         hp: 10,
       },
-      {} as Combat,
+      {} as Expedition,
       {} as GameContext
     );
 
@@ -239,7 +239,7 @@ describe(selectAbilityForCreature.name, () => {
         name: "Test Creature",
         hp: 10,
       },
-      {} as Combat,
+      {} as Expedition,
       {} as GameContext
     );
 
@@ -275,7 +275,7 @@ describe(selectAbilityForCreature.name, () => {
         name: "Test Creature",
         hp: 10,
       },
-      {} as Combat,
+      {} as Expedition,
       {} as GameContext
     );
 
