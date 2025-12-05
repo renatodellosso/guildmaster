@@ -17,7 +17,7 @@ import {
 import { AdventurerInstance, CreatureInstance } from "@/lib/creature";
 import { CreatureDefId, creatures } from "@/lib/content/creatures";
 import { GameContext } from "@/lib/gameContext";
-import { AbilityPriority } from "@/lib/ability";
+import { AbilityPriority } from "@/lib/abilityPriority";
 import { Expedition } from "@/lib/expedition";
 import { AbilityId } from "@/lib/content/abilityId";
 

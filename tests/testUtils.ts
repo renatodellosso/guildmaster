@@ -42,6 +42,7 @@ export function buildCreatureInstance(
     definitionId: "human",
     name: "Test Creature",
     hp: 10,
+    mana: 5,
     equipment: {},
     statusEffects: [],
     classes: {},

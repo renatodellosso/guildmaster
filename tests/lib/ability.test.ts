@@ -1,12 +1,12 @@
 import {
   Ability,
-  AbilityPriority,
   AbilityWithSource,
   getCastableAbilities,
   getHighestPriorityAbilities,
   selectAbilityForCreature,
   selectAbilityFromList,
 } from "@/lib/ability";
+import { AbilityPriority } from "@/lib/abilityPriority";
 import { describe, expect, expectTypeOf, it } from "vitest";
 import { CreatureInstance, CreatureProviderSource } from "@/lib/creature";
 import { creatures } from "@/lib/content/creatures";

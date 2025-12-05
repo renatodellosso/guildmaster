@@ -5,6 +5,7 @@ import {
   getMaxHealth,
   getSkill,
   getResistances,
+  getMaxMana,
 } from "@/lib/creatureUtils";
 import { formatInt, formatPercent, titleCase } from "@/lib/format";
 import { Context, getFromOptionalFunc } from "@/lib/utilTypes";
@@ -64,6 +65,10 @@ export function AdventurerDisplay({
       <div>
         HP: {formatInt(adventurer.hp)}/
         {formatInt(getMaxHealth(adventurer, context.game))}
+      </div>
+      <div>
+        Mana: {formatInt(adventurer.mana)}/
+        {formatInt(getMaxMana(adventurer, context.game))}
       </div>
       <div>
         Activity:{" "}

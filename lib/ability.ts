@@ -1,16 +1,10 @@
+import { AbilityPriority } from "./abilityPriority";
 import { AbilityId } from "./content/abilityId";
 import { CreatureInstance, CreatureProviderSource } from "./creature";
 import { getProviders } from "./creatureUtils";
 import { Expedition } from "./expedition";
 import { GameContext } from "./gameContext";
 import { getFromOptionalFunc, Id, OptionalFunc } from "./utilTypes";
-
-export enum AbilityPriority {
-  Low = 0,
-  Medium = 50,
-  High = 100,
-  Max = 150,
-}
 
 export type AbilityFuncParams = [
   caster: CreatureInstance,

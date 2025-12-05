@@ -30,6 +30,14 @@ export type CreatureProvider = Tickable<{
     number,
     [CreatureInstance, number, GameContext, CreatureProviderSource]
   >;
+  maxMana?: OptionalFunc<
+    number,
+    [CreatureInstance, number, GameContext, CreatureProviderSource]
+  >;
+  manaRegen?: OptionalFunc<
+    number,
+    [CreatureInstance, number, GameContext, CreatureProviderSource]
+  >;
   skills?: Partial<{
     [key in keyof SkillList]: OptionalFunc<
       number,
@@ -58,6 +66,7 @@ export type CreatureInstance = {
   definitionId: CreatureDefId;
   name: string;
   hp: number;
+  mana: number;
   equipment: { [slot in EquipmentSlot]?: ItemInstance };
   statusEffects: StatusEffectInstance[];
   classes: {
@@ -83,6 +92,7 @@ export function createCreatureInstance(
     definitionId: defId,
     name: creatures[defId].name,
     hp: 0,
+    mana: 0,
     equipment: {},
     statusEffects: [],
     classes: {},

@@ -109,6 +109,54 @@ export function getHealthRegen(
   return regen;
 }
 
+export function getMaxMana(
+  creature: CreatureInstance,
+  gameContext: GameContext
+): number {
+  const providers = getProviders(creature);
+
+  let maxMana = 0;
+
+  for (const provider of providers) {
+    if (provider.def.maxMana) {
+      maxMana += getFromOptionalFunc(
+        provider.def.maxMana,
+        creature,
+        maxMana,
+        gameContext,
+        provider.source
+      );
+    }
+  }
+
+  maxMana += 5 * getSkill(SkillId.Magic, creature, gameContext);
+
+  return maxMana;
+}
+
+export function getManaRegen(
+  creature: CreatureInstance,
+  gameContext: GameContext
+): number {
+  const providers = getProviders(creature);
+
+  let regen = 1;
+
+  for (const provider of providers) {
+    if (provider.def.manaRegen) {
+      regen += getFromOptionalFunc(
+        provider.def.manaRegen,
+        creature,
+        regen,
+        gameContext,
+        provider.source
+      );
+    }
+  }
+
+  return regen;
+}
+
 export function getSkill(
   skill: SkillId,
   creature: CreatureInstance,
@@ -178,6 +226,21 @@ export function heal(
   return originalHp - creature.hp;
 }
 
+export function regenMana(
+  creature: CreatureInstance,
+  amount: number,
+  gameContext: GameContext
+) {
+  const originalMana = creature.mana;
+
+  creature.mana = Math.min(
+    creature.mana + amount,
+    getMaxMana(creature, gameContext)
+  );
+
+  return originalMana - creature.mana;
+}
+
 export function takeDamage(
   creature: CreatureInstance,
   damage: Damage[],
@@ -205,6 +268,15 @@ export function takeDamage(
   }
 
   return damageDealt;
+}
+
+export function takeManaDamage(creature: CreatureInstance, amount: number) {
+  const originalMana = creature.mana;
+
+  creature.mana -= amount;
+  creature.mana = Math.max(creature.mana, 0);
+
+  return originalMana - creature.mana;
 }
 
 export function onDie(

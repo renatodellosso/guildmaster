@@ -2,7 +2,13 @@ import { ActivityInstance } from "./activity";
 import { handleCombatTick } from "./combat";
 import { activities } from "./content/activities";
 import { CreatureInstance } from "./creature";
-import { getHealthRegen, getProviders, heal } from "./creatureUtils";
+import {
+  getHealthRegen,
+  getManaRegen,
+  getProviders,
+  heal,
+  regenMana,
+} from "./creatureUtils";
 import { GameContext } from "./gameContext";
 import { tickAllStatusEffects } from "./statusEffect";
 
@@ -65,4 +71,6 @@ function tickCreature(creature: CreatureInstance, gameContext: GameContext) {
       gameContext
     );
   }
+
+  regenMana(creature, getManaRegen(creature, gameContext), gameContext);
 }

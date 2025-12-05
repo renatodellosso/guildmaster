@@ -1,5 +1,5 @@
 import { CreatureInstance } from "@/lib/creature";
-import { getMaxHealth } from "@/lib/creatureUtils";
+import { getMaxHealth, getMaxMana } from "@/lib/creatureUtils";
 import { Expedition } from "@/lib/expedition";
 import { formatInt } from "@/lib/format";
 import { getCreature } from "@/lib/utils";
@@ -78,10 +78,17 @@ function CreatureDisplay({
   creature: CreatureInstance;
   context: Context;
 }) {
+  const maxMana = getMaxMana(creature, context.game);
+
   return (
     <li>
       {creature.name} - HP: {formatInt(creature.hp)}/
       {formatInt(getMaxHealth(creature, context.game))}
+      {maxMana > 0 && (
+        <>
+          , Mana: {formatInt(creature.mana)}/{formatInt(maxMana)}
+        </>
+      )}
     </li>
   );
 }
