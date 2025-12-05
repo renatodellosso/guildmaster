@@ -5,6 +5,7 @@ import { SkillId } from "@/lib/skills";
 import { getFromOptionalFunc, Context } from "@/lib/utilTypes";
 import { useState } from "react";
 import ClassTooltip from "../ClassTooltip";
+import { formatInt } from "@/lib/format";
 
 export function LevelUpMenu({
   adventurer,
@@ -67,8 +68,13 @@ export function LevelUpMenu({
         >
           {Object.keys(SkillId).map((skill) => (
             <option key={skill} value={skill}>
-              {skill} ({getSkill(skill as SkillId, adventurer, context.game)}{" "}
-              &rarr; {getSkill(skill as SkillId, adventurer, context.game) + 1})
+              {skill} (
+              {formatInt(getSkill(skill as SkillId, adventurer, context.game))}{" "}
+              &rarr;{" "}
+              {formatInt(
+                getSkill(skill as SkillId, adventurer, context.game) + 1
+              )}
+              )
             </option>
           ))}
         </select>
@@ -80,7 +86,7 @@ export function LevelUpMenu({
             classId={selectedClass!}
             creature={adventurer}
             context={context}
-            level={adventurer.classes[selectedClass!] || 1}
+            level={(adventurer.classes[selectedClass!] || 0) + 1}
           >
             <select
               value={selectedClass}

@@ -41,7 +41,14 @@ export function Tooltip({
     };
   }, [isHovered]);
 
-  const contentWrapper = <div ref={contentRef} className="absolute bg-black border px-1">{content}</div>;
+  const contentWrapper = (
+    <div
+      ref={contentRef}
+      className="text-sm absolute bg-black border px-1"
+    >
+      {content}
+    </div>
+  );
 
   return (
     <>

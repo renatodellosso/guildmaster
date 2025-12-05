@@ -14,6 +14,12 @@ const rawClasses = {
       getSkill(SkillId.Melee, creature, gameContext) >= 1,
     maxHealth: (_creature, _prev, _gameContext, source) =>
       25 + ((source as number) - 1) * 5,
+    skills: {
+      [SkillId.Melee]: (creature, _prev, _gameContext, source) =>
+        (source as number) > 1
+          ? getSkill(SkillId.Endurance, creature, _gameContext) / 3
+          : 0,
+    },
   },
 } satisfies RawRegistry<ClassId, ClassDefinition>;
 

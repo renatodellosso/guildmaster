@@ -1,6 +1,6 @@
 import { classes, ClassId } from "@/lib/content/classes";
 import { CreatureInstance } from "@/lib/creature";
-import { Context } from "@/lib/utilTypes";
+import { Context, getFromOptionalFunc } from "@/lib/utilTypes";
 import { ReactNode } from "react";
 import { Tooltip } from "./Tooltip";
 import CreatureProviderDetails from "./CreatureProviderDetails";
@@ -30,6 +30,14 @@ export default function ClassTooltip({
       <strong>
         {cls.name} {classLevel}
       </strong>
+      <p>
+        {getFromOptionalFunc(
+          cls.description,
+          creature,
+          context.game,
+          classLevel
+        )}
+      </p>
       <CreatureProviderDetails
         provider={cls}
         source={classLevel}

@@ -19,6 +19,7 @@ import { getAbilities } from "@/lib/ability";
 import AbilityDescription from "./AbilityDescription";
 import StatusEffectDisplay from "./StatusEffectDisplay";
 import { classes, ClassId } from "@/lib/content/classes";
+import ClassTooltip from "./ClassTooltip";
 
 export function AdventurerDisplay({
   adventurer,
@@ -77,7 +78,8 @@ export function AdventurerDisplay({
         <ul>
           {Object.values(SkillId).map((skillId) => (
             <li key={skillId}>
-              {skillId}: {getSkill(skillId, adventurer, context.game)}
+              {skillId}:{" "}
+              {formatInt(getSkill(skillId, adventurer, context.game))}
             </li>
           ))}
         </ul>
@@ -131,16 +133,28 @@ export function AdventurerDisplay({
     </>
   );
 
-  const classList = `(${Object.entries(adventurer.classes)
-    .map(([classId, level]) => `${classes[classId as ClassId].name} ${level}`)
-    .join(", ")})`;
+  const classList = (
+    <span>
+      (
+      {Object.entries(adventurer.classes).map(([classId, level]) => (
+        <ClassTooltip
+          key={classId}
+          classId={classId as ClassId}
+          creature={adventurer}
+          context={context}
+          level={level}
+        >
+          {classes[classId as ClassId].name} {level}
+        </ClassTooltip>
+      ))}
+      )
+    </span>
+  );
 
   return (
     <div className="p-2 border grow">
-      <h2>
-        {adventurer.name}{" "}
-        {Object.keys(adventurer.classes).length > 0 && classList}
-      </h2>
+      <h2>{adventurer.name}</h2>
+      {Object.keys(adventurer.classes).length > 0 && classList}
       {body}
     </div>
   );
