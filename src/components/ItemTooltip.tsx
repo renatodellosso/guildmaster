@@ -3,7 +3,7 @@ import { EquipmentDefinition, isEquipment, ItemInstance } from "@/lib/item";
 import { Context, getFromOptionalFunc } from "@/lib/utilTypes";
 import { ReactNode } from "react";
 import { Tooltip } from "./Tooltip";
-import { formatBonus, titleCase } from "@/lib/format";
+import { formatBonus, formatPercent, titleCase } from "@/lib/format";
 import { CreatureInstance } from "@/lib/creature";
 import AbilityDescription from "./AbilityDescription";
 
@@ -109,6 +109,15 @@ function EquipmentDetails({
     ...skills,
   };
 
+  const resistances = equipmentDef.resistances
+    ? getFromOptionalFunc(
+        equipmentDef.resistances,
+        creature!,
+        context.game,
+        itemInstance
+      )
+    : {};
+
   const abilities =
     equipmentDef.abilities &&
     getFromOptionalFunc(
@@ -129,6 +138,16 @@ function EquipmentDetails({
           </div>
         );
       })}
+      {resistances && Object.entries(resistances).length > 0 && (
+        <div>
+          <strong>Resistances:</strong>
+          {Object.entries(resistances).map(([resistanceType, value]) => (
+            <div key={resistanceType}>
+              {titleCase(resistanceType)}: {formatPercent(value)}
+            </div>
+          ))}
+        </div>
+      )}
       {abilities && (
         <div>
           <strong>Abilities:</strong>

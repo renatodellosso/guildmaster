@@ -76,9 +76,11 @@ export function createExpedition(
 }
 
 export function addToExpeditionLog(
-  expedition: Expedition,
+  expedition: Expedition | undefined,
   entry: string
 ): void {
+  if (!expedition) return;
+
   expedition.log.push(`[Turn ${expedition.turnNumber}]: ${entry}`);
   if (expedition.log.length > MAX_LOG_ENTRIES) {
     expedition.log = expedition.log.slice(-MAX_LOG_ENTRIES);

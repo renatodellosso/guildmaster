@@ -1,3 +1,4 @@
+import { DamageTypeGroups } from "../damage";
 import { EquipmentDefinition, EquipmentSlot } from "../item";
 import { RawRegistry } from "../registry";
 
@@ -10,5 +11,8 @@ export const rawEquipments = {
     value: 15,
     slot: EquipmentSlot.Accessory,
     maxHealth: 5,
+    resistances: {
+      [DamageTypeGroups.Physical]: 0.2,
+    },
   },
 } satisfies RawRegistry<EquipmentId, EquipmentDefinition>;

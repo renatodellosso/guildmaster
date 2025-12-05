@@ -33,7 +33,7 @@ export type Ability = {
   description: string;
   activate: (...args: AbilityFuncParams) => void;
   selectTargets: (
-    ...args: AbilityFuncParamsWithoutTargets
+    ...args: [CreatureInstance, Expedition, GameContext, CreatureProviderSource]
   ) => (Id | CreatureInstance)[];
   canActivate: OptionalFunc<boolean, AbilityFuncParams>;
   priority: OptionalFunc<AbilityPriority, AbilityFuncParams>;

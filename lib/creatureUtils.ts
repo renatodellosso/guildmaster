@@ -6,6 +6,12 @@ import {
   CreatureProvider,
   CreatureProviderSource,
 } from "./creature";
+import {
+  Damage,
+  DamageResistances,
+  getDamageAfterResistances,
+  mergeResistances,
+} from "./damage";
 import { rollDrops } from "./drops";
 import { addToExpeditionLog, Expedition } from "./expedition";
 import { formatInt } from "./format";
@@ -125,6 +131,29 @@ export function getSkill(
   return val;
 }
 
+export function getResistances(
+  creature: CreatureInstance,
+  gameContext: GameContext
+): DamageResistances {
+  const providers = getProviders(creature);
+
+  const resistancesList: DamageResistances[] = [];
+
+  for (const provider of providers) {
+    if (provider.def.resistances) {
+      const res = getFromOptionalFunc(
+        provider.def.resistances,
+        creature,
+        gameContext,
+        provider.source
+      );
+      resistancesList.push(res);
+    }
+  }
+
+  return mergeResistances(resistancesList);
+}
+
 export function heal(
   creature: CreatureInstance,
   amount: number,
@@ -142,19 +171,31 @@ export function heal(
 
 export function takeDamage(
   creature: CreatureInstance,
-  amount: number,
+  damage: Damage[],
   gameContext: GameContext,
   expedition?: Expedition
 ) {
-  const originalHp = creature.hp;
+  const resistances = getResistances(creature, gameContext);
+  const finalDamages = getDamageAfterResistances(damage, resistances);
 
-  creature.hp = Math.max(creature.hp - amount, 0);
+  const originalHp = creature.hp;
+  const damageDealt: Damage[] = [];
+
+  for (const dmg of finalDamages) {
+    const toDeal = Math.min(creature.hp, dmg.amount);
+    if (toDeal <= 0) continue;
+
+    damageDealt.push({ type: dmg.type, amount: toDeal });
+    creature.hp -= toDeal;
+  }
+
+  creature.hp = Math.max(creature.hp, 0);
 
   if (originalHp > 0 && creature.hp === 0) {
     onDie(creature, gameContext, expedition);
   }
 
-  return originalHp - creature.hp;
+  return damageDealt;
 }
 
 export function onDie(

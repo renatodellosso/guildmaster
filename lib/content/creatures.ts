@@ -4,11 +4,12 @@ import { CreatureDefinition } from "../creature";
 import { getSkill, takeDamage } from "../creatureUtils";
 import { DropTableEntry } from "../drops";
 import { addToExpeditionLog } from "../expedition";
-import { formatInt } from "../format";
+import { formatDamage } from "../format";
 import { finishRegistry, RawRegistry } from "../registry";
 import { SkillId } from "../skills";
 import { Table } from "../table";
 import { Id } from "../utilTypes";
+import { DamageType } from "../damage";
 
 export type CreatureDefId = "human" | "goblin";
 
@@ -27,14 +28,19 @@ const rawCreatures = {
           if (targets.length === 0 || !targets[0]) return;
           const damage = takeDamage(
             targets[0],
-            5 + getSkill(SkillId.Melee, caster, gameContext),
+            [
+              {
+                type: DamageType.Bludgeoning,
+                amount: 5 + getSkill(SkillId.Melee, caster, gameContext),
+              },
+            ],
             gameContext,
             expedition
           );
 
           addToExpeditionLog(
             expedition,
-            `${caster.name} punches ${targets[0].name} for ${formatInt(damage)} damage.`
+            `${caster.name} punches ${targets[0].name} for ${formatDamage(damage)} damage.`
           );
         },
         canActivate: () => true,
@@ -49,7 +55,7 @@ const rawCreatures = {
     maxHealth: 80,
     xpValue: 50,
     skills: {
-      [SkillId.Magic]: 1,
+      [SkillId.Melee]: 1,
     },
     drops: {
       chance: 0.5,
@@ -73,14 +79,20 @@ const rawCreatures = {
           if (targets.length === 0 || !targets[0]) return;
           const damage = takeDamage(
             targets[0],
-            caster.hp / 20 + getSkill(SkillId.Magic, caster, gameContext),
+            [
+              {
+                type: DamageType.Slashing,
+                amount:
+                  caster.hp / 20 + getSkill(SkillId.Melee, caster, gameContext),
+              },
+            ],
             gameContext,
             expedition
           );
 
           addToExpeditionLog(
             expedition,
-            `${caster.name} slashes ${targets[0].name} for ${formatInt(damage)} damage!`
+            `${caster.name} slashes ${targets[0].name} for ${formatDamage(damage)} damage!`
           );
         },
         canActivate: () => true,

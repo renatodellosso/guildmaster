@@ -1,7 +1,12 @@
 import { activities } from "@/lib/content/activities";
 import { AdventurerInstance } from "@/lib/creature";
-import { getXpForNextLevel, getMaxHealth, getSkill } from "@/lib/creatureUtils";
-import { formatInt, titleCase } from "@/lib/format";
+import {
+  getXpForNextLevel,
+  getMaxHealth,
+  getSkill,
+  getResistances,
+} from "@/lib/creatureUtils";
+import { formatInt, formatPercent, titleCase } from "@/lib/format";
 import { Context, getFromOptionalFunc } from "@/lib/utilTypes";
 import { useEffect, useState } from "react";
 import { LevelUpMenu } from "./menus/LevelUpMenu";
@@ -28,6 +33,7 @@ export function AdventurerDisplay({
   }, [adventurer.id]);
 
   const abilities = getAbilities(adventurer, undefined, context.game);
+  const resistances = getResistances(adventurer, context.game);
 
   const body = levelUpMenuOpen ? (
     <LevelUpMenu
@@ -74,6 +80,16 @@ export function AdventurerDisplay({
           ))}
         </ul>
       </div>
+      {resistances && Object.entries(resistances).length > 0 && (
+        <div>
+          <strong>Resistances:</strong>
+          {Object.entries(resistances).map(([resistanceType, value]) => (
+            <div key={resistanceType}>
+              {titleCase(resistanceType)}: {formatPercent(value)}
+            </div>
+          ))}
+        </div>
+      )}
       <div className="w-1/8">
         <strong>Equipment:</strong>
         <table>
@@ -94,10 +110,7 @@ export function AdventurerDisplay({
         <strong>Abilities:</strong>
         {abilities.length === 0 && <p>No abilities.</p>}
         {abilities.map((ability) => (
-          <AbilityDescription
-            ability={ability}
-            key={ability.ability.id}
-          />
+          <AbilityDescription ability={ability} key={ability.ability.id} />
         ))}
       </div>
     </>

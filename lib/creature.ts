@@ -2,6 +2,7 @@ import { Ability, AbilityFuncParamsWithoutTargets } from "./ability";
 import { ActivityInstance } from "./activity";
 import { CreatureDefId, creatures } from "./content/creatures";
 import { getMaxHealth } from "./creatureUtils";
+import { DamageResistances } from "./damage";
 import { Drops } from "./drops";
 import { GameContext } from "./gameContext";
 import { EquipmentSlot, ItemInstance } from "./item";
@@ -27,6 +28,10 @@ export type CreatureProvider = {
     >;
   }>;
   abilities?: OptionalFunc<Ability[], AbilityFuncParamsWithoutTargets>;
+  resistances?: OptionalFunc<
+    DamageResistances,
+    [CreatureInstance, GameContext, CreatureProviderSource]
+  >;
 };
 
 type DefProvider = MakeRequired<CreatureProvider, "maxHealth">;

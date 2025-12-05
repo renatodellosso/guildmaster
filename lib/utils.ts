@@ -28,3 +28,8 @@ export function getCreature<TCreature extends CreatureInstance>(
     return creatureId as TCreature;
   }
 }
+
+export function round(num: number, decimals: number = 0): number {
+  const factor = Math.pow(10, decimals);
+  return Math.round(num * factor) / factor;
+}
