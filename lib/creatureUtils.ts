@@ -1,3 +1,4 @@
+import { classes, ClassId } from "./content/classes";
 import { creatures } from "./content/creatures";
 import { items } from "./content/items";
 import {
@@ -31,6 +32,14 @@ export function getProviders(creature: CreatureInstance): ProviderWithSource[] {
   const providers: ProviderWithSource[] = [
     { def: creatures[creature.definitionId], source: creature },
   ];
+
+  for (const cls of Object.entries(creature.classes)) {
+    const id = cls[0] as ClassId;
+    const classDef = classes[id];
+    if (classDef) {
+      providers.push({ def: classDef, source: cls[1] });
+    }
+  }
 
   if ("equipment" in creature && typeof creature.equipment === "object") {
     const equipment = creature.equipment as AdventurerInstance["equipment"];

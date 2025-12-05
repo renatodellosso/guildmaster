@@ -44,6 +44,7 @@ export function buildCreatureInstance(
     hp: 10,
     equipment: {},
     statusEffects: [],
+    classes: {},
     ...creature,
   };
 }

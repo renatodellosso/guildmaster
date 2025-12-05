@@ -18,6 +18,7 @@ import ItemTooltip from "./ItemTooltip";
 import { getAbilities } from "@/lib/ability";
 import AbilityDescription from "./AbilityDescription";
 import StatusEffectDisplay from "./StatusEffectDisplay";
+import { classes, ClassId } from "@/lib/content/classes";
 
 export function AdventurerDisplay({
   adventurer,
@@ -130,9 +131,16 @@ export function AdventurerDisplay({
     </>
   );
 
+  const classList = `(${Object.entries(adventurer.classes)
+    .map(([classId, level]) => `${classes[classId as ClassId].name} ${level}`)
+    .join(", ")})`;
+
   return (
     <div className="p-2 border grow">
-      <h2>{adventurer.name}</h2>
+      <h2>
+        {adventurer.name}{" "}
+        {Object.keys(adventurer.classes).length > 0 && classList}
+      </h2>
       {body}
     </div>
   );

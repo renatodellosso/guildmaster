@@ -1,8 +1,10 @@
+import { classes, ClassId } from "@/lib/content/classes";
 import { AdventurerInstance } from "@/lib/creature";
 import { getSkill } from "@/lib/creatureUtils";
 import { SkillId } from "@/lib/skills";
+import { getFromOptionalFunc, Context } from "@/lib/utilTypes";
 import { useState } from "react";
-import { Context } from "vm";
+import ClassTooltip from "../ClassTooltip";
 
 export function LevelUpMenu({
   adventurer,
@@ -13,9 +15,22 @@ export function LevelUpMenu({
   close: () => void;
   context: Context;
 }) {
+  const availableClasses = Object.values(classes).filter((cls) =>
+    getFromOptionalFunc(cls.canSelect, adventurer, context.game)
+  );
+
+  const [errorMessage, setErrorMessage] = useState<string>();
   const [skill, setSkill] = useState<SkillId>(SkillId.Melee);
+  const [selectedClass, setSelectedClass] = useState<ClassId>(
+    availableClasses[0]?.id
+  );
 
   function levelUp() {
+    if (!skill || (!selectedClass && availableClasses.length > 0)) {
+      setErrorMessage("Please select a skill and class to level up.");
+      return;
+    }
+
     adventurer.level += 1;
 
     // Increase selected skill by 1
@@ -24,6 +39,14 @@ export function LevelUpMenu({
       adventurer.skills = {};
     }
     adventurer.skills[skill] = currentSkillValue + 1;
+
+    // Add selected class
+    if (selectedClass) {
+      if (!adventurer.classes[selectedClass]) {
+        adventurer.classes[selectedClass] = 0;
+      }
+      adventurer.classes[selectedClass]!++;
+    }
 
     close();
   }
@@ -50,7 +73,30 @@ export function LevelUpMenu({
           ))}
         </select>
       </div>
+      {availableClasses.length > 0 && (
+        <div className="flex gap-2">
+          <p>Select a class to add:</p>
+          <ClassTooltip
+            classId={selectedClass!}
+            creature={adventurer}
+            context={context}
+            level={adventurer.classes[selectedClass!] || 1}
+          >
+            <select
+              value={selectedClass}
+              onChange={(e) => setSelectedClass(e.target.value as ClassId)}
+            >
+              {availableClasses.map((cls) => (
+                <option key={cls.id} value={cls.id}>
+                  {cls.name}
+                </option>
+              ))}
+            </select>
+          </ClassTooltip>
+        </div>
+      )}
       <button onClick={levelUp}>Confirm</button>
+      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
     </div>
   );
 }

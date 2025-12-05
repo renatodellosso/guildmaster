@@ -1,5 +1,6 @@
 import { Ability, AbilityFuncParamsWithoutTargets } from "./ability";
 import { ActivityInstance } from "./activity";
+import { ClassId } from "./content/classes";
 import { CreatureDefId, creatures } from "./content/creatures";
 import { getMaxHealth } from "./creatureUtils";
 import { DamageResistances } from "./damage";
@@ -14,7 +15,8 @@ import { Id, MakeRequired, OptionalFunc, Tickable } from "./utilTypes";
 export type CreatureProviderSource =
   | CreatureInstance
   | ItemInstance
-  | StatusEffectInstance;
+  | StatusEffectInstance
+  | number;
 
 export type CreatureProvider = Tickable<{
   creature: CreatureInstance;
@@ -58,6 +60,9 @@ export type CreatureInstance = {
   hp: number;
   equipment: { [slot in EquipmentSlot]?: ItemInstance };
   statusEffects: StatusEffectInstance[];
+  classes: {
+    [key in ClassId]?: number;
+  };
 };
 
 export type AdventurerInstance = CreatureInstance & {
@@ -80,6 +85,7 @@ export function createCreatureInstance(
     hp: 0,
     equipment: {},
     statusEffects: [],
+    classes: {},
   };
 
   creature.hp = getMaxHealth(creature, gameContext);

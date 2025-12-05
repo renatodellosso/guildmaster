@@ -12,7 +12,7 @@ export function formatBonus(value: number, format: "int" = "int"): string {
 }
 
 export function formatPercent(value: number): string {
-  const rounded = round(value * 100);
+  const rounded = round(value * 100, 1);
   return `${rounded}%`;
 }
 

@@ -1,11 +1,11 @@
 import { items } from "@/lib/content/items";
 import { EquipmentDefinition, isEquipment, ItemInstance } from "@/lib/item";
-import { Context, getFromOptionalFunc } from "@/lib/utilTypes";
+import { Context } from "@/lib/utilTypes";
 import { ReactNode } from "react";
 import { Tooltip } from "./Tooltip";
-import { formatBonus, formatPercent, titleCase } from "@/lib/format";
+import { titleCase } from "@/lib/format";
 import { CreatureInstance } from "@/lib/creature";
-import AbilityDescription from "./AbilityDescription";
+import CreatureProviderDetails from "./CreatureProviderDetails";
 
 export default function ItemTooltip({
   children,
@@ -29,9 +29,9 @@ export default function ItemTooltip({
     : null;
 
   const equipmentDetails = isItemEquipment ? (
-    <EquipmentDetails
-      equipmentDef={equipmentDef!}
-      itemInstance={itemInstance}
+    <CreatureProviderDetails
+      provider={itemDef as EquipmentDefinition}
+      source={itemInstance}
       creature={creature}
       context={context}
     />
@@ -52,116 +52,4 @@ export default function ItemTooltip({
   );
 
   return <Tooltip content={tooltip}>{children}</Tooltip>;
-}
-
-function EquipmentDetails({
-  equipmentDef,
-  itemInstance,
-  creature,
-  context,
-}: {
-  equipmentDef: EquipmentDefinition;
-  itemInstance: ItemInstance;
-  creature?: CreatureInstance;
-  context: Context;
-}) {
-  const maxHealth =
-    equipmentDef.maxHealth &&
-    getFromOptionalFunc(
-      equipmentDef.maxHealth,
-      creature!,
-      0,
-      context.game,
-      itemInstance
-    );
-  const healthRegen =
-    equipmentDef.healthRegen &&
-    getFromOptionalFunc(
-      equipmentDef.healthRegen,
-      creature!,
-      0,
-      context.game,
-      itemInstance
-    );
-
-  const skills = Object.entries(equipmentDef.skills || {}).reduce(
-    (acc, [skillId, func]) => {
-      const bonus = getFromOptionalFunc(
-        func,
-        creature!,
-        0,
-        context.game,
-        itemInstance
-      );
-      if (bonus !== 0) {
-        acc[skillId] = bonus;
-      }
-      return acc;
-    },
-    {} as {
-      [key: string]: number;
-    }
-  );
-
-  const stats = {
-    "Max Health": maxHealth,
-    "Health Regen": healthRegen,
-    ...skills,
-  };
-
-  const resistances = equipmentDef.resistances
-    ? getFromOptionalFunc(
-        equipmentDef.resistances,
-        creature!,
-        context.game,
-        itemInstance
-      )
-    : {};
-
-  const abilities =
-    equipmentDef.abilities &&
-    getFromOptionalFunc(
-      equipmentDef.abilities,
-      creature!,
-      undefined,
-      context.game,
-      itemInstance
-    );
-
-  return (
-    <>
-      {Object.entries(stats).map(([statName, stat]) => {
-        if (stat === undefined) return null;
-        return (
-          <div key={statName}>
-            {statName}: {formatBonus(stat)}
-          </div>
-        );
-      })}
-      {resistances && Object.entries(resistances).length > 0 && (
-        <div>
-          <strong>Resistances:</strong>
-          {Object.entries(resistances).map(([resistanceType, value]) => (
-            <div key={resistanceType}>
-              {titleCase(resistanceType)}: {formatPercent(value)}
-            </div>
-          ))}
-        </div>
-      )}
-      {abilities && (
-        <div>
-          <strong>Abilities:</strong>
-          {abilities.map((ability) => (
-            <AbilityDescription
-              ability={{
-                ability: ability,
-                source: itemInstance,
-              }}
-              key={ability.id}
-            />
-          ))}
-        </div>
-      )}
-    </>
-  );
 }

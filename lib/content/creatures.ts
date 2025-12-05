@@ -10,6 +10,7 @@ import { SkillId } from "../skills";
 import { Table } from "../table";
 import { Id } from "../utilTypes";
 import { DamageType } from "../damage";
+import { chance } from "../utils";
 
 export type CreatureDefId = "human" | "goblin";
 
@@ -52,7 +53,7 @@ const rawCreatures = {
   },
   goblin: {
     name: "Goblin",
-    maxHealth: 80,
+    maxHealth: 60,
     xpValue: 50,
     skills: {
       [SkillId.Melee]: 1,
@@ -90,7 +91,7 @@ const rawCreatures = {
             expedition
           );
 
-          if (damage.length > 0) {
+          if (damage.length > 0 && chance(0.2)) {
             targets[0].statusEffects.push({
               definitionId: "poisoned",
               duration: 3,

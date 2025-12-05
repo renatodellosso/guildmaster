@@ -18,6 +18,10 @@ export function randomId(): Id {
   return Math.random().toString(36).substring(2, 10);
 }
 
+export function chance(percent: number): boolean {
+  return Math.random() < percent;
+}
+
 export function getCreature<TCreature extends CreatureInstance>(
   creatureId: TCreature | Id,
   gameContext: GameContext
