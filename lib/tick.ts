@@ -2,7 +2,7 @@ import { ActivityInstance } from "./activity";
 import { handleCombatTick } from "./combat";
 import { activities } from "./content/activities";
 import { CreatureInstance } from "./creature";
-import { getHealthRegen, heal } from "./creatureUtils";
+import { getHealthRegen, getProviders, heal } from "./creatureUtils";
 import { GameContext } from "./gameContext";
 import { tickAllStatusEffects } from "./statusEffect";
 
@@ -53,5 +53,16 @@ function tickCreature(creature: CreatureInstance, gameContext: GameContext) {
     if (activity.tick) {
       activity.tick(creature, gameContext);
     }
+  }
+
+  const providers = getProviders(creature);
+  for (const provider of providers) {
+    provider.def.tick?.(
+      {
+        creature,
+        source: provider.source,
+      },
+      gameContext
+    );
   }
 }
