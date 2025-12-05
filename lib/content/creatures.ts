@@ -91,7 +91,7 @@ const rawCreatures = {
         damage: [
           {
             type: DamageType.Slashing,
-            amount: 12,
+            amount: 10,
           },
         ],
         range: 1,
@@ -126,7 +126,7 @@ const rawCreatures = {
         damage: [
           {
             type: DamageType.Piercing,
-            amount: 15,
+            amount: 11,
           },
         ],
         range: 3,

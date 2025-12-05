@@ -51,15 +51,6 @@ export const rawDungeons = {
       {
         item: [
           {
-            id: "bandit_archer",
-            count: 3,
-          },
-        ],
-        weight: 1,
-      },
-      {
-        item: [
-          {
             id: "bandit",
             count: 1,
           },

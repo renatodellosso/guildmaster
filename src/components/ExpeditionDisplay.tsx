@@ -5,6 +5,7 @@ import { formatInt } from "@/lib/format";
 import { getCreature } from "@/lib/utils";
 import { Context } from "@/lib/utilTypes";
 import InventoryDisplay from "./InventoryDisplay";
+import CreatureTooltip from "./CreatureTooltip";
 
 export default function ExpeditionDisplay({
   expedition,
@@ -82,13 +83,15 @@ function CreatureDisplay({
 
   return (
     <li>
-      {creature.name} - HP: {formatInt(creature.hp)}/
-      {formatInt(getMaxHealth(creature, context.game))}
-      {maxMana > 0 && (
-        <>
-          , Mana: {formatInt(creature.mana)}/{formatInt(maxMana)}
-        </>
-      )}
+      <CreatureTooltip creature={creature} context={context}>
+        {creature.name} - HP: {formatInt(creature.hp)}/
+        {formatInt(getMaxHealth(creature, context.game))}
+        {maxMana > 0 && (
+          <>
+            , Mana: {formatInt(creature.mana)}/{formatInt(maxMana)}
+          </>
+        )}
+      </CreatureTooltip>
     </li>
   );
 }

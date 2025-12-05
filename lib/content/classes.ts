@@ -74,6 +74,7 @@ const rawClasses = {
               duration: 2 + Math.floor((source as number) / 2),
               manaCost: 8,
               side: "ally",
+              priority: AbilityPriority.Medium,
             }),
           ]
         : [],

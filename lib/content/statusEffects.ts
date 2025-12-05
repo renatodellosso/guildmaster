@@ -35,8 +35,10 @@ const rawStatusEffects = {
       )}.`,
     resistances: (_creature, _gameContext, source) => {
       return {
-        [DamageTypeGroups.All]:
+        [DamageTypeGroups.All]: Math.max(
           1 - Math.pow(0.9, (source as StatusEffectInstance).strength),
+          0.5
+        ),
       };
     },
   },

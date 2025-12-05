@@ -7,7 +7,7 @@ export type ActivityId = "resting" | "onExpedition";
 const rawActivities = {
   resting: {
     description: "Resting",
-    healthRegenMultiplier: 2,
+    healthRegenMultiplier: 3,
   },
   onExpedition: {
     description: (creature, gameContext) => {
