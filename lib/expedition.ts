@@ -5,11 +5,15 @@ import { GameContext } from "./gameContext";
 import { Inventory } from "./inventory";
 import { Id } from "./utilTypes";
 
+const MAX_LOG_ENTRIES = 10;
+
 export type Expedition = {
   combat: Combat;
   dungeonId: DungeonId;
   party: Id[];
   inventory: Inventory;
+  turnNumber: number;
+  log: string[];
 };
 
 /**
@@ -62,9 +66,21 @@ export function createExpedition(
     party,
     inventory: [],
     combat: undefined as unknown as Combat,
+    log: [],
+    turnNumber: 0,
   };
 
   expedition.combat = startCombat(expedition, gameContext);
 
   return expedition;
+}
+
+export function addToExpeditionLog(
+  expedition: Expedition,
+  entry: string
+): void {
+  expedition.log.push(`[Turn ${expedition.turnNumber}]: ${entry}`);
+  if (expedition.log.length > MAX_LOG_ENTRIES) {
+    expedition.log = expedition.log.slice(-MAX_LOG_ENTRIES);
+  }
 }

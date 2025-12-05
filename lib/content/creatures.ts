@@ -2,6 +2,8 @@ import { chooseRandomLivingTarget } from "../combat";
 import { CreatureDefinition } from "../creature";
 import { getSkill, takeDamage } from "../creatureUtils";
 import { DropTableEntry } from "../drops";
+import { addToExpeditionLog } from "../expedition";
+import { formatInt } from "../format";
 import { finishRegistry, RawRegistry } from "../registry";
 import { SkillId } from "../skills";
 import { Table } from "../table";
@@ -21,11 +23,16 @@ const rawCreatures = {
         description: "Punch an enemy",
         activate: (caster, targets, expedition, gameContext) => {
           if (targets.length === 0 || !targets[0]) return;
-          takeDamage(
+          const damage = takeDamage(
             targets[0],
             5 + getSkill(SkillId.Melee, caster, gameContext),
             gameContext,
             expedition
+          );
+
+          addToExpeditionLog(
+            expedition,
+            `${caster.name} punches ${targets[0].name} for ${formatInt(damage)} damage.`
           );
         },
         canActivate: () => true,
@@ -61,11 +68,16 @@ const rawCreatures = {
         description: "Slash an enemy",
         activate: (caster, targets, expedition, gameContext) => {
           if (targets.length === 0 || !targets[0]) return;
-          takeDamage(
+          const damage = takeDamage(
             targets[0],
             caster.hp / 20 + getSkill(SkillId.Magic, caster, gameContext),
             gameContext,
             expedition
+          );
+
+          addToExpeditionLog(
+            expedition,
+            `${caster.name} slashes ${targets[0].name} for ${formatInt(damage)} damage!`
           );
         },
         canActivate: () => true,

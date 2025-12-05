@@ -7,7 +7,8 @@ import {
   CreatureProviderSource,
 } from "./creature";
 import { rollDrops } from "./drops";
-import { Expedition } from "./expedition";
+import { addToExpeditionLog, Expedition } from "./expedition";
+import { formatInt } from "./format";
 import { GameContext } from "./gameContext";
 import { addToInventory } from "./inventory";
 import { EquipmentDefinition } from "./item";
@@ -128,11 +129,15 @@ export function heal(
   creature: CreatureInstance,
   amount: number,
   gameContext: GameContext
-): void {
+) {
+  const originalHp = creature.hp;
+
   creature.hp = Math.min(
     creature.hp + amount,
     getMaxHealth(creature, gameContext)
   );
+
+  return originalHp - creature.hp;
 }
 
 export function takeDamage(
@@ -140,7 +145,7 @@ export function takeDamage(
   amount: number,
   gameContext: GameContext,
   expedition?: Expedition
-): void {
+) {
   const originalHp = creature.hp;
 
   creature.hp = Math.max(creature.hp - amount, 0);
@@ -148,6 +153,8 @@ export function takeDamage(
   if (originalHp > 0 && creature.hp === 0) {
     onDie(creature, gameContext, expedition);
   }
+
+  return originalHp - creature.hp;
 }
 
 export function onDie(
@@ -162,20 +169,27 @@ export function onDie(
 
   if (!expedition) return;
 
+  let msg = `${creature.name} has died!`;
+
   if (xpValue) {
     // Find other side of combat
     const enemies = expedition.combat.allies.creatures.includes(creature)
       ? expedition.combat.enemies
       : expedition.combat.allies;
 
+    const xpPerCreature = xpValue / enemies.creatures.length;
+    msg += ` ${formatInt(xpPerCreature)} XP awarded.`;
+
     // Distribute XP to all alive creatures on other side
     for (const enemyId of enemies.creatures) {
       const enemy = getCreature(enemyId, gameContext);
       if ("xp" in enemy && typeof enemy.xp === "number") {
-        enemy.xp += xpValue / enemies.creatures.length;
+        enemy.xp += xpPerCreature;
       }
     }
   }
+
+  addToExpeditionLog(expedition, msg);
 
   if (def.drops) {
     const drops = def.drops;

@@ -15,6 +15,8 @@ describe(startCombat.name, () => {
       party: ["hero1", "hero2"],
       combat: {} as Combat,
       inventory: [],
+      log: [],
+      turnNumber: 0,
     };
 
     const enemyIds = new Set<Id>();
@@ -48,6 +50,8 @@ describe(startCombat.name, () => {
       party: ["hero1", "hero2"],
       combat: {} as Combat,
       inventory: [],
+      log: [],
+      turnNumber: 0,
     };
 
     dungeons[expedition.dungeonId].encounters = new Table<Encounter>([

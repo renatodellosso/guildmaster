@@ -17,40 +17,52 @@ export default function ExpeditionDisplay({
 
   return (
     <div>
-      <strong>
-        Allies{" "}
-        {combat.allies.retreatTimer > -1 &&
-          ` (Retreating in ${combat.allies.retreatTimer} turns)`}
-      </strong>
-      <ul>
-        {combat.allies.creatures.map((creatureId) => {
-          const creature = getCreature(creatureId, context.game);
-          return (
-            <CreatureDisplay
-              key={String(creature.id)}
-              creature={creature}
-              context={context}
-            />
-          );
-        })}
-      </ul>
-      <strong>
-        Enemies{" "}
-        {combat.enemies.retreatTimer > -1 &&
-          ` (Retreating in ${combat.enemies.retreatTimer} turns)`}
-      </strong>
-      <ul>
-        {combat.enemies.creatures.map((creatureId) => {
-          const creature = getCreature(creatureId, context.game);
-          return (
-            <CreatureDisplay
-              key={String(creature.id)}
-              creature={creature}
-              context={context}
-            />
-          );
-        })}
-      </ul>
+      <div className="flex gap-4">
+        <div>
+          <strong>
+            Allies{" "}
+            {combat.allies.retreatTimer > -1 &&
+              ` (Retreating in ${combat.allies.retreatTimer} turns)`}
+          </strong>
+          <ul>
+            {combat.allies.creatures.map((creatureId) => {
+              const creature = getCreature(creatureId, context.game);
+              return (
+                <CreatureDisplay
+                  key={String(creature.id)}
+                  creature={creature}
+                  context={context}
+                />
+              );
+            })}
+          </ul>
+          <strong>
+            Enemies{" "}
+            {combat.enemies.retreatTimer > -1 &&
+              ` (Retreating in ${combat.enemies.retreatTimer} turns)`}
+          </strong>
+          <ul>
+            {combat.enemies.creatures.map((creatureId) => {
+              const creature = getCreature(creatureId, context.game);
+              return (
+                <CreatureDisplay
+                  key={String(creature.id)}
+                  creature={creature}
+                  context={context}
+                />
+              );
+            })}
+          </ul>
+        </div>
+        <div>
+          <strong>Expedition Log:</strong>
+          <div className="overflow-y-scroll pr-1">
+            {expedition.log.map((entry, index) => (
+              <div key={index}>{entry}</div>
+            ))}
+          </div>
+        </div>
+      </div>
       <div>
         <strong>Inventory:</strong>
         <InventoryDisplay inventory={expedition.inventory} context={context} />

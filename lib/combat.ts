@@ -179,6 +179,8 @@ export function handleCombatTick(
   }
 
   takeCombatTurn(expedition, onVictory, onDefeat, gameContext);
+
+  expedition.turnNumber++;
 }
 
 export function chooseRandomLivingTarget(
