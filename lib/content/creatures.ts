@@ -23,7 +23,7 @@ const rawCreatures = {
           if (targets.length === 0 || !targets[0]) return;
           takeDamage(
             targets[0],
-            5 + getSkill(SkillId.Melee, caster),
+            5 + getSkill(SkillId.Melee, caster, gameContext),
             gameContext,
             expedition
           );
@@ -50,7 +50,7 @@ const rawCreatures = {
           item: { definitionId: "coin", amount: [1, 5] },
         },
         {
-          weight: 9.1,
+          weight: 0.1,
           item: { definitionId: "shieldBauble", amount: 1 },
         },
       ]),
@@ -63,7 +63,7 @@ const rawCreatures = {
           if (targets.length === 0 || !targets[0]) return;
           takeDamage(
             targets[0],
-            caster.hp / 20 + getSkill(SkillId.Magic, caster),
+            caster.hp / 20 + getSkill(SkillId.Magic, caster, gameContext),
             gameContext,
             expedition
           );

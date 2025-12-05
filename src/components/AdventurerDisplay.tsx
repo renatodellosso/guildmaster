@@ -65,7 +65,7 @@ export function AdventurerDisplay({
         <ul>
           {Object.values(SkillId).map((skillId) => (
             <li key={skillId}>
-              {skillId}: {getSkill(skillId, adventurer)}
+              {skillId}: {getSkill(skillId, adventurer, context.game)}
             </li>
           ))}
         </ul>

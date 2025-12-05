@@ -9,9 +9,23 @@ import { SkillList } from "./skills";
 import { randomId } from "./utils";
 import { Id, MakeRequired, OptionalFunc } from "./utilTypes";
 
+export type CreatureProviderSource = CreatureInstance | ItemInstance;
+
 export type CreatureProvider = {
-  maxHealth?: OptionalFunc<number, [CreatureInstance, number, GameContext]>;
-  healthRegen?: OptionalFunc<number, [CreatureInstance, number, GameContext]>;
+  maxHealth?: OptionalFunc<
+    number,
+    [CreatureInstance, number, GameContext, CreatureProviderSource]
+  >;
+  healthRegen?: OptionalFunc<
+    number,
+    [CreatureInstance, number, GameContext, CreatureProviderSource]
+  >;
+  skills?: Partial<{
+    [key in keyof SkillList]: OptionalFunc<
+      number,
+      [CreatureInstance, number, GameContext, CreatureProviderSource]
+    >;
+  }>;
 };
 
 type DefProvider = MakeRequired<CreatureProvider, "maxHealth">;

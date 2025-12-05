@@ -7,6 +7,7 @@ import { Context } from "vm";
 export function LevelUpMenu({
   adventurer,
   close,
+  context,
 }: {
   adventurer: AdventurerInstance;
   close: () => void;
@@ -18,7 +19,7 @@ export function LevelUpMenu({
     adventurer.level += 1;
 
     // Increase selected skill by 1
-    const currentSkillValue = getSkill(skill, adventurer);
+    const currentSkillValue = getSkill(skill, adventurer, context.game);
     if (!adventurer.skills) {
       adventurer.skills = {};
     }
@@ -43,8 +44,8 @@ export function LevelUpMenu({
         >
           {Object.keys(SkillId).map((skill) => (
             <option key={skill} value={skill}>
-              {skill} ({getSkill(skill as SkillId, adventurer)} &rarr;{" "}
-              {getSkill(skill as SkillId, adventurer) + 1})
+              {skill} ({getSkill(skill as SkillId, adventurer, context.game)}{" "}
+              &rarr; {getSkill(skill as SkillId, adventurer, context.game) + 1})
             </option>
           ))}
         </select>

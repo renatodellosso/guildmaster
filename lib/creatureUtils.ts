@@ -4,6 +4,7 @@ import {
   AdventurerInstance,
   CreatureInstance,
   CreatureProvider,
+  CreatureProviderSource,
 } from "./creature";
 import { rollDrops } from "./drops";
 import { Expedition } from "./expedition";
@@ -14,8 +15,15 @@ import { SkillId } from "./skills";
 import { chooseRandom, getCreature } from "./utils";
 import { getFromOptionalFunc } from "./utilTypes";
 
-function getProviders(creature: CreatureInstance): CreatureProvider[] {
-  const providers: CreatureProvider[] = [creatures[creature.definitionId]];
+type ProviderWithSource = {
+  def: CreatureProvider;
+  source: CreatureProviderSource;
+};
+
+function getProviders(creature: CreatureInstance): ProviderWithSource[] {
+  const providers: ProviderWithSource[] = [
+    { def: creatures[creature.definitionId], source: creature },
+  ];
 
   if ("equipment" in creature && typeof creature.equipment === "object") {
     const equipment = creature.equipment as AdventurerInstance["equipment"];
@@ -26,7 +34,7 @@ function getProviders(creature: CreatureInstance): CreatureProvider[] {
         itemInstance.definitionId
       ] as EquipmentDefinition;
 
-      providers.push(equipmentDef);
+      providers.push({ def: equipmentDef, source: itemInstance });
     }
   }
 
@@ -42,17 +50,18 @@ export function getMaxHealth(
   let maxHp = 0;
 
   for (const provider of providers) {
-    if (provider.maxHealth) {
+    if (provider.def.maxHealth) {
       maxHp += getFromOptionalFunc(
-        provider.maxHealth,
+        provider.def.maxHealth,
         creature,
         maxHp,
-        gameContext
+        gameContext,
+        provider.source
       );
     }
   }
 
-  maxHp += 5 * getSkill(SkillId.Endurance, creature);
+  maxHp += 5 * getSkill(SkillId.Endurance, creature, gameContext);
 
   if ("level" in creature && typeof creature.level === "number") {
     maxHp += creature.level * 10;
@@ -70,17 +79,49 @@ export function getHealthRegen(
   let regen = 1;
 
   for (const provider of providers) {
-    if (provider.healthRegen) {
+    if (provider.def.healthRegen) {
       regen += getFromOptionalFunc(
-        provider.healthRegen,
+        provider.def.healthRegen,
         creature,
         regen,
-        gameContext
+        gameContext,
+        provider.source
       );
     }
   }
 
   return regen;
+}
+
+export function getSkill(
+  skill: SkillId,
+  creature: CreatureInstance,
+  gameContext: GameContext
+): number {
+  const providers = getProviders(creature);
+
+  let val = 0;
+
+  if ("skills" in creature) {
+    const skillList = creature.skills as AdventurerInstance["skills"];
+    if (skillList && typeof skillList[skill] === "number") {
+      val += skillList[skill]!;
+    }
+  }
+
+  for (const provider of providers) {
+    if (provider.def.skills?.[skill]) {
+      val += getFromOptionalFunc(
+        provider.def.skills[skill],
+        creature,
+        val,
+        gameContext,
+        provider.source
+      );
+    }
+  }
+
+  return val;
 }
 
 export function heal(
@@ -147,22 +188,6 @@ export function onDie(
 export function getXpForNextLevel(level: number): number {
   if (level <= 0) return 100;
   return getXpForNextLevel(level - 1) + 100 * Math.pow(1.1, level);
-}
-
-export function getSkill(skill: SkillId, creature: CreatureInstance): number {
-  const def = creatures[creature.definitionId];
-  let val = def.skills?.[skill]
-    ? getFromOptionalFunc(def.skills[skill], creature)
-    : 0;
-
-  if ("skills" in creature && typeof creature.skills === "object") {
-    const skills = creature.skills as Partial<{
-      [key in keyof typeof def.skills]: number;
-    }>;
-    val += skills[skill] ?? 0;
-  }
-
-  return val;
 }
 
 export function randomName(): string {

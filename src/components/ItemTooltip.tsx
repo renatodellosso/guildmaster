@@ -65,14 +65,46 @@ function EquipmentDetails({
 }) {
   const maxHealth =
     equipmentDef.maxHealth &&
-    getFromOptionalFunc(equipmentDef.maxHealth, creature!, 0, context.game);
+    getFromOptionalFunc(
+      equipmentDef.maxHealth,
+      creature!,
+      0,
+      context.game,
+      itemInstance
+    );
   const healthRegen =
     equipmentDef.healthRegen &&
-    getFromOptionalFunc(equipmentDef.healthRegen, creature!, 0, context.game);
+    getFromOptionalFunc(
+      equipmentDef.healthRegen,
+      creature!,
+      0,
+      context.game,
+      itemInstance
+    );
+
+  const skills = Object.entries(equipmentDef.skills || {}).reduce(
+    (acc, [skillId, func]) => {
+      const bonus = getFromOptionalFunc(
+        func,
+        creature!,
+        0,
+        context.game,
+        itemInstance
+      );
+      if (bonus !== 0) {
+        acc[skillId] = bonus;
+      }
+      return acc;
+    },
+    {} as {
+      [key: string]: number;
+    }
+  );
 
   const stats = {
     "Max Health": maxHealth,
     "Health Regen": healthRegen,
+    ...skills,
   };
 
   return (
