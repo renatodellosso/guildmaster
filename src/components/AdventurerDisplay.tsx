@@ -17,6 +17,7 @@ import { addToInventory, removeFromInventory } from "@/lib/inventory";
 import ItemTooltip from "./ItemTooltip";
 import { getAbilities } from "@/lib/ability";
 import AbilityDescription from "./AbilityDescription";
+import StatusEffectDisplay from "./StatusEffectDisplay";
 
 export function AdventurerDisplay({
   adventurer,
@@ -87,6 +88,19 @@ export function AdventurerDisplay({
             <div key={resistanceType}>
               {titleCase(resistanceType)}: {formatPercent(value)}
             </div>
+          ))}
+        </div>
+      )}
+      {adventurer.statusEffects && adventurer.statusEffects.length > 0 && (
+        <div className="flex flex-col">
+          <strong>Status Effects:</strong>
+          {adventurer.statusEffects.map((statusEffect, index) => (
+            <StatusEffectDisplay
+              key={index}
+              instance={statusEffect}
+              creature={adventurer}
+              context={context}
+            />
           ))}
         </div>
       )}

@@ -25,3 +25,7 @@ export type Context = {
 export type MakeRequired<T, K extends keyof T> = T & {
   [P in K]-?: T[P];
 };
+
+export type Tickable<TInstance> = {
+  tick?: (instance: TInstance, gameContext: GameContext) => void;
+};

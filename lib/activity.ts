@@ -1,16 +1,15 @@
 import { ActivityId } from "./content/activities";
 import { GameContext } from "./gameContext";
 import { CreatureInstance } from "./creature";
-import { OptionalFunc } from "./utilTypes";
+import { OptionalFunc, Tickable } from "./utilTypes";
 
-export type ActivityDefinition = {
+export type ActivityDefinition = Tickable<CreatureInstance> & {
   id: ActivityId;
   description: OptionalFunc<string, [CreatureInstance, GameContext]>;
   /**
    * Defaults to 1 if not specified.
    */
   healthRegenMultiplier?: number;
-  tick?: (creature: CreatureInstance, gameContext: GameContext) => void;
 };
 
 export type ActivityInstance = {

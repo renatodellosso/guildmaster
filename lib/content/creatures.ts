@@ -90,6 +90,14 @@ const rawCreatures = {
             expedition
           );
 
+          if (damage.length > 0) {
+            targets[0].statusEffects.push({
+              definitionId: "poisoned",
+              duration: 3,
+              strength: 1,
+            });
+          }
+
           addToExpeditionLog(
             expedition,
             `${caster.name} slashes ${targets[0].name} for ${formatDamage(damage)} damage!`

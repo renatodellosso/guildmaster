@@ -208,6 +208,11 @@ export function onDie(
     ? getFromOptionalFunc(def.xpValue, creature, gameContext)
     : 0;
 
+  // Remove temporary status effects
+  creature.statusEffects = creature.statusEffects?.filter(
+    (statusEffect) => statusEffect.duration === "infinite"
+  );
+
   if (!expedition) return;
 
   let msg = `${creature.name} has died!`;

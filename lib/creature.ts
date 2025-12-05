@@ -7,12 +7,19 @@ import { Drops } from "./drops";
 import { GameContext } from "./gameContext";
 import { EquipmentSlot, ItemInstance } from "./item";
 import { SkillList } from "./skills";
+import { StatusEffectInstance } from "./statusEffect";
 import { randomId } from "./utils";
-import { Id, MakeRequired, OptionalFunc } from "./utilTypes";
+import { Id, MakeRequired, OptionalFunc, Tickable } from "./utilTypes";
 
-export type CreatureProviderSource = CreatureInstance | ItemInstance;
+export type CreatureProviderSource =
+  | CreatureInstance
+  | ItemInstance
+  | StatusEffectInstance;
 
-export type CreatureProvider = {
+export type CreatureProvider = Tickable<{
+  creature: CreatureInstance;
+  source: CreatureProviderSource;
+}> & {
   maxHealth?: OptionalFunc<
     number,
     [CreatureInstance, number, GameContext, CreatureProviderSource]
@@ -48,10 +55,9 @@ export type CreatureInstance = {
   id: Id;
   definitionId: CreatureDefId;
   name: string;
-
   hp: number;
-
   equipment: { [slot in EquipmentSlot]?: ItemInstance };
+  statusEffects: StatusEffectInstance[];
 };
 
 export type AdventurerInstance = CreatureInstance & {
@@ -73,6 +79,7 @@ export function createCreatureInstance(
     name: creatures[defId].name,
     hp: 0,
     equipment: {},
+    statusEffects: [],
   };
 
   creature.hp = getMaxHealth(creature, gameContext);
