@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import ExpeditionsMenu from "./components/menus/ExpeditionsMenu";
 import { GameContext } from "@/lib/gameContext";
-import useTick from "@/lib/hooks/useTick";
-import { clearSave, getDefaultSave, loadSave } from "@/lib/saveUtils";
-import RosterMenu from "./components/menus/RosterMenu";
+import { getDefaultSave, loadSave } from "@/lib/saveUtils";
 import { Context } from "@/lib/utilTypes";
-import InventoryDisplay from "./components/InventoryDisplay";
+import MainGameWindow from "./components/MainGameWindow";
+import { OfflineProgressWindow } from "./components/OfflineProgressWindow";
 
 function App() {
   const [gameContext, setGameContext] = useState<GameContext>();
+  const [processingOfflineProgress, setProcessingOfflineProgress] =
+    useState(true);
 
   const context: Context = {
     game: gameContext!,
@@ -23,43 +23,24 @@ function App() {
     } else {
       setGameContext(getDefaultSave().gameContext);
     }
-  }, []);
 
-  const { lastSaveAt, lastDelta } = useTick(gameContext!, setGameContext);
+    setProcessingOfflineProgress(save.savedAt < Date.now() - 1000);
+  }, []);
 
   if (!gameContext) {
     return <div>Loading...</div>;
   }
 
-  return (
-    <div>
-      <button
-        onClick={() => {
-          clearSave();
-          location.reload();
-        }}
-      >
-        Clear Save
-      </button>
-      <div>
-        Last Tick:{" "}
-        {gameContext
-          ? new Date(gameContext.lastTick).toLocaleTimeString()
-          : "N/A"}
-      </div>
-      <div>Last Delta: {lastDelta ? lastDelta.toFixed(3) + "s" : "N/A"}</div>
-      <div>
-        Last Save:{" "}
-        {lastSaveAt ? new Date(lastSaveAt).toLocaleTimeString() : "N/A"}
-      </div>
-      <ExpeditionsMenu context={context} />
-      <RosterMenu context={context} />
-      <div>
-        <h1>Inventory</h1>
-        <InventoryDisplay inventory={gameContext.inventory} context={context} />
-      </div>
-    </div>
-  );
+  if (processingOfflineProgress) {
+    return (
+      <OfflineProgressWindow
+        context={context}
+        finish={() => setProcessingOfflineProgress(false)}
+      />
+    );
+  }
+
+  return <MainGameWindow context={context} setGameContext={setGameContext} />;
 }
 
 export default App;
