@@ -61,7 +61,7 @@ function tickCreature(creature: CreatureInstance, gameContext: GameContext) {
     }
   }
 
-  const providers = getProviders(creature);
+  const providers = getProviders(creature, gameContext);
   for (const provider of providers) {
     provider.def.tick?.(
       {

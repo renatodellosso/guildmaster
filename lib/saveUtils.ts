@@ -1,6 +1,7 @@
 import { createCreatureInstance } from "./creature";
 import { randomName } from "./creatureUtils";
 import { GameContext } from "./gameContext";
+import { getMaxRosterSize } from "./gameUtils";
 
 const SAVE_KEY = "guildmaster_save";
 
@@ -42,11 +43,8 @@ export function getDefaultSave(): Save {
     buildingsUnderConstruction: {},
   };
 
-  const creatures = Array.from({ length: 3 }).map(() =>
-    createCreatureInstance("human", context)
-  );
-
-  creatures.forEach((creature) => {
+  function addStartingAdventurer() {
+    const creature = createCreatureInstance("human", context);
     creature.name = randomName();
     context.roster[creature.id] = {
       ...creature,
@@ -57,7 +55,11 @@ export function getDefaultSave(): Save {
       },
       skills: {},
     };
-  });
+  }
+
+  while (Object.keys(context.roster).length < getMaxRosterSize(context)) {
+    addStartingAdventurer();
+  }
 
   return {
     gameContext: context,

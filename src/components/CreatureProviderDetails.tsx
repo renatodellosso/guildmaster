@@ -14,7 +14,7 @@ export default function CreatureProviderDetails({
   context,
 }: {
   provider: CreatureProvider;
-  source: CreatureProviderSource;
+  source: CreatureProviderSource | undefined;
   creature: CreatureInstance | undefined;
   context: Context;
 }) {

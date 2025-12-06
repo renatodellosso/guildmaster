@@ -1,5 +1,6 @@
 import { Ability, AbilityFuncParamsWithoutTargets } from "./ability";
 import { ActivityInstance } from "./activity";
+import { BuildingInstance } from "./building";
 import { ClassId } from "./content/classes";
 import { CreatureDefId, creatures } from "./content/creatures";
 import { getMaxHealth } from "./creatureUtils";
@@ -16,7 +17,8 @@ export type CreatureProviderSource =
   | CreatureInstance
   | ItemInstance
   | StatusEffectInstance
-  | number;
+  | BuildingInstance
+  | number; // For class levels
 
 export type CreatureProvider = Tickable<{
   creature: CreatureInstance;
@@ -24,30 +26,35 @@ export type CreatureProvider = Tickable<{
 }> & {
   maxHealth?: OptionalFunc<
     number,
-    [CreatureInstance, number, GameContext, CreatureProviderSource]
+    [CreatureInstance, number, GameContext, CreatureProviderSource | undefined]
   >;
   healthRegen?: OptionalFunc<
     number,
-    [CreatureInstance, number, GameContext, CreatureProviderSource]
+    [CreatureInstance, number, GameContext, CreatureProviderSource | undefined]
   >;
   maxMana?: OptionalFunc<
     number,
-    [CreatureInstance, number, GameContext, CreatureProviderSource]
+    [CreatureInstance, number, GameContext, CreatureProviderSource | undefined]
   >;
   manaRegen?: OptionalFunc<
     number,
-    [CreatureInstance, number, GameContext, CreatureProviderSource]
+    [CreatureInstance, number, GameContext, CreatureProviderSource | undefined]
   >;
   skills?: Partial<{
     [key in keyof SkillList]: OptionalFunc<
       number,
-      [CreatureInstance, number, GameContext, CreatureProviderSource]
+      [
+        CreatureInstance,
+        number,
+        GameContext,
+        CreatureProviderSource | undefined,
+      ]
     >;
   }>;
   abilities?: OptionalFunc<Ability[], AbilityFuncParamsWithoutTargets>;
   resistances?: OptionalFunc<
     DamageResistances,
-    [CreatureInstance, GameContext, CreatureProviderSource]
+    [CreatureInstance, GameContext, CreatureProviderSource | undefined]
   >;
 };
 

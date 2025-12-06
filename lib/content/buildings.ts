@@ -10,6 +10,8 @@ const rawBuildings = {
     canBuild: true,
     cost: [{ definitionId: "coin", amount: 100 }],
     buildTime: 60,
+    healthRegen: 1,
+    maxRosterSize: 1,
   },
   bonfire: {
     name: "Bonfire",
@@ -19,6 +21,8 @@ const rawBuildings = {
     cost: [{ definitionId: "coin", amount: 500 }],
     buildTime: 300,
     replaces: "firepit",
+    healthRegen: 2,
+    maxPartySize: 1,
   },
 } satisfies RawRegistry<BuildingId, BuildingDefinition>;
 

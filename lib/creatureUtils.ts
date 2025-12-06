@@ -1,3 +1,4 @@
+import { buildings } from "./content/buildings";
 import { classes, ClassId } from "./content/classes";
 import { creatures } from "./content/creatures";
 import { items } from "./content/items";
@@ -29,10 +30,26 @@ export type ProviderWithSource = {
   source: CreatureProviderSource;
 };
 
-export function getProviders(creature: CreatureInstance): ProviderWithSource[] {
+export function getProviders(
+  creature: CreatureInstance,
+  gameContext: GameContext
+): ProviderWithSource[] {
   const providers: ProviderWithSource[] = [
     { def: creatures[creature.definitionId], source: creature },
   ];
+
+  const ignoreGameProviders = !Object.keys(gameContext.roster).includes(
+    String(creature.id)
+  );
+  if (!ignoreGameProviders) {
+    // Add game-wide providers from buildings
+    for (const buildingInstance of Object.values(gameContext.buildings)) {
+      const buildingDef = buildings[buildingInstance.definitionId];
+      if (buildingDef) {
+        providers.push({ def: buildingDef, source: buildingInstance });
+      }
+    }
+  }
 
   for (const cls of Object.entries(creature.classes)) {
     const id = cls[0] as ClassId;
@@ -69,7 +86,7 @@ export function getMaxHealth(
   creature: CreatureInstance,
   gameContext: GameContext
 ): number {
-  const providers = getProviders(creature);
+  const providers = getProviders(creature, gameContext);
 
   let maxHp = 0;
 
@@ -98,7 +115,7 @@ export function getHealthRegen(
   creature: CreatureInstance,
   gameContext: GameContext
 ): number {
-  const providers = getProviders(creature);
+  const providers = getProviders(creature, gameContext);
 
   let regen = 1;
 
@@ -121,7 +138,7 @@ export function getMaxMana(
   creature: CreatureInstance,
   gameContext: GameContext
 ): number {
-  const providers = getProviders(creature);
+  const providers = getProviders(creature, gameContext);
 
   let maxMana = 0;
 
@@ -146,7 +163,7 @@ export function getManaRegen(
   creature: CreatureInstance,
   gameContext: GameContext
 ): number {
-  const providers = getProviders(creature);
+  const providers = getProviders(creature, gameContext);
 
   let regen = 1;
 
@@ -170,7 +187,7 @@ export function getSkill(
   creature: CreatureInstance,
   gameContext: GameContext
 ): number {
-  const providers = getProviders(creature);
+  const providers = getProviders(creature, gameContext);
 
   let val = 0;
 
@@ -200,7 +217,7 @@ export function getResistances(
   creature: CreatureInstance,
   gameContext: GameContext
 ): DamageResistances {
-  const providers = getProviders(creature);
+  const providers = getProviders(creature, gameContext);
 
   const resistancesList: DamageResistances[] = [];
 

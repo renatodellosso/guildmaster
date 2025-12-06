@@ -1,13 +1,13 @@
 import { BuildingId, buildings } from "./content/buildings";
 import { AdventurerInstance } from "./creature";
 import { getSkill } from "./creatureUtils";
-import { GameContext } from "./gameContext";
+import { GameContext, GameProvider } from "./gameContext";
 import { removeFromInventory } from "./inventory";
 import { ItemInstance } from "./item";
 import { SkillId } from "./skills";
 import { getFromOptionalFunc, OptionalFunc } from "./utilTypes";
 
-export type BuildingDefinition = {
+export type BuildingDefinition = GameProvider & {
   id: BuildingId;
   name: string;
   description: OptionalFunc<
@@ -88,31 +88,46 @@ export function progressBuildingConstruction(
   }
 
   const progress = Math.min(amount, timeRemaining);
-  const newTimeRemaining = timeRemaining - progress;
+  const newTimeRemaining = Math.min(
+    timeRemaining - progress,
+    buildings[buildingId].buildTime
+  );
   if (newTimeRemaining === 0) {
-    // Construction complete
-    delete gameContext.buildingsUnderConstruction[buildingId];
-    gameContext.buildings[buildingId] = {
-      definitionId: buildingId,
-      data: undefined,
-    };
-
-    // Reassign any workers
-    Object.values(gameContext.roster).forEach((creature) => {
-      if (
-        creature.activity.definitionId === "building" &&
-        creature.activity.data === buildingId
-      ) {
-        creature.activity = {
-          definitionId: "resting",
-        };
-      }
-    });
+    finishBuildingConstruction(buildingId, gameContext);
   } else {
     gameContext.buildingsUnderConstruction[buildingId] = newTimeRemaining;
   }
 
   return progress;
+}
+
+function finishBuildingConstruction(
+  buildingId: BuildingId,
+  gameContext: GameContext
+) {
+  delete gameContext.buildingsUnderConstruction[buildingId];
+  gameContext.buildings[buildingId] = {
+    definitionId: buildingId,
+    data: undefined,
+  };
+
+  // Reassign any workers
+  Object.values(gameContext.roster).forEach((creature) => {
+    if (
+      creature.activity.definitionId === "building" &&
+      creature.activity.data === buildingId
+    ) {
+      creature.activity = {
+        definitionId: "resting",
+      };
+    }
+  });
+
+  // Replace building if applicable
+  const buildingDef = buildings[buildingId];
+  if (buildingDef.replaces) {
+    delete gameContext.buildings[buildingDef.replaces];
+  }
 }
 
 export function getConstructionProgressPerTickForWorker(

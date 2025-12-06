@@ -16,7 +16,7 @@ export type AbilityFuncParamsWithoutTargets = [
   caster: CreatureInstance,
   expedition: Expedition | undefined,
   gameContext: GameContext,
-  source: CreatureProviderSource,
+  source: CreatureProviderSource | undefined,
 ];
 
 export type Ability = {
@@ -32,7 +32,7 @@ export type Ability = {
 
 export type AbilityWithSource = {
   ability: Ability;
-  source: CreatureProviderSource;
+  source: CreatureProviderSource | undefined;
 };
 
 export function getAbilities(
@@ -40,7 +40,7 @@ export function getAbilities(
   expedition: Expedition | undefined,
   gameContext: GameContext
 ): AbilityWithSource[] {
-  const providers = getProviders(creature);
+  const providers = getProviders(creature, gameContext);
 
   const abilities: AbilityWithSource[] = [];
 
@@ -123,7 +123,7 @@ export function selectAbilityForCreature(
   creature: CreatureInstance,
   expedition: Expedition,
   gameContext: GameContext
-): { ability: Ability; source: CreatureProviderSource } | undefined {
+): AbilityWithSource | undefined {
   const castableAbilities = getCastableAbilities(
     creature,
     expedition,

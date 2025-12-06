@@ -1,7 +1,7 @@
 import { DungeonId, dungeons } from "@/lib/content/dungeons";
 import { CreatureInstance } from "@/lib/creature";
 import { createExpedition } from "@/lib/expedition";
-import { getMaxPartySize } from "@/lib/gameStats";
+import { getMaxPartySize } from "@/lib/gameUtils";
 import { Context, Id } from "@/lib/utilTypes";
 import { useState } from "react";
 
@@ -68,7 +68,9 @@ export default function StartExpeditionMenu({
         </select>
       </div>
       <div className="flex flex-col gap-1 mb-2">
-        <p>Party:</p>
+        <p>
+          Party ({party.length}/{maxPartySize}):
+        </p>
         {party.length < maxPartySize && (
           <PartyMemberSelector
             availableMembers={availablePartyMembers}

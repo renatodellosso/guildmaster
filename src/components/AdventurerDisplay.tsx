@@ -6,8 +6,10 @@ import {
   getSkill,
   getResistances,
   getMaxMana,
+  getHealthRegen,
+  getManaRegen,
 } from "@/lib/creatureUtils";
-import { formatInt, formatPercent, titleCase } from "@/lib/format";
+import { formatBonus, formatInt, formatPercent, titleCase } from "@/lib/format";
 import { Context, getFromOptionalFunc } from "@/lib/utilTypes";
 import { useEffect, useState } from "react";
 import { LevelUpMenu } from "./menus/LevelUpMenu";
@@ -64,11 +66,13 @@ export function AdventurerDisplay({
       </div>
       <div>
         HP: {formatInt(adventurer.hp)}/
-        {formatInt(getMaxHealth(adventurer, context.game))}
+        {formatInt(getMaxHealth(adventurer, context.game))} (
+        {formatBonus(getHealthRegen(adventurer, context.game))}/tick)
       </div>
       <div>
         Mana: {formatInt(adventurer.mana)}/
-        {formatInt(getMaxMana(adventurer, context.game))}
+        {formatInt(getMaxMana(adventurer, context.game))} (
+        {formatBonus(getManaRegen(adventurer, context.game))}/tick)
       </div>
       <div>
         Activity:{" "}
@@ -153,11 +157,14 @@ export function AdventurerDisplay({
             {classes[classId as ClassId].name} {level}
           </ClassTooltip>
         ))
-        .reduce((prev, curr) => (
-          <>
-            {prev}, {curr}
-          </>
-        ), <></>)}
+        .reduce(
+          (prev, curr) => (
+            <>
+              {prev}, {curr}
+            </>
+          ),
+          <></>
+        )}
       )
     </span>
   );

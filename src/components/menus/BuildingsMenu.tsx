@@ -10,6 +10,8 @@ import { getSkill } from "@/lib/creatureUtils";
 import { hasInInventory } from "@/lib/inventory";
 import { SkillId } from "@/lib/skills";
 import { Context, getFromOptionalFunc } from "@/lib/utilTypes";
+import BuildingTooltip from "../BuildingTooltip";
+import { formatInt } from "@/lib/format";
 
 export default function BuildingsMenu({ context }: { context: Context }) {
   function startConstruction(buildingId: BuildingId) {
@@ -32,12 +34,14 @@ export default function BuildingsMenu({ context }: { context: Context }) {
         <h2>Buildings</h2>
         {Object.values(context.game.buildings).map((building) => (
           <div key={building.definitionId}>
-            <strong>{buildings[building.definitionId].name}</strong> -{" "}
-            {getFromOptionalFunc(
-              buildings[building.definitionId].description,
-              building,
-              context.game
-            )}
+            <BuildingTooltip building={building} context={context}>
+              <strong>{buildings[building.definitionId].name}</strong> -{" "}
+              {getFromOptionalFunc(
+                buildings[building.definitionId].description,
+                building,
+                context.game
+              )}
+            </BuildingTooltip>
           </div>
         ))}
       </div>
@@ -48,6 +52,7 @@ export default function BuildingsMenu({ context }: { context: Context }) {
             <thead>
               <tr>
                 <th>Building</th>
+                <th>Replacing</th>
                 <th>Work Remaining</th>
                 <th>Workers</th>
                 <th>Progress/Tick</th>
@@ -65,9 +70,20 @@ export default function BuildingsMenu({ context }: { context: Context }) {
 
                   return (
                     <tr key={buildingId}>
-                      <td>{def.name}</td>
+                      <td>
+                        <BuildingTooltip
+                          key={buildingId}
+                          building={buildingId as BuildingId}
+                          context={context}
+                        >
+                          {def.name}
+                        </BuildingTooltip>
+                      </td>
+                      <td>
+                        {def.replaces ? buildings[def.replaces].name : "N/A"}
+                      </td>
                       <td className="text-right">
-                        {timeRemaining}/{def.buildTime}
+                        {formatInt(timeRemaining)}/{formatInt(def.buildTime)}
                       </td>
                       <td>
                         <div className="flex flex-col max-h-48 overflow-y-scroll pr-2">
@@ -151,7 +167,14 @@ export default function BuildingsMenu({ context }: { context: Context }) {
             ) : (
               availableBuildings.map((buildingDef) => (
                 <tr key={buildingDef.id}>
-                  <td>{buildingDef.name}</td>
+                  <td>
+                    <BuildingTooltip
+                      building={buildingDef.id}
+                      context={context}
+                    >
+                      {buildingDef.name}
+                    </BuildingTooltip>
+                  </td>
                   <td>
                     {getFromOptionalFunc(
                       buildingDef.description,
@@ -169,11 +192,11 @@ export default function BuildingsMenu({ context }: { context: Context }) {
                     {buildingDef.cost
                       .map(
                         (cost) =>
-                          `${cost.amount}x ${items[cost.definitionId].name}`
+                          `${formatInt(cost.amount)}x ${items[cost.definitionId].name}`
                       )
                       .join(", ")}
                   </td>
-                  <td>{buildingDef.buildTime}</td>
+                  <td>{formatInt(buildingDef.buildTime)}</td>
                   <td>
                     {buildingDef.replaces
                       ? buildings[buildingDef.replaces].name

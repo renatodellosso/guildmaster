@@ -62,6 +62,10 @@ export function hasInInventory(
     return item.every((it) => hasInInventory(inventory, it));
   }
 
+  if (item.amount <= 0) {
+    return true;
+  }
+
   const existingItem = inventory.find((i) => matchesItemFilter(i, item));
 
   return existingItem !== undefined && existingItem.amount >= item.amount;
