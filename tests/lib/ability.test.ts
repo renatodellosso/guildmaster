@@ -13,7 +13,6 @@ import { creatures } from "@/lib/content/creatures";
 import { GameContext } from "@/lib/gameContext";
 import { Expedition } from "@/lib/expedition";
 import { buildCreatureInstance } from "../testUtils";
-import { AbilityId } from "@/lib/content/abilityId";
 
 describe("Ability", () => {
   it("allows arbitrary priority functions", () => {
@@ -45,7 +44,6 @@ describe(getCastableAbilities.name, () => {
     expectTypeOf<CastableAbilities>().toEqualTypeOf<AbilityWithSource[]>();
 
     const ability1: Ability = {
-      id: AbilityId.Punch,
       name: "Castable Ability",
       description: "A castable ability",
       activate: () => {},
@@ -55,7 +53,6 @@ describe(getCastableAbilities.name, () => {
     };
 
     const ability2: Ability = {
-      id: AbilityId.Punch,
       name: "Non-Castable Ability",
       description: "A non-castable ability",
       activate: () => {},
@@ -84,7 +81,6 @@ describe(getCastableAbilities.name, () => {
 describe(getHighestPriorityAbilities.name, () => {
   it("returns abilities with the highest priority", () => {
     const ability1: Ability = {
-      id: AbilityId.Punch,
       name: "Ability 1",
       description: "First ability",
       activate: () => {},
@@ -94,7 +90,6 @@ describe(getHighestPriorityAbilities.name, () => {
     };
 
     const ability2: Ability = {
-      id: AbilityId.Punch,
       name: "Ability 2",
       description: "Second ability",
       activate: () => {},
@@ -104,7 +99,6 @@ describe(getHighestPriorityAbilities.name, () => {
     };
 
     const ability3: Ability = {
-      id: AbilityId.Punch,
       name: "Ability 3",
       description: "Third ability",
       activate: () => {},
@@ -136,7 +130,6 @@ describe(getHighestPriorityAbilities.name, () => {
 describe(selectAbilityFromList.name, () => {
   it("selects an ability from a list", () => {
     const ability1: Ability = {
-      id: AbilityId.Punch,
       name: "Ability 1",
       description: "First ability",
       activate: () => {},
@@ -146,7 +139,6 @@ describe(selectAbilityFromList.name, () => {
     };
 
     const ability2: Ability = {
-      id: AbilityId.Punch,
       name: "Ability 2",
       description: "Second ability",
       activate: () => {},
@@ -177,7 +169,6 @@ describe(selectAbilityFromList.name, () => {
 describe(selectAbilityForCreature.name, () => {
   it("selects an ability for a creature", () => {
     const ability1: Ability = {
-      id: AbilityId.Punch,
       name: "Ability 1",
       description: "First ability",
       activate: () => {},
@@ -187,7 +178,6 @@ describe(selectAbilityForCreature.name, () => {
     };
 
     const ability2: Ability = {
-      id: AbilityId.Punch,
       name: "Ability 2",
       description: "Second ability",
       activate: () => {},
@@ -234,7 +224,6 @@ describe(selectAbilityForCreature.name, () => {
 
   it("only selects castable abilities", () => {
     const ability1: Ability = {
-      id: AbilityId.Punch,
       name: "Castable Ability",
       description: "A castable ability",
       activate: () => {},
@@ -244,7 +233,6 @@ describe(selectAbilityForCreature.name, () => {
     };
 
     const ability2: Ability = {
-      id: AbilityId.Punch,
       name: "Non-Castable Ability",
       description: "A non-castable ability",
       activate: () => {},
@@ -272,7 +260,6 @@ describe(selectAbilityForCreature.name, () => {
 
   it("only selects abilities with the highest priority", () => {
     const ability1: Ability = {
-      id: AbilityId.Punch,
       name: "High Priority Ability",
       description: "A high priority ability",
       activate: () => {},
@@ -282,7 +269,6 @@ describe(selectAbilityForCreature.name, () => {
     };
 
     const ability2: Ability = {
-      id: AbilityId.Punch,
       name: "Low Priority Ability",
       description: "A low priority ability",
       activate: () => {},

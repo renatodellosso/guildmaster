@@ -1,4 +1,3 @@
-import { AbilityId } from "./abilityId";
 import { CreatureDefinition } from "../creature";
 import { DropTableEntry } from "../drops";
 import { finishRegistry, RawRegistry } from "../registry";
@@ -19,7 +18,6 @@ const rawCreatures = {
     skills: {},
     abilities: [
       attack({
-        id: AbilityId.Punch,
         name: "Punch",
         description: "Punch an enemy with a fist.",
         damage: [
@@ -54,7 +52,6 @@ const rawCreatures = {
     },
     abilities: [
       attack({
-        id: AbilityId.Slash,
         name: "Slash",
         description: "Slash an enemy with a crude blade.",
         damage: [
@@ -85,7 +82,6 @@ const rawCreatures = {
     },
     abilities: [
       attack({
-        id: AbilityId.Slash,
         name: "Slash",
         description: "Slash an enemy with a crude blade.",
         damage: [
@@ -120,7 +116,6 @@ const rawCreatures = {
     },
     abilities: [
       attack({
-        id: AbilityId.Arrow,
         name: "Arrow Shot",
         description: "Shoot an arrow at an enemy.",
         damage: [

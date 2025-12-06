@@ -2,7 +2,6 @@ import { attack } from "../abilityTemplates";
 import { DamageType, DamageTypeGroups } from "../damage";
 import { EquipmentDefinition, EquipmentSlot } from "../item";
 import { RawRegistry } from "../registry";
-import { AbilityId } from "./abilityId";
 
 export type EquipmentId = "shieldBauble" | "longsword" | "shortbow";
 
@@ -24,7 +23,6 @@ export const rawEquipments = {
     slot: EquipmentSlot.Weapon,
     abilities: [
       attack({
-        id: AbilityId.LongswordSlash,
         name: "Slash",
         description: "Slash an enemy with a longsword.",
         damage: [
@@ -44,7 +42,6 @@ export const rawEquipments = {
     slot: EquipmentSlot.Weapon,
     abilities: [
       attack({
-        id: AbilityId.Arrow,
         name: "Arrow",
         description: "Shoot an arrow at your target.",
         damage: [

@@ -1,7 +1,6 @@
 import { Ability } from "./ability";
 import { AbilityPriority } from "./abilityPriority";
 import { chooseRandomLivingTargetWithinRange } from "./combat";
-import { AbilityId } from "./content/abilityId";
 import { StatusEffectId } from "./content/statusEffects";
 import { CreatureInstance } from "./creature";
 import { getSkill, takeDamage } from "./creatureUtils";
@@ -12,7 +11,6 @@ import { GameContext } from "./gameContext";
 import { SkillId } from "./skills";
 
 export function attack(params: {
-  id: AbilityId;
   name: string;
   description: string;
   damage: Damage[];
@@ -35,7 +33,6 @@ export function attack(params: {
   params.skill = params.range > 1 ? SkillId.Ranged : SkillId.Melee;
 
   return {
-    id: params.id,
     name: params.name,
     description: `${params.description} Deals ${formatDamage(
       params.damage
@@ -81,8 +78,7 @@ export function attack(params: {
   };
 }
 
-export function applyStatusEffect(params: {
-  id: AbilityId;
+  export function applyStatusEffect(params: {
   name: string;
   description: string;
   statusEffectId: StatusEffectId;
@@ -97,7 +93,6 @@ export function applyStatusEffect(params: {
   params.strength = params.strength ?? 1;
 
   return {
-    id: params.id,
     name: params.name,
     description: params.description,
     canActivate: (caster) => caster.mana >= (params!.manaCost ?? 0),

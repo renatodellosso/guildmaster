@@ -5,7 +5,6 @@ import { getSkill } from "../creatureUtils";
 import { DamageType } from "../damage";
 import { finishRegistry, RawRegistry } from "../registry";
 import { SkillId } from "../skills";
-import { AbilityId } from "./abilityId";
 
 export type ClassId = "thug" | "wizard" | "abjurer";
 
@@ -35,7 +34,6 @@ const rawClasses = {
       30 + ((source as number) - 1) * 5,
     abilities: [
       attack({
-        id: AbilityId.ManaBolt,
         name: "Mana Bolt",
         description: "Hurl a bolt of magical energy at your target.",
         damage: [
@@ -66,7 +64,6 @@ const rawClasses = {
       (source as number) >= 2
         ? [
             applyStatusEffect({
-              id: AbilityId.Ward,
               name: "Ward",
               description:
                 "Create a magical ward that reduces incoming magic damage.",

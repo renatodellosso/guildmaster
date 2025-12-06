@@ -1,5 +1,4 @@
 import { AbilityPriority } from "./abilityPriority";
-import { AbilityId } from "./content/abilityId";
 import { CreatureInstance, CreatureProviderSource } from "./creature";
 import { getProviders } from "./creatureUtils";
 import { Expedition } from "./expedition";
@@ -21,8 +20,6 @@ export type AbilityFuncParamsWithoutTargets = [
 ];
 
 export type Ability = {
-  id: AbilityId;
-  overridePriority?: number;
   name: string;
   description: string;
   activate: (...args: AbilityFuncParams) => void;
@@ -45,9 +42,7 @@ export function getAbilities(
 ): AbilityWithSource[] {
   const providers = getProviders(creature);
 
-  const abilities: {
-    [id in AbilityId]?: AbilityWithSource;
-  } = {};
+  const abilities: AbilityWithSource[] = [];
 
   for (const provider of providers) {
     if (!provider.def.abilities) {
@@ -63,22 +58,11 @@ export function getAbilities(
     );
 
     for (const ability of providerAbilities) {
-      const currPriority =
-        abilities[ability.id]?.ability.overridePriority ?? -Infinity;
-      const newPriority = ability.overridePriority ?? -Infinity;
-
-      if (abilities[ability.id] && newPriority <= currPriority) {
-        continue;
-      }
-
-      abilities[ability.id] = {
-        ability,
-        source: provider.source,
-      };
+      abilities.push({ ability, source: provider.source });
     }
   }
 
-  return Object.values(abilities);
+  return abilities;
 }
 export function getCastableAbilities(
   creature: CreatureInstance,

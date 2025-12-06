@@ -93,13 +93,13 @@ export default function CreatureProviderDetails({
       {abilities && abilities.length > 0 && (
         <div>
           <strong>Abilities:</strong>
-          {abilities.map((ability) => (
+          {abilities.map((ability, index) => (
             <AbilityDescription
               ability={{
                 ability: ability,
                 source,
               }}
-              key={ability.id}
+              key={index}
             />
           ))}
         </div>

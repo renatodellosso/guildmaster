@@ -19,13 +19,11 @@ import { CreatureDefId, creatures } from "@/lib/content/creatures";
 import { GameContext } from "@/lib/gameContext";
 import { AbilityPriority } from "@/lib/abilityPriority";
 import { Expedition } from "@/lib/expedition";
-import { AbilityId } from "@/lib/content/abilityId";
 
 describe(takeCombatTurn.name, () => {
   it("takes a turn for each creature", () => {
     creatures.human.abilities = [
       {
-        id: AbilityId.Punch,
         name: "Basic Attack",
         activate: vi.fn(),
         description: "",
@@ -137,7 +135,6 @@ describe(takeCombatTurn.name, () => {
 
     creatures.human.abilities = [
       {
-        id: AbilityId.Punch,
         name: "Basic Attack",
         activate: vi.fn((creature) => {
           actionOrder.push(creature.id);
@@ -197,7 +194,6 @@ describe(takeCombatTurn.name, () => {
 
     creatures.human.abilities = [
       {
-        id: AbilityId.Punch,
         name: "Basic Attack",
         activate: vi.fn((creature) => {
           actionOrder.push(creature.id);

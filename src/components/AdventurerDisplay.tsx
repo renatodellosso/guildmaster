@@ -131,8 +131,8 @@ export function AdventurerDisplay({
       <div>
         <strong>Abilities:</strong>
         {abilities.length === 0 && <p>No abilities.</p>}
-        {abilities.map((ability) => (
-          <AbilityDescription ability={ability} key={ability.ability.id} />
+        {abilities.map((ability, index) => (
+          <AbilityDescription ability={ability} key={index} />
         ))}
       </div>
     </>
