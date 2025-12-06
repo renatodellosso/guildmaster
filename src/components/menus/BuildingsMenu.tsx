@@ -5,13 +5,13 @@ import {
   startBuildingConstruction,
 } from "@/lib/building";
 import { BuildingId, buildings } from "@/lib/content/buildings";
-import { items } from "@/lib/content/items";
 import { getSkill } from "@/lib/creatureUtils";
 import { hasInInventory } from "@/lib/inventory";
 import { SkillId } from "@/lib/skills";
 import { Context, getFromOptionalFunc } from "@/lib/utilTypes";
 import BuildingTooltip from "../BuildingTooltip";
 import { formatInt } from "@/lib/format";
+import ItemList from "../ItemList";
 
 export default function BuildingsMenu({ context }: { context: Context }) {
   function startConstruction(buildingId: BuildingId) {
@@ -189,12 +189,7 @@ export default function BuildingsMenu({ context }: { context: Context }) {
                         : "text-red-500"
                     }
                   >
-                    {buildingDef.cost
-                      .map(
-                        (cost) =>
-                          `${formatInt(cost.amount)}x ${items[cost.definitionId].name}`
-                      )
-                      .join(", ")}
+                    <ItemList items={buildingDef.cost} context={context} />
                   </td>
                   <td>{formatInt(buildingDef.buildTime)}</td>
                   <td>

@@ -23,6 +23,7 @@ import AbilityDescription from "./AbilityDescription";
 import StatusEffectDisplay from "./StatusEffectDisplay";
 import { classes, ClassId } from "@/lib/content/classes";
 import ClassTooltip from "./ClassTooltip";
+import { canReassignAdventurer } from "@/lib/activity";
 
 export function AdventurerDisplay({
   adventurer,
@@ -40,6 +41,18 @@ export function AdventurerDisplay({
 
   const abilities = getAbilities(adventurer, undefined, context.game);
   const resistances = getResistances(adventurer, context.game);
+
+  function expelFromGuild() {
+    if (
+      !canReassignAdventurer(adventurer, context.game) ||
+      !confirm(`Are you sure you want to expel ${adventurer.name}?`)
+    ) {
+      return;
+    }
+
+    delete context.game.roster[adventurer.id];
+    context.updateGameState();
+  }
 
   const body = levelUpMenuOpen ? (
     <LevelUpMenu
@@ -64,6 +77,11 @@ export function AdventurerDisplay({
           <button onClick={() => setLevelUpMenuOpen(true)}>Level Up</button>
         )}
       </div>
+      {canReassignAdventurer(adventurer, context.game) && (
+        <button onClick={expelFromGuild} className="bg-red-900">
+          Expel from guild
+        </button>
+      )}
       <div>
         HP: {formatInt(adventurer.hp)}/
         {formatInt(getMaxHealth(adventurer, context.game))} (

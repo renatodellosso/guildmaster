@@ -3,6 +3,7 @@ import { BuildingId } from "./content/buildings";
 import { AdventurerInstance, CreatureProvider } from "./creature";
 import { Expedition } from "./expedition";
 import { Inventory } from "./inventory";
+import { ItemInstance } from "./item";
 import { Id, OptionalFunc } from "./utilTypes";
 
 export type GameContext = {
@@ -33,5 +34,9 @@ export type GameProvider = CreatureProvider & {
   maxPartySize?: OptionalFunc<
     number,
     [GameProvider, number, GameContext, GameProviderSource | undefined]
+  >;
+  recruitmentCost?: OptionalFunc<
+    ItemInstance[],
+    [GameProvider, ItemInstance[], GameContext, GameProviderSource | undefined]
   >;
 };

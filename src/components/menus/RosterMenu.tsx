@@ -4,10 +4,23 @@ import { formatInt } from "@/lib/format";
 import { Context, getFromOptionalFunc, Id } from "@/lib/utilTypes";
 import { useState } from "react";
 import { AdventurerDisplay } from "../AdventurerDisplay";
-import { getMaxRosterSize } from "@/lib/gameUtils";
+import {
+  getMaxRosterSize,
+  getRecruitmentCost,
+  recruitAdventurer,
+} from "@/lib/gameUtils";
+import ItemList from "../ItemList";
+import { hasInInventory } from "@/lib/inventory";
 
 export default function RosterMenu({ context }: { context: Context }) {
   const [selectedId, setSelectedId] = useState<Id>();
+
+  const recruitmentCost = getRecruitmentCost(context.game);
+
+  function recruit() {
+    recruitAdventurer(context.game);
+    context.updateGameState();
+  }
 
   return (
     <div>
@@ -17,6 +30,18 @@ export default function RosterMenu({ context }: { context: Context }) {
       </h1>
       <div className="flex">
         <div className="flex flex-col overflow-y-scroll">
+          {Object.keys(context.game.roster).length <
+            getMaxRosterSize(context.game) && (
+            <button
+              onClick={recruit}
+              disabled={
+                !hasInInventory(context.game.inventory, recruitmentCost)
+              }
+            >
+              Recruit Adventurer{" "}
+              <ItemList items={recruitmentCost} context={context} />
+            </button>
+          )}
           {Object.values(context.game.roster).map((creature) => {
             const xpForNextLevel = getXpForNextLevel(creature.level);
 

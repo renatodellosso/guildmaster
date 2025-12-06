@@ -1,7 +1,5 @@
-import { createCreatureInstance } from "./creature";
-import { randomName } from "./creatureUtils";
 import { GameContext } from "./gameContext";
-import { getMaxRosterSize } from "./gameUtils";
+import { addNewAdventurer, getMaxRosterSize } from "./gameUtils";
 
 const SAVE_KEY = "guildmaster_save";
 
@@ -43,22 +41,8 @@ export function getDefaultSave(): Save {
     buildingsUnderConstruction: {},
   };
 
-  function addStartingAdventurer() {
-    const creature = createCreatureInstance("human", context);
-    creature.name = randomName();
-    context.roster[creature.id] = {
-      ...creature,
-      xp: 0,
-      level: 0,
-      activity: {
-        definitionId: "resting",
-      },
-      skills: {},
-    };
-  }
-
   while (Object.keys(context.roster).length < getMaxRosterSize(context)) {
-    addStartingAdventurer();
+    addNewAdventurer(context);
   }
 
   return {
