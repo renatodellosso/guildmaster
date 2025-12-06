@@ -1,7 +1,7 @@
 import { ActivityInstance } from "./activity";
 import { handleCombatTick } from "./combat";
 import { activities } from "./content/activities";
-import { CreatureInstance } from "./creature";
+import { AdventurerInstance, CreatureInstance } from "./creature";
 import {
   getHealthRegen,
   getManaRegen,
@@ -57,7 +57,7 @@ function tickCreature(creature: CreatureInstance, gameContext: GameContext) {
     const activityInstance = creature.activity as ActivityInstance;
     const activity = activities[activityInstance.definitionId];
     if (activity.tick) {
-      activity.tick(creature, gameContext);
+      activity.tick(creature as AdventurerInstance, gameContext);
     }
   }
 

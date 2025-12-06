@@ -5,6 +5,7 @@ export enum SkillId {
   Ranged = "Ranged",
   Magic = "Magic",
   Endurance = "Endurance",
+  Construction = "Construction",
 }
 
 export type SkillList<TArgs extends unknown[] = []> = {

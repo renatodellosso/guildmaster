@@ -1,8 +1,13 @@
 import { ActivityDefinition } from "../activity";
+import {
+  getConstructionProgressPerTickForWorker,
+  progressBuildingConstruction,
+} from "../building";
 import { finishRegistry, RawRegistry } from "../registry";
+import { BuildingId } from "./buildings";
 import { dungeons } from "./dungeons";
 
-export type ActivityId = "resting" | "onExpedition";
+export type ActivityId = "resting" | "onExpedition" | "building";
 
 const rawActivities = {
   resting: {
@@ -22,6 +27,22 @@ const rawActivities = {
       return `On Expedition in ${dungeonName}`;
     },
     healthRegenMultiplier: 0,
+    canReassign: false,
+  },
+  building: {
+    description: "Constructing a building",
+    healthRegenMultiplier: 1,
+    canReassign: true,
+    tick: (creature, gameContext) => {
+      const buildingId = creature.activity.data as BuildingId;
+      const progress = progressBuildingConstruction(
+        buildingId,
+        getConstructionProgressPerTickForWorker(creature, gameContext),
+        gameContext
+      );
+
+      creature.xp += progress;
+    },
   },
 } satisfies RawRegistry<ActivityId, ActivityDefinition>;
 

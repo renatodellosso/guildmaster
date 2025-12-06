@@ -5,6 +5,7 @@ import InventoryDisplay from "./InventoryDisplay";
 import ExpeditionsMenu from "./menus/ExpeditionsMenu";
 import RosterMenu from "./menus/RosterMenu";
 import { GameContext } from "@/lib/gameContext";
+import BuildingsMenu from "./menus/BuildingsMenu";
 
 export default function MainGameWindow({
   context,
@@ -40,8 +41,12 @@ export default function MainGameWindow({
       <RosterMenu context={context} />
       <div>
         <h1>Inventory</h1>
-        <InventoryDisplay inventory={context.game.inventory} context={context} />
+        <InventoryDisplay
+          inventory={context.game.inventory}
+          context={context}
+        />
       </div>
+      <BuildingsMenu context={context} />
     </div>
   );
 }

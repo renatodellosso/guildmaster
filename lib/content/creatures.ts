@@ -75,7 +75,7 @@ const rawCreatures = {
   },
   bandit: {
     name: "Bandit",
-    maxHealth: 80,
+    maxHealth: 60,
     xpValue: 75,
     skills: {
       [SkillId.Melee]: 2,
@@ -109,7 +109,7 @@ const rawCreatures = {
   },
   bandit_archer: {
     name: "Bandit Archer",
-    maxHealth: 70,
+    maxHealth: 50,
     xpValue: 90,
     skills: {
       [SkillId.Ranged]: 3,

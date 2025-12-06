@@ -157,7 +157,7 @@ export function AdventurerDisplay({
           <>
             {prev}, {curr}
           </>
-        ))}
+        ), <></>)}
       )
     </span>
   );

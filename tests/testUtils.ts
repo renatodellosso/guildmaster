@@ -27,6 +27,8 @@ export function buildGameContext(
     ),
     expeditions: [],
     inventory: [],
+    buildings: {},
+    buildingsUnderConstruction: {},
   };
 }
 

@@ -1,4 +1,4 @@
-import { ItemInstance } from "./item";
+import { ItemInstance, matchesItemFilter } from "./item";
 
 export type Inventory = ItemInstance[];
 
@@ -25,8 +25,16 @@ export function addToInventory(
 
 export function removeFromInventory(
   inventory: Inventory,
-  item: ItemInstance
+  item: ItemInstance | ItemInstance[]
 ): boolean {
+  if (Array.isArray(item)) {
+    for (const it of item) {
+      const success = removeFromInventory(inventory, it);
+      if (!success) return false;
+    }
+    return true;
+  }
+
   const existingItemIndex = inventory.findIndex(
     (i) => i.definitionId === item.definitionId
   );
@@ -44,4 +52,17 @@ export function removeFromInventory(
   }
 
   return true;
+}
+
+export function hasInInventory(
+  inventory: Inventory,
+  item: ItemInstance | ItemInstance[]
+): boolean {
+  if (Array.isArray(item)) {
+    return item.every((it) => hasInInventory(inventory, it));
+  }
+
+  const existingItem = inventory.find((i) => matchesItemFilter(i, item));
+
+  return existingItem !== undefined && existingItem.amount >= item.amount;
 }

@@ -43,6 +43,27 @@ export function areItemsEqual(
   return true;
 }
 
+/**
+ * @param filter does not filter by amount
+ */
+export function matchesItemFilter(
+  item: ItemInstance,
+  filter: Partial<ItemInstance>
+): boolean {
+  const keys = Object.keys(filter).filter((k) => k !== "amount");
+
+  for (const key of keys) {
+    if (
+      (item as Record<string, unknown>)[key] !==
+      (filter as Record<string, unknown>)[key]
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 export function isEquipment(item: ItemInstance): boolean {
   if (!(item.definitionId in items)) {
     return false;

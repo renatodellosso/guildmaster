@@ -38,6 +38,8 @@ export function getDefaultSave(): Save {
     roster: {},
     expeditions: [],
     inventory: [],
+    buildings: {},
+    buildingsUnderConstruction: {},
   };
 
   const creatures = Array.from({ length: 3 }).map(() =>

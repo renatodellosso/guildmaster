@@ -23,6 +23,10 @@ textarea {
   @apply border border-white hover:bg-gray-700 active:bg-gray-900 px-1 cursor-pointer;
 }
 
+*:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
 /* width */
 ::-webkit-scrollbar {
   width: 5px;
