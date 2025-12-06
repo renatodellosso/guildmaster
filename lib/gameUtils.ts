@@ -14,6 +14,7 @@ export function getMaxRosterSize(gameContext: GameContext): number {
     maxRosterSize += getFromOptionalFunc(
       def.maxRosterSize,
       def,
+      maxRosterSize,
       gameContext,
       building
     );

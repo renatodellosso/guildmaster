@@ -28,10 +28,10 @@ export type GameProviderSource = BuildingInstance;
 export type GameProvider = CreatureProvider & {
   maxRosterSize?: OptionalFunc<
     number,
-    [GameProvider, GameContext, GameProviderSource]
+    [GameProvider, number, GameContext, GameProviderSource | undefined]
   >;
   maxPartySize?: OptionalFunc<
     number,
-    [GameProvider, number, GameContext, GameProviderSource]
+    [GameProvider, number, GameContext, GameProviderSource | undefined]
   >;
 };

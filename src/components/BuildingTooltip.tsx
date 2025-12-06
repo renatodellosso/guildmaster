@@ -4,6 +4,7 @@ import { Context } from "@/lib/utilTypes";
 import { ReactNode } from "react";
 import { Tooltip } from "./Tooltip";
 import CreatureProviderDetails from "./CreatureProviderDetails";
+import GameProviderDetails from "./GameProviderDetails";
 
 export default function BuildingTooltip({
   building,
@@ -24,6 +25,11 @@ export default function BuildingTooltip({
         provider={def}
         source={typeof building === "string" ? undefined : building}
         creature={undefined}
+        context={context}
+      />
+      <GameProviderDetails
+        provider={def}
+        source={typeof building === "string" ? undefined : building}
         context={context}
       />
     </>
