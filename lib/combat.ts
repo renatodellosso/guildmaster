@@ -4,7 +4,7 @@ import { AdventurerInstance, CreatureInstance } from "./creature";
 import { Expedition, startCombat } from "./expedition";
 import { GameContext } from "./gameContext";
 import { addToInventory } from "./inventory";
-import { getCreature } from "./utils";
+import { getCreature, randRange } from "./utils";
 import { Id } from "./utilTypes";
 
 export type RetreatTriggerDefinition = {
@@ -226,4 +226,37 @@ export function chooseRandomLivingTargetWithinRange(
 
   const randomIndex = Math.floor(Math.random() * livingCreatures.length);
   return [livingCreatures[randomIndex]];
+}
+
+export function chooseMultipleRandomLivingTargetsWithinRange(
+  side: CombatSide,
+  gameContext: GameContext,
+  maxRange: number,
+  targetCount: number
+): CreatureInstance[] {
+  const livingCreatures = side.creatures
+    .filter((creatureOrId) => {
+      const creature = getCreature(creatureOrId, gameContext);
+      return creature.hp > 0;
+    })
+    .slice(0, maxRange)
+    .map((creatureOrId) => getCreature(creatureOrId, gameContext));
+
+  if (livingCreatures.length === 0) {
+    return [];
+  }
+
+  const selectedTargets: CreatureInstance[] = [];
+  const availableTargets = [...livingCreatures];
+
+  for (let i = 0; i < targetCount; i++) {
+    if (availableTargets.length === 0) {
+      break;
+    }
+    const randomIndex = randRange([0, availableTargets.length - 1]);
+    selectedTargets.push(availableTargets[randomIndex]);
+    availableTargets.splice(randomIndex, 1); // Remove selected target to avoid duplicates
+  }
+
+  return selectedTargets;
 }

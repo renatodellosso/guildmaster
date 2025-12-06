@@ -36,11 +36,13 @@ export function LevelUpMenu({
         (adventurer.classes[maxClass as ClassId] || 0)
         ? currentClass
         : maxClass;
-    });
+    }, availableClasses[0]?.id);
 
   const [errorMessage, setErrorMessage] = useState<string>();
   const [skill, setSkill] = useState<SkillId>(highestSkill);
-  const [selectedClass, setSelectedClass] = useState<ClassId>(highestClass as ClassId);
+  const [selectedClass, setSelectedClass] = useState<ClassId>(
+    highestClass as ClassId
+  );
 
   function levelUp() {
     if (!skill || (!selectedClass && availableClasses.length > 0)) {

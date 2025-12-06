@@ -1,6 +1,6 @@
 import { BuildingInstance } from "@/lib/building";
 import { BuildingId, buildings } from "@/lib/content/buildings";
-import { Context } from "@/lib/utilTypes";
+import { Context, getFromOptionalFunc } from "@/lib/utilTypes";
 import { ReactNode } from "react";
 import { Tooltip } from "./Tooltip";
 import CreatureProviderDetails from "./CreatureProviderDetails";
@@ -17,21 +17,19 @@ export default function BuildingTooltip({
 }) {
   const def =
     buildings[typeof building === "string" ? building : building.definitionId];
+  const source = typeof building === "string" ? undefined : building;
 
   const tooltip = (
     <>
       <strong>{def.name}</strong>
+      {getFromOptionalFunc(def.description, source, context.game)}
       <CreatureProviderDetails
         provider={def}
-        source={typeof building === "string" ? undefined : building}
+        source={source}
         creature={undefined}
         context={context}
       />
-      <GameProviderDetails
-        provider={def}
-        source={typeof building === "string" ? undefined : building}
-        context={context}
-      />
+      <GameProviderDetails provider={def} source={source} context={context} />
     </>
   );
 

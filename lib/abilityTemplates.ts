@@ -1,6 +1,9 @@
 import { Ability } from "./ability";
 import { AbilityPriority } from "./abilityPriority";
-import { chooseRandomLivingTargetWithinRange } from "./combat";
+import {
+  chooseMultipleRandomLivingTargetsWithinRange,
+  chooseRandomLivingTargetWithinRange,
+} from "./combat";
 import { StatusEffectId } from "./content/statusEffects";
 import { CreatureInstance } from "./creature";
 import { getSkill, takeDamage } from "./creatureUtils";
@@ -19,6 +22,7 @@ export function attack(params: {
   manaCost?: number;
   priority?: AbilityPriority;
   skill?: SkillId;
+  targets?: number;
   onDealDamage?: (
     caster: CreatureInstance,
     target: CreatureInstance,
@@ -29,21 +33,22 @@ export function attack(params: {
 }): Ability {
   params.manaCost = params.manaCost ?? 0;
   params.range = params.range ?? 1;
+  params.targets = params.targets ?? 1;
   params.priority = params.priority ?? AbilityPriority.Low;
-
   params.skill = params.range > 1 ? SkillId.Ranged : SkillId.Melee;
 
   return {
     name: params.name,
     description: `${params.description} Deals ${formatDamage(
       params.damage
-    )} damage to a target within ${params.range} position of the front.`,
+    )} damage to ${params.targets} target${params.targets !== 1 ? "s" : ""} within ${params.range} position of the front.`,
     canActivate: (caster) => caster.mana >= (params!.manaCost ?? 0),
     selectTargets: (_caster, expedition, gameContext) =>
-      chooseRandomLivingTargetWithinRange(
+      chooseMultipleRandomLivingTargetsWithinRange(
         expedition.combat.enemies,
         gameContext,
-        params!.range!
+        params!.range!,
+        params!.targets!
       ),
     activate: (caster, targets, expedition, gameContext) => {
       if (targets.length === 0 || !targets[0]) return;

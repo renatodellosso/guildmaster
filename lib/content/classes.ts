@@ -1,8 +1,8 @@
 import { AbilityPriority } from "../abilityPriority";
 import { applyStatusEffect, attack } from "../abilityTemplates";
-import { ClassDefinition } from "../class";
-import { getSkill } from "../creatureUtils";
-import { DamageType } from "../damage";
+import { buildClassDescription, ClassDefinition, requireLevel } from "../class";
+import { getMaxMana, getSkill, heal } from "../creatureUtils";
+import { DamageType, DamageTypeGroups } from "../damage";
 import { finishRegistry, RawRegistry } from "../registry";
 import { SkillId } from "../skills";
 
@@ -11,17 +11,54 @@ export type ClassId = "thug" | "wizard" | "abjurer";
 const rawClasses = {
   thug: {
     name: "Thug",
-    description:
+    description: buildClassDescription(
       "A brutish enforcer who uses strength and intimidation to get their way.",
+      {
+        2: "+1 Melee per 3 Endurance.",
+        7: "Regenerates health each tick based on Endurance.",
+      }
+    ),
     canSelect: (creature, gameContext) =>
       getSkill(SkillId.Endurance, creature, gameContext) >= 1,
     maxHealth: (_creature, _prev, _gameContext, source) =>
       25 + ((source as number) - 1) * 5,
     skills: {
       [SkillId.Melee]: (creature, _prev, _gameContext, source) =>
-        (source as number) > 1
+        (source as number) >= 2
           ? getSkill(SkillId.Endurance, creature, _gameContext) / 3
           : 0,
+    },
+    abilities: (_creature, _prev, _gameContext, source) =>
+      requireLevel(
+        {
+          3: [
+            attack({
+              name: "Power Strike",
+              description: "A powerful melee attack that deals extra damage.",
+              damage: [
+                {
+                  type: DamageType.Bludgeoning,
+                  amount: 15,
+                },
+              ],
+              range: 1,
+              priority: AbilityPriority.Medium,
+              skill: SkillId.Melee,
+            }),
+          ],
+        },
+        _creature,
+        _gameContext,
+        source
+      ),
+    tick: ({ creature, source }, gameContext) => {
+      if ((source as number) >= 7) {
+        heal(
+          creature,
+          1 + getSkill(SkillId.Endurance, creature, gameContext) / 10,
+          gameContext
+        );
+      }
     },
   },
   wizard: {
@@ -32,27 +69,58 @@ const rawClasses = {
       getSkill(SkillId.Magic, creature, gameContext) >= 1,
     maxMana: (_creature, _prev, _gameContext, source) =>
       30 + ((source as number) - 1) * 5,
-    abilities: [
-      attack({
-        name: "Mana Bolt",
-        description: "Hurl a bolt of magical energy at your target.",
-        damage: [
-          {
-            type: DamageType.Force,
-            amount: 10,
-          },
-        ],
-        range: 3,
-        manaCost: 5,
-        priority: AbilityPriority.Medium,
-        skill: SkillId.Magic,
-      }),
-    ],
+    abilities: (_creature, _prev, _gameContext, source) =>
+      requireLevel(
+        {
+          0: [
+            attack({
+              name: "Mana Bolt",
+              description: "Hurl a bolt of magical energy at your target.",
+              damage: [
+                {
+                  type: DamageType.Force,
+                  amount: 10,
+                },
+              ],
+              range: 3,
+              manaCost: 5,
+              priority: AbilityPriority.Medium,
+              skill: SkillId.Magic,
+            }),
+          ],
+          3: [
+            attack({
+              name: "Fireball",
+              description:
+                "Launch a fiery explosion that damages all enemies in an area.",
+              damage: [
+                {
+                  type: DamageType.Fire,
+                  amount: 30,
+                },
+              ],
+              range: 3,
+              targets: 3,
+              manaCost: 30,
+              priority: AbilityPriority.High,
+              skill: SkillId.Magic,
+            }),
+          ],
+        },
+        _creature,
+        _gameContext,
+        source
+      ),
   },
   abjurer: {
     name: "Abjurer",
-    description:
+    description: buildClassDescription(
       "A protective spellcaster who specializes in defensive magic and wards.",
+      {
+        0: "Grants a bonus to max health based on level and Magic skill.",
+        5: "Provides resistance to all damage types based on mana.",
+      }
+    ),
     canSelect: (creature, gameContext) =>
       getSkill(SkillId.Endurance, creature, gameContext) >= 2 &&
       creature.classes["wizard"] !== undefined &&
@@ -61,8 +129,9 @@ const rawClasses = {
       (source as number) * 3 +
       getSkill(SkillId.Magic, creature, _gameContext) * 5,
     abilities: (_creature, _prev, _gameContext, source) =>
-      (source as number) >= 2
-        ? [
+      requireLevel(
+        {
+          2: [
             applyStatusEffect({
               name: "Ward",
               description:
@@ -73,8 +142,19 @@ const rawClasses = {
               side: "ally",
               priority: AbilityPriority.Medium,
             }),
-          ]
-        : [],
+          ],
+        },
+        _creature,
+        _gameContext,
+        source
+      ),
+    resistances: (creature, gameContext, source) =>
+      (source as number) >= 5
+        ? {
+            [DamageTypeGroups.All]:
+              creature.mana / getMaxMana(creature, gameContext) / 4,
+          }
+        : {},
   },
 } satisfies RawRegistry<ClassId, ClassDefinition>;
 
