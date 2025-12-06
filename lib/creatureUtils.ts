@@ -1,6 +1,7 @@
 import { classes, ClassId } from "./content/classes";
 import { creatures } from "./content/creatures";
 import { items } from "./content/items";
+import { statusEffects } from "./content/statusEffects";
 import {
   AdventurerInstance,
   CreatureInstance,
@@ -52,6 +53,13 @@ export function getProviders(creature: CreatureInstance): ProviderWithSource[] {
 
       providers.push({ def: equipmentDef, source: itemInstance });
     }
+  }
+
+  for (const statusEffect of creature.statusEffects || []) {
+    providers.push({
+      def: statusEffects[statusEffect.definitionId],
+      source: statusEffect,
+    });
   }
 
   return providers;
