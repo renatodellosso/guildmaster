@@ -44,7 +44,7 @@ export function Tooltip({
   const contentWrapper = (
     <div
       ref={contentRef}
-      className="text-sm absolute bg-black border px-1"
+      className="text-left text-white text-sm absolute bg-black border border-white px-1"
     >
       {content}
     </div>

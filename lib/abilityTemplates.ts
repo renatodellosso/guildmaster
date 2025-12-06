@@ -9,6 +9,7 @@ import { addToExpeditionLog, Expedition } from "./expedition";
 import { formatDamage } from "./format";
 import { GameContext } from "./gameContext";
 import { SkillId } from "./skills";
+import { deepCopy } from "./utils";
 
 export function attack(params: {
   name: string;
@@ -46,7 +47,7 @@ export function attack(params: {
       ),
     activate: (caster, targets, expedition, gameContext) => {
       if (targets.length === 0 || !targets[0]) return;
-      const damage = params!.damage;
+      const damage = deepCopy(params!.damage);
       if (damage[0])
         damage[0].amount += getSkill(params!.skill!, caster, gameContext);
 
@@ -78,7 +79,7 @@ export function attack(params: {
   };
 }
 
-  export function applyStatusEffect(params: {
+export function applyStatusEffect(params: {
   name: string;
   description: string;
   statusEffectId: StatusEffectId;

@@ -24,7 +24,7 @@ textarea {
 }
 
 *:disabled {
-  @apply opacity-50 cursor-not-allowed;
+  @apply border-gray-500 hover:bg-black active:bg-black text-gray-500 cursor-not-allowed;
 }
 
 /* width */

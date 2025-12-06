@@ -176,9 +176,11 @@ export function AdventurerDisplay({
           </ClassTooltip>
         ))
         .reduce(
-          (prev, curr) => (
+          (prev, curr, index) => (
             <>
-              {prev}, {curr}
+              {prev}
+              {index > 0 ? ", " : ""}
+              {curr}
             </>
           ),
           <></>
@@ -205,13 +207,6 @@ function EquipmentSelect({
   slot: EquipmentSlot;
   context: Context;
 }) {
-  console.log(
-    "Rendering EquipmentSelect for slot:",
-    slot,
-    "on",
-    adventurer.name
-  );
-
   const availableEquipment = context.game.inventory
     .filter(isEquipment)
     .filter((item) => {
@@ -221,7 +216,6 @@ function EquipmentSelect({
 
   function handleChange(event: React.ChangeEvent<HTMLSelectElement>) {
     const value = event.target.value;
-    console.log("Selected value:", value);
     if (value === "none") {
       if (slot in adventurer.equipment && adventurer.equipment[slot]) {
         addToInventory(context.game.inventory, {

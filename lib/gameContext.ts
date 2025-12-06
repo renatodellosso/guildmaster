@@ -39,4 +39,8 @@ export type GameProvider = CreatureProvider & {
     ItemInstance[],
     [GameProvider, ItemInstance[], GameContext, GameProviderSource | undefined]
   >;
+  startingSkillChance?: OptionalFunc<
+    number,
+    [GameProvider, number, GameContext, GameProviderSource | undefined]
+  >;
 };

@@ -20,11 +20,27 @@ export function LevelUpMenu({
     getFromOptionalFunc(cls.canSelect, adventurer, context.game)
   );
 
-  const [errorMessage, setErrorMessage] = useState<string>();
-  const [skill, setSkill] = useState<SkillId>(SkillId.Melee);
-  const [selectedClass, setSelectedClass] = useState<ClassId>(
-    availableClasses[0]?.id
+  const highestSkill = Object.values(SkillId).reduce(
+    (maxSkill, currentSkill) => {
+      return getSkill(currentSkill, adventurer, context.game) >
+        getSkill(maxSkill, adventurer, context.game)
+        ? currentSkill
+        : maxSkill;
+    },
+    SkillId.Melee
   );
+  const highestClass = Object.keys(adventurer.classes)
+    .filter((cls) => availableClasses.some((ac) => ac.id === cls))
+    .reduce((maxClass, currentClass) => {
+      return (adventurer.classes[currentClass as ClassId] || 0) >
+        (adventurer.classes[maxClass as ClassId] || 0)
+        ? currentClass
+        : maxClass;
+    });
+
+  const [errorMessage, setErrorMessage] = useState<string>();
+  const [skill, setSkill] = useState<SkillId>(highestSkill);
+  const [selectedClass, setSelectedClass] = useState<ClassId>(highestClass as ClassId);
 
   function levelUp() {
     if (!skill || (!selectedClass && availableClasses.length > 0)) {

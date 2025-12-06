@@ -1,9 +1,11 @@
 import { buildings } from "./content/buildings";
-import { createCreatureInstance } from "./creature";
+import { AdventurerInstance, createCreatureInstance } from "./creature";
 import { randomName } from "./creatureUtils";
 import { GameContext, GameProvider, GameProviderSource } from "./gameContext";
 import { removeFromInventory } from "./inventory";
 import { ItemInstance } from "./item";
+import { SkillId } from "./skills";
+import { chance, chooseRandom } from "./utils";
 import { getFromOptionalFunc } from "./utilTypes";
 
 type GameProviderWithSource = {
@@ -85,11 +87,34 @@ export function getRecruitmentCost(gameContext: GameContext): ItemInstance[] {
   return cost;
 }
 
-export function addNewAdventurer(gameContext: GameContext) {
-  const creature = createCreatureInstance("human", gameContext);
-  creature.name = randomName();
-  gameContext.roster[creature.id] = {
-    ...creature,
+export function getStartingSkillChance(gameContext: GameContext): number {
+  let chance = 0.4;
+
+  for (const building of getProviders(gameContext)) {
+    const def = building.def;
+    if (!def.startingSkillChance) {
+      continue;
+    }
+
+    chance += getFromOptionalFunc(
+      def.startingSkillChance,
+      def,
+      chance,
+      gameContext,
+      building.source
+    );
+  }
+
+  return chance;
+}
+
+export function addNewAdventurer(
+  gameContext: GameContext,
+  skillCount: number = 0
+) {
+  const creature: AdventurerInstance = {
+    ...createCreatureInstance("human", gameContext),
+    name: randomName(),
     xp: 0,
     level: 0,
     activity: {
@@ -97,11 +122,30 @@ export function addNewAdventurer(gameContext: GameContext) {
     },
     skills: {},
   };
+
+  const startingSkillChance = getStartingSkillChance(gameContext);
+
+  for (let i = 0; i < skillCount; i++) {
+    if (!chance(startingSkillChance)) {
+      continue;
+    }
+
+    // Choose a skill to level up
+    const skill = chooseRandom(Object.values(SkillId));
+    creature.skills[skill] = (creature.skills[skill] || 0) + 1;
+  }
+
+  gameContext.roster[creature.id] = creature;
 }
 
 export function recruitAdventurer(gameContext: GameContext) {
   const recruitmentCost = getRecruitmentCost(gameContext);
 
+  const maxLevel = Object.values(gameContext.roster).reduce(
+    (max, creature) => Math.max(max, creature.level),
+    0
+  );
+
   removeFromInventory(gameContext.inventory, recruitmentCost);
-  addNewAdventurer(gameContext);
+  addNewAdventurer(gameContext, maxLevel);
 }

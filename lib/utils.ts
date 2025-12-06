@@ -37,3 +37,17 @@ export function round(num: number, decimals: number = 0): number {
   const factor = Math.pow(10, decimals);
   return Math.round(num * factor) / factor;
 }
+
+export function deepCopy<T>(obj: T): T {
+  if (Array.isArray(obj)) {
+    return obj.map((item) => deepCopy(item)) as unknown as T;
+  } else if (obj && typeof obj === "object") {
+    const copy: any = {};
+    for (const key in obj) {
+      copy[key] = deepCopy((obj as any)[key]);
+    }
+    return copy;
+  } else {
+    return obj;
+  }
+}

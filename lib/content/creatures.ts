@@ -6,7 +6,6 @@ import { Table } from "../table";
 import { Id } from "../utilTypes";
 import { DamageType } from "../damage";
 import { attack } from "../abilityTemplates";
-import { chance } from "../utils";
 
 export type CreatureDefId = "human" | "goblin" | "bandit" | "bandit_archer";
 
@@ -42,7 +41,7 @@ const rawCreatures = {
       table: new Table<DropTableEntry>([
         {
           weight: 1,
-          item: { definitionId: "coin", amount: [1, 5] },
+          item: { definitionId: "coin", amount: [1, 15] },
         },
         {
           weight: 0.1,
@@ -57,19 +56,10 @@ const rawCreatures = {
         damage: [
           {
             type: DamageType.Slashing,
-            amount: 8,
+            amount: 5,
           },
         ],
         range: 1,
-        onDealDamage: (_caster, target) => {
-          if (chance(0.3)) {
-            target.statusEffects.push({
-              definitionId: "poisoned",
-              duration: 3,
-              strength: 1,
-            });
-          }
-        },
       }),
     ],
   },
@@ -87,7 +77,7 @@ const rawCreatures = {
         damage: [
           {
             type: DamageType.Slashing,
-            amount: 10,
+            amount: 4,
           },
         ],
         range: 1,
@@ -121,7 +111,7 @@ const rawCreatures = {
         damage: [
           {
             type: DamageType.Piercing,
-            amount: 11,
+            amount: 5,
           },
         ],
         range: 3,
