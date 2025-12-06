@@ -1,13 +1,15 @@
-import { BuildingDefinition } from "../building";
+import { BuildingDefinition, doesNotHaveBuildingTag } from "../building";
 import { finishRegistry, RawRegistry } from "../registry";
 
 export type BuildingId = "firepit" | "bonfire" | "tents";
+export type BuildingTag = "guildCenter";
 
 const rawBuildings = {
   firepit: {
     name: "Firepit",
     description: "A simple firepit to keep adventurers warm and cook food.",
-    canBuild: true,
+    canBuild: doesNotHaveBuildingTag("guildCenter"),
+    tags: ["guildCenter"],
     cost: [{ definitionId: "coin", amount: 30 }],
     buildTime: 60,
     healthRegen: 1,
@@ -17,7 +19,8 @@ const rawBuildings = {
     name: "Bonfire",
     description:
       "A large bonfire to keep adventurers warm and cook food for a larger group.",
-    canBuild: true,
+    canBuild: doesNotHaveBuildingTag("guildCenter"),
+    tags: ["guildCenter"],
     cost: [{ definitionId: "coin", amount: 200 }],
     buildTime: 300,
     replaces: "firepit",
@@ -29,6 +32,7 @@ const rawBuildings = {
     name: "Tents",
     description: "Tents to provide shelter for adventurers.",
     canBuild: true,
+    tags: [],
     cost: [{ definitionId: "coin", amount: 100 }],
     buildTime: 600,
     maxRosterSize: 2,

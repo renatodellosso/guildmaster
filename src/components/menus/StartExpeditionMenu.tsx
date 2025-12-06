@@ -1,3 +1,4 @@
+import { canReassignAdventurer } from "@/lib/activity";
 import { DungeonId, dungeons } from "@/lib/content/dungeons";
 import { CreatureInstance } from "@/lib/creature";
 import { createExpedition } from "@/lib/expedition";
@@ -17,7 +18,10 @@ export default function StartExpeditionMenu({
   const [party, setParty] = useState<Id[]>([]);
 
   const availablePartyMembers = Object.values(context.game.roster).filter(
-    (member) => member.hp > 0 && !party.includes(member.id)
+    (member) =>
+      member.hp > 0 &&
+      !party.includes(member.id) &&
+      canReassignAdventurer(member, context.game)
   );
 
   const maxPartySize = getMaxPartySize(context.game);

@@ -1,6 +1,7 @@
 import { attack } from "../abilityTemplates";
 import { DamageType, DamageTypeGroups } from "../damage";
-import { EquipmentDefinition, EquipmentSlot } from "../item";
+import { EquipmentSlot } from "../equipmentSlot";
+import { EquipmentDefinition } from "../item";
 import { RawRegistry } from "../registry";
 
 export type EquipmentId = "shieldBauble" | "longsword" | "shortbow";

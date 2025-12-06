@@ -14,7 +14,7 @@ import { Context, getFromOptionalFunc } from "@/lib/utilTypes";
 import { useEffect, useState } from "react";
 import { LevelUpMenu } from "./menus/LevelUpMenu";
 import { SkillId } from "@/lib/skills";
-import { EquipmentDefinition, EquipmentSlot, isEquipment } from "@/lib/item";
+import { EquipmentDefinition, isEquipment } from "@/lib/item";
 import { items } from "@/lib/content/items";
 import { addToInventory, removeFromInventory } from "@/lib/inventory";
 import ItemTooltip from "./ItemTooltip";
@@ -24,6 +24,7 @@ import StatusEffectDisplay from "./StatusEffectDisplay";
 import { classes, ClassId } from "@/lib/content/classes";
 import ClassTooltip from "./ClassTooltip";
 import { canReassignAdventurer } from "@/lib/activity";
+import { EquipmentSlot } from "@/lib/equipmentSlot";
 
 export function AdventurerDisplay({
   adventurer,

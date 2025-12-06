@@ -1,4 +1,4 @@
-import { BuildingId, buildings } from "./content/buildings";
+import { BuildingId, buildings, BuildingTag } from "./content/buildings";
 import { AdventurerInstance } from "./creature";
 import { getSkill } from "./creatureUtils";
 import { GameContext, GameProvider } from "./gameContext";
@@ -10,6 +10,7 @@ import { getFromOptionalFunc, OptionalFunc } from "./utilTypes";
 export type BuildingDefinition = GameProvider & {
   id: BuildingId;
   name: string;
+  tags: BuildingTag[];
   description: OptionalFunc<
     string,
     [BuildingInstance | undefined, GameContext]
@@ -140,4 +141,18 @@ export function getConstructionProgressPerTickForWorker(
     gameContext
   );
   return constructionSkill + 1;
+}
+
+export function doesNotHaveBuildingTag(
+  tag: BuildingTag
+): BuildingDefinition["canBuild"] {
+  return (gameContext) => {
+    for (const buildingInstance of Object.values(gameContext.buildings)) {
+      const buildingDef = buildings[buildingInstance.definitionId];
+      if (buildingDef.tags.includes(tag)) {
+        return false;
+      }
+    }
+    return true;
+  };
 }

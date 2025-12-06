@@ -6,6 +6,8 @@ import { getCreature } from "@/lib/utils";
 import { Context } from "@/lib/utilTypes";
 import InventoryDisplay from "./InventoryDisplay";
 import CreatureTooltip from "./CreatureTooltip";
+import { dungeons } from "@/lib/content/dungeons";
+import { forceStartRetreat } from "@/lib/combat";
 
 export default function ExpeditionDisplay({
   expedition,
@@ -15,9 +17,21 @@ export default function ExpeditionDisplay({
   context: Context;
 }) {
   const combat = expedition.combat;
+  const dungeon = dungeons[expedition.dungeonId];
+
+  function retreat() {
+    forceStartRetreat(expedition);
+    context.updateGameState();
+  }
 
   return (
     <div>
+      <div className="flex gap-2">
+        <strong>Expedition to {dungeon.name}</strong>
+        {expedition.combat.allies.retreatTimer == -1 && (
+          <button onClick={retreat}>Retreat</button>
+        )}
+      </div>
       <div className="flex gap-4">
         <div>
           <strong>

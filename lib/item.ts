@@ -1,5 +1,6 @@
 import { ItemId, items } from "./content/items";
 import { CreatureProvider } from "./creature";
+import { EquipmentSlot } from "./equipmentSlot";
 
 export type ItemDefinition = {
   id: ItemId;
@@ -12,12 +13,6 @@ export type ItemInstance = {
   definitionId: ItemId;
   amount: number;
 };
-
-export enum EquipmentSlot {
-  Weapon = "weapon",
-  Armor = "armor",
-  Accessory = "accessory",
-}
 
 export type EquipmentDefinition = ItemDefinition &
   CreatureProvider & {

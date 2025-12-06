@@ -7,6 +7,8 @@ import { addToInventory } from "./inventory";
 import { getCreature, randRange } from "./utils";
 import { Id } from "./utilTypes";
 
+const RETREAT_TIMER_START = 3;
+
 export type RetreatTriggerDefinition = {
   shouldRetreat: (combat: Combat, data?: unknown) => boolean;
   /**
@@ -101,7 +103,7 @@ export function handleRetreat(
 
   if (combat.allies.retreatTimer === -1) {
     if (checkRetreatTriggers(combat)) {
-      combat.allies.retreatTimer = 3; // Retreat in 3 turns
+      combat.allies.retreatTimer = RETREAT_TIMER_START;
     }
     return;
   }
@@ -146,7 +148,18 @@ export function takeCombatTurn(
   combat.allies = combat.enemies;
   combat.enemies = tmp;
 
-  takeTurnsForCombatSide(expedition, onVictory, gameContext);
+  takeTurnsForCombatSide(
+    expedition,
+    () => {
+      // Swap sides back before calling victory callback
+      tmp = combat.allies;
+      combat.allies = combat.enemies;
+      combat.enemies = tmp;
+
+      onVictory();
+    },
+    gameContext
+  );
 
   tmp = combat.allies;
   combat.allies = combat.enemies;
@@ -157,17 +170,7 @@ export function handleCombatTick(
   expedition: Expedition,
   gameContext: GameContext
 ) {
-  function onVictory() {
-    console.log("Expedition victorious!");
-
-    addToInventory(gameContext.inventory, expedition.inventory);
-    expedition.inventory = [];
-
-    expedition.combat = startCombat(expedition, gameContext);
-  }
-
-  function onDefeat() {
-    console.log("Expedition defeated!");
+  function endExpedition() {
     gameContext.expeditions = gameContext.expeditions.filter(
       (c) => c.combat !== expedition.combat
     );
@@ -183,9 +186,33 @@ export function handleCombatTick(
     }
   }
 
+  function onVictory() {
+    console.log("Expedition victorious!");
+
+    addToInventory(gameContext.inventory, expedition.inventory);
+    expedition.inventory = [];
+
+    if (expedition.combat.allies.retreatTimer !== -1) {
+      endExpedition();
+      return;
+    }
+
+    expedition.combat = startCombat(expedition, gameContext);
+  }
+
+  function onDefeat() {
+    console.log("Expedition defeated!");
+
+    endExpedition();
+  }
+
   takeCombatTurn(expedition, onVictory, onDefeat, gameContext);
 
   expedition.turnNumber++;
+}
+
+export function forceStartRetreat(expedition: Expedition) {
+  expedition.combat.allies.retreatTimer = RETREAT_TIMER_START;
 }
 
 export function chooseRandomLivingTarget(
