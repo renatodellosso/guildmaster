@@ -58,6 +58,7 @@ export function attack(params: {
 
       const damageTaken = takeDamage(
         targets[0],
+        caster,
         damage,
         gameContext,
         expedition

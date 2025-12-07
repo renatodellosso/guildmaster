@@ -4,10 +4,11 @@ import { BuildingInstance } from "./building";
 import { ClassId } from "./content/classes";
 import { CreatureDefId, creatures } from "./content/creatures";
 import { getMaxHealth } from "./creatureUtils";
-import { DamageResistances } from "./damage";
+import { Damage, DamageResistances } from "./damage";
 import { Drops } from "./drops";
+import { EquipmentSlot } from "./equipmentSlot";
 import { GameContext } from "./gameContext";
-import { EquipmentSlot, ItemInstance } from "./item";
+import { ItemInstance } from "./item";
 import { SkillList } from "./skills";
 import { StatusEffectInstance } from "./statusEffect";
 import { randomId } from "./utils";
@@ -56,6 +57,39 @@ export type CreatureProvider = Tickable<{
     DamageResistances,
     [CreatureInstance, GameContext, CreatureProviderSource | undefined]
   >;
+  getDamageToDeal?: OptionalFunc<
+    Damage[],
+    [
+      Damage[],
+      CreatureInstance,
+      CreatureInstance,
+      GameContext,
+      CreatureProviderSource | undefined,
+    ]
+  >;
+  getDamageToTake?: OptionalFunc<
+    Damage[],
+    [
+      Damage[],
+      CreatureInstance,
+      CreatureInstance,
+      GameContext,
+      CreatureProviderSource | undefined,
+    ]
+  >;
+  onDealDamage?: (
+    caster: CreatureInstance,
+    target: CreatureInstance,
+    damageDealt: Damage[],
+    gameContext: GameContext,
+    source: CreatureProviderSource | undefined
+  ) => void;
+  onKill?: (
+    killer: CreatureInstance,
+    killed: CreatureInstance,
+    gameContext: GameContext,
+    source: CreatureProviderSource | undefined
+  ) => void;
 };
 
 type DefProvider = MakeRequired<CreatureProvider, "maxHealth">;

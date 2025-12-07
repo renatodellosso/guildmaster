@@ -22,7 +22,7 @@ import { GameContext } from "./gameContext";
 import { addToInventory } from "./inventory";
 import { EquipmentDefinition } from "./item";
 import { SkillId } from "./skills";
-import { chooseRandom, getCreature } from "./utils";
+import { chooseRandom, deepCopy, getCreature } from "./utils";
 import { getFromOptionalFunc } from "./utilTypes";
 
 export type ProviderWithSource = {
@@ -236,6 +236,95 @@ export function getResistances(
   return mergeResistances(resistancesList);
 }
 
+export function getDamageToDeal(
+  baseDamage: Damage[],
+  caster: CreatureInstance,
+  target: CreatureInstance,
+  gameContext: GameContext
+): Damage[] {
+  const providers = getProviders(caster, gameContext);
+
+  let finalDamage = baseDamage;
+
+  for (const provider of providers) {
+    if (provider.def.getDamageToDeal) {
+      finalDamage = getFromOptionalFunc(
+        provider.def.getDamageToDeal,
+        finalDamage,
+        caster,
+        target,
+        gameContext,
+        provider.source
+      );
+    }
+  }
+
+  return finalDamage;
+}
+
+export function getDamageToTake(
+  baseDamage: Damage[],
+  creature: CreatureInstance,
+  dealtBy: CreatureInstance,
+  gameContext: GameContext
+): Damage[] {
+  const providers = getProviders(creature, gameContext);
+
+  let finalDamage = baseDamage;
+
+  for (const provider of providers) {
+    if (provider.def.getDamageToTake) {
+      finalDamage = getFromOptionalFunc(
+        provider.def.getDamageToTake,
+        finalDamage,
+        creature,
+        dealtBy,
+        gameContext,
+        provider.source
+      );
+    }
+  }
+
+  return finalDamage;
+}
+
+export function onDealDamage(
+  caster: CreatureInstance,
+  target: CreatureInstance,
+  damageDealt: Damage[],
+  gameContext: GameContext,
+  source?: CreatureProviderSource
+): void {
+  const providers = getProviders(caster, gameContext);
+
+  for (const provider of providers) {
+    if (provider.def.onDealDamage) {
+      provider.def.onDealDamage(
+        caster,
+        target,
+        damageDealt,
+        gameContext,
+        source
+      );
+    }
+  }
+}
+
+export function onKill(
+  killer: CreatureInstance,
+  killed: CreatureInstance,
+  gameContext: GameContext,
+  source?: CreatureProviderSource
+): void {
+  const providers = getProviders(killer, gameContext);
+
+  for (const provider of providers) {
+    if (provider.def.onKill) {
+      provider.def.onKill(killer, killed, gameContext, source);
+    }
+  }
+}
+
 export function heal(
   creature: CreatureInstance,
   amount: number,
@@ -268,10 +357,15 @@ export function regenMana(
 
 export function takeDamage(
   creature: CreatureInstance,
+  dealtBy: CreatureInstance,
   damage: Damage[],
   gameContext: GameContext,
   expedition?: Expedition
 ) {
+  damage = deepCopy(damage);
+  damage = getDamageToDeal(damage, dealtBy, creature, gameContext);
+  damage = getDamageToTake(damage, creature, dealtBy, gameContext);
+
   const resistances = getResistances(creature, gameContext);
   const finalDamages = getDamageAfterResistances(damage, resistances);
 
@@ -289,9 +383,11 @@ export function takeDamage(
   creature.hp = Math.max(creature.hp, 0);
 
   if (originalHp > 0 && creature.hp === 0) {
+    onKill(dealtBy, creature, gameContext);
     onDie(creature, gameContext, expedition);
   }
 
+  onDealDamage(dealtBy, creature, damageDealt, gameContext);
   return damageDealt;
 }
 
