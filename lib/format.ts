@@ -5,9 +5,13 @@ export function formatInt(value: number): string {
   return Math.round(value).toLocaleString();
 }
 
-export function formatBonus(value: number, format: "int" = "int"): string {
+export function formatBonus(
+  value: number,
+  format: "int" | "percent" = "int"
+): string {
   const sign = value > 0 ? "+" : "";
-  const formattedValue = format === "int" ? formatInt(value) : value.toFixed(2);
+  const formattedValue =
+    format === "int" ? formatInt(value) : formatPercent(value);
   return `${sign}${formattedValue}`;
 }
 

@@ -35,6 +35,10 @@ export type GameProvider = CreatureProvider & {
     number,
     [GameProvider, number, GameContext, GameProviderSource | undefined]
   >;
+  maxExpeditions?: OptionalFunc<
+    number,
+    [GameProvider, number, GameContext, GameProviderSource | undefined]
+  >;
   recruitmentCost?: OptionalFunc<
     ItemInstance[],
     [GameProvider, ItemInstance[], GameContext, GameProviderSource | undefined]

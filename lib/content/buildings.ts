@@ -1,7 +1,7 @@
 import { BuildingDefinition, buildingFilter } from "../building";
 import { finishRegistry, RawRegistry } from "../registry";
 
-export type BuildingId = "firepit" | "bonfire" | "tents" | "altar";
+export type BuildingId = "firepit" | "bonfire" | "tents" | "altar" | "war_room";
 export type BuildingTag = "guildCenter" | "temple";
 
 const rawBuildings = {
@@ -71,6 +71,18 @@ const rawBuildings = {
     buildTime: 1200,
     manaRegen: 1,
     healthRegen: 1,
+  },
+  war_room: {
+    name: "War Room",
+    description:
+      "A strategic room for planning battles and training adventurers.",
+    canBuild: buildingFilter({
+      hasBuildingTags: ["guildCenter"],
+    }),
+    tags: [],
+    cost: [{ definitionId: "coin", amount: 500 }],
+    buildTime: 1800,
+    maxExpeditions: 1,
   },
 } satisfies RawRegistry<BuildingId, BuildingDefinition>;
 

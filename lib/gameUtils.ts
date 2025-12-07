@@ -66,6 +66,27 @@ export function getMaxPartySize(gameContext: GameContext): number {
   return maxPartySize;
 }
 
+export function getMaxExpeditions(gameContext: GameContext): number {
+  let maxExpeditions = 2;
+
+  for (const building of getProviders(gameContext)) {
+    const def = building.def;
+    if (!def.maxExpeditions) {
+      continue;
+    }
+
+    maxExpeditions += getFromOptionalFunc(
+      def.maxExpeditions,
+      def,
+      maxExpeditions,
+      gameContext,
+      building.source
+    );
+  }
+
+  return maxExpeditions;
+}
+
 export function getRecruitmentCost(gameContext: GameContext): ItemInstance[] {
   let cost: ItemInstance[] = [{ definitionId: "coin", amount: 100 }];
 

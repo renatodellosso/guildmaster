@@ -461,7 +461,7 @@ export function onDie(
 
 export function getXpForNextLevel(level: number): number {
   if (level <= 0) return 100;
-  return getXpForNextLevel(level - 1) + 100 * Math.pow(1.2, level);
+  return getXpForNextLevel(level - 1) + 100 * Math.pow(1.3, level);
 }
 
 export function randomName(): string {

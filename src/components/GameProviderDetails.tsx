@@ -1,3 +1,4 @@
+import { items } from "@/lib/content/items";
 import { formatBonus } from "@/lib/format";
 import { GameProvider, GameProviderSource } from "@/lib/gameContext";
 import { Context, getFromOptionalFunc } from "@/lib/utilTypes";
@@ -29,20 +30,83 @@ export default function GameProviderDetails({
       context.game,
       source
     );
+  const maxExpeditions =
+    provider.maxExpeditions &&
+    getFromOptionalFunc(
+      provider.maxExpeditions,
+      provider,
+      0,
+      context.game,
+      source
+    );
+  const recruitmentCost =
+    provider.recruitmentCost &&
+    getFromOptionalFunc(
+      provider.recruitmentCost,
+      provider,
+      [],
+      context.game,
+      source
+    );
+  const startingSkillChance =
+    provider.startingSkillChance &&
+    getFromOptionalFunc(
+      provider.startingSkillChance,
+      provider,
+      0,
+      context.game,
+      source
+    );
+  const sellValueMultiplier =
+    provider.sellValueMultiplier &&
+    getFromOptionalFunc(
+      provider.sellValueMultiplier,
+      provider,
+      1,
+      context.game,
+      source
+    );
 
   const stats = {
     "Max Roster Size": maxRosterSize,
     "Max Party Size": maxPartySize,
+    "Max Expeditions": maxExpeditions,
+  };
+
+  const percentStats = {
+    "Starting Skill Chance": startingSkillChance,
+    "Sell Value Multiplier": sellValueMultiplier,
   };
 
   return (
     <div>
-      {Object.entries(stats).map(([statName, value]) =>
-        value !== undefined ? (
-          <div key={statName}>
-            {statName}: {formatBonus(value)}
-          </div>
-        ) : null
+      {Object.entries(stats).map(
+        ([statName, value]) =>
+          value !== undefined && (
+            <div key={statName}>
+              {statName}: {formatBonus(value)}
+            </div>
+          )
+      )}
+      {Object.entries(percentStats).map(
+        ([statName, value]) =>
+          value !== undefined && (
+            <div key={statName}>
+              {statName}: {formatBonus(value, "percent")}
+            </div>
+          )
+      )}
+      {recruitmentCost && recruitmentCost.length > 0 && (
+        <div>
+          Recruitment Cost:
+          <ul>
+            {recruitmentCost.map((cost) => (
+              <li key={cost.definitionId}>
+                {formatBonus(cost.amount)}x {items[cost.definitionId].name}
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
     </div>
   );
