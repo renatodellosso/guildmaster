@@ -10,6 +10,10 @@ export type StatusEffectDefinition = CreatureProvider & {
     string,
     [CreatureInstance | undefined, StatusEffectInstance, GameContext]
   >;
+  /**
+   * Undefined defaults to true
+   */
+  allowDuplicate?: boolean;
 };
 
 export type StatusEffectInstance = {

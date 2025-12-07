@@ -19,9 +19,10 @@ export default function InventoryDisplay({
     const def = items[itemInstance.definitionId];
 
     const sellValueMultiplier = getSellValueMultiplier(context.game);
+    const totalValuePerItem = def.value * sellValueMultiplier;
     const res = prompt(
-      `How many ${def.name} would you like to sell? (You have ${itemInstance.amount}) 
-        (Value: ${formatInt(def.value * sellValueMultiplier)} = ${formatInt(def.value)} * ${formatPercent(sellValueMultiplier)} each)`,
+      `How many ${def.name} would you like to sell? (You have ${itemInstance.amount}, worth ${formatInt(totalValuePerItem * itemInstance.amount)}) ` +
+        `(Individual Value: ${formatInt(totalValuePerItem)} = ${formatInt(def.value)} * ${formatPercent(sellValueMultiplier)} each)`,
       itemInstance.amount.toString()
     );
 

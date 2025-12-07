@@ -3,7 +3,7 @@ import { AbilityPriority } from "./abilityPriority";
 import { chooseMultipleRandomLivingTargetsWithinRange } from "./combat";
 import { StatusEffectId } from "./content/statusEffects";
 import { CreatureInstance } from "./creature";
-import { getSkill, heal, takeDamage } from "./creatureUtils";
+import { addStatusEffect, getSkill, heal, takeDamage } from "./creatureUtils";
 import { Damage } from "./damage";
 import { addToExpeditionLog, Expedition } from "./expedition";
 import { formatDamage, formatInt } from "./format";
@@ -129,7 +129,7 @@ export function applyStatusEffect(
       if (targets.length === 0 || !targets[0]) return;
 
       for (const target of targets) {
-        target.statusEffects.push({
+        addStatusEffect(target, {
           definitionId: params!.statusEffectId,
           duration: params!.duration,
           strength: params!.strength!,

@@ -25,6 +25,7 @@ import { GameContext } from "./gameContext";
 import { addToInventory } from "./inventory";
 import { EquipmentDefinition } from "./item";
 import { SkillId } from "./skills";
+import { StatusEffectInstance } from "./statusEffect";
 import { chooseRandom, deepCopy, getCreature } from "./utils";
 import { getFromOptionalFunc } from "./utilTypes";
 
@@ -457,6 +458,31 @@ export function onDie(
 
     addToInventory(expedition.inventory, droppedItems);
   }
+}
+
+export function addStatusEffect(
+  creature: CreatureInstance,
+  status: StatusEffectInstance
+) {
+  const def = statusEffects[status.definitionId];
+  if (def.allowDuplicate === false) {
+    const existing = creature.statusEffects.find(
+      (s) => s.definitionId === status.definitionId
+    );
+
+    if (existing) {
+      // Refresh duration
+      existing.duration =
+        existing.duration === "infinite"
+          ? existing.duration
+          : status.duration === "infinite"
+            ? status.duration
+            : Math.max(existing.duration, status.duration);
+      existing.strength = Math.max(existing.strength, status.strength);
+      return;
+    }
+  }
+  creature.statusEffects.push(status);
 }
 
 export function getXpForNextLevel(level: number): number {

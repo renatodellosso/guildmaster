@@ -54,11 +54,12 @@ const rawStatusEffects = {
   vampirism: {
     name: "Vampirism",
     description: "This person is a vampire.",
+    allowDuplicate: false,
     maxHealth: -50,
     resistances: {
       [DamageType.Radiant]: -0.5,
       [DamageType.Fire]: -0.5,
-      [DamageType.Necrotic]: 0.5,
+      [DamageType.Necrotic]: 0.3,
     },
     tick: ({ creature, source }, gameContext) => {
       heal(creature, (source as StatusEffectInstance).strength, gameContext);

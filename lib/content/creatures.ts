@@ -7,7 +7,7 @@ import { Id } from "../utilTypes";
 import { DamageType } from "../damage";
 import { attack } from "../abilityTemplates";
 import { chance } from "../utils";
-import { getSkill, heal } from "../creatureUtils";
+import { addStatusEffect, getSkill, heal } from "../creatureUtils";
 import { addToExpeditionLog } from "../expedition";
 
 export type CreatureDefId =
@@ -251,7 +251,7 @@ const rawCreatures = {
         onDealDamage: (_caster, targets) => {
           if (chance(0.3)) {
             for (const target of targets) {
-              target.statusEffects.push({
+              addStatusEffect(target, {
                 definitionId: "poisoned",
                 duration: 3,
                 strength: 1,
@@ -453,12 +453,13 @@ const rawCreatures = {
             if (!chance(Math.max(0, 0.5 / Math.max(endurance, 1)))) {
               continue;
             }
-            
-            target.statusEffects.push({
+
+            addStatusEffect(target, {
               definitionId: "vampirism",
               duration: "infinite",
               strength: 1,
             });
+
             addToExpeditionLog(
               expedition,
               `${target.name} has been afflicted with Vampirism!`
