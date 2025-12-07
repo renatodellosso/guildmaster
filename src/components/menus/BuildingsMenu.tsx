@@ -30,21 +30,23 @@ export default function BuildingsMenu({ context }: { context: Context }) {
   return (
     <div>
       <h1>Stronghold</h1>
-      <div>
-        <h2>Buildings</h2>
-        {Object.values(context.game.buildings).map((building) => (
-          <div key={building.definitionId}>
-            <BuildingTooltip building={building} context={context}>
-              <strong>{buildings[building.definitionId].name}</strong> -{" "}
-              {getFromOptionalFunc(
-                buildings[building.definitionId].description,
-                building,
-                context.game
-              )}
-            </BuildingTooltip>
-          </div>
-        ))}
-      </div>
+      {Object.values(context.game.buildings).length > 0 && (
+        <div>
+          <h2>Buildings</h2>
+          {Object.values(context.game.buildings).map((building) => (
+            <div key={building.definitionId}>
+              <BuildingTooltip building={building} context={context}>
+                <strong>{buildings[building.definitionId].name}</strong> -{" "}
+                {getFromOptionalFunc(
+                  buildings[building.definitionId].description,
+                  building,
+                  context.game
+                )}
+              </BuildingTooltip>
+            </div>
+          ))}
+        </div>
+      )}
       {Object.entries(context.game.buildingsUnderConstruction).length > 0 && (
         <div>
           <h2>Under Construction</h2>

@@ -22,6 +22,7 @@ export default function BuildingTooltip({
   const tooltip = (
     <>
       <strong>{def.name}</strong>
+      <br />
       {getFromOptionalFunc(def.description, source, context.game)}
       <CreatureProviderDetails
         provider={def}

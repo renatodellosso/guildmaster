@@ -46,6 +46,7 @@ export function AdventurerDisplay({
   function expelFromGuild() {
     if (
       !canReassignAdventurer(adventurer, context.game) ||
+      Object.values(context.game.roster).length <= 1 ||
       !confirm(`Are you sure you want to expel ${adventurer.name}?`)
     ) {
       return;
@@ -78,11 +79,12 @@ export function AdventurerDisplay({
           <button onClick={() => setLevelUpMenuOpen(true)}>Level Up</button>
         )}
       </div>
-      {canReassignAdventurer(adventurer, context.game) && (
-        <button onClick={expelFromGuild} className="bg-red-900">
-          Expel from guild
-        </button>
-      )}
+      {canReassignAdventurer(adventurer, context.game) &&
+        Object.values(context.game.roster).length > 1 && (
+          <button onClick={expelFromGuild} className="bg-red-900">
+            Expel from guild
+          </button>
+        )}
       <div>
         HP: {formatInt(adventurer.hp)}/
         {formatInt(getMaxHealth(adventurer, context.game))} (
