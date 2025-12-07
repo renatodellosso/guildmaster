@@ -1,7 +1,14 @@
 import { BuildingDefinition, buildingFilter } from "../building";
 import { finishRegistry, RawRegistry } from "../registry";
 
-export type BuildingId = "firepit" | "bonfire" | "tents" | "altar" | "war_room";
+export type BuildingId =
+  | "firepit"
+  | "bonfire"
+  | "longhall"
+  | "tents"
+  | "huts"
+  | "altar"
+  | "war_room";
 export type BuildingTag = "guildCenter" | "temple";
 
 const rawBuildings = {
@@ -32,6 +39,21 @@ const rawBuildings = {
     maxPartySize: 1,
     maxRosterSize: 1,
   },
+  longhall: {
+    name: "Longhall",
+    description: "A spacious hall for adventurers to gather, eat, and rest.",
+    canBuild: buildingFilter({
+      hasBuildingIds: ["bonfire"],
+    }),
+    tags: ["guildCenter"],
+    cost: [{ definitionId: "coin", amount: 1000 }],
+    buildTime: 4000,
+    replaces: "bonfire",
+    healthRegen: 2,
+    maxPartySize: 2,
+    maxRosterSize: 2,
+    maxHealth: 10,
+  },
   tents: {
     name: "Tents",
     description: "Tents to provide shelter for adventurers.",
@@ -40,6 +62,25 @@ const rawBuildings = {
     cost: [{ definitionId: "coin", amount: 100 }],
     buildTime: 600,
     maxRosterSize: 2,
+  },
+  huts: {
+    name: "Huts",
+    description: "Small huts to provide better shelter for adventurers.",
+    canBuild: buildingFilter({
+      hasUpgradeOf: ["bonfire"],
+      hasBuildingIds: ["tents"],
+    }),
+    replaces: "tents",
+    tags: [],
+    cost: [
+      { definitionId: "coin", amount: 500 },
+      {
+        definitionId: "tattered_cloth",
+        amount: 5,
+      },
+    ],
+    buildTime: 2400,
+    maxRosterSize: 4,
   },
   altar: {
     name: "Altar",
@@ -80,7 +121,17 @@ const rawBuildings = {
       hasBuildingTags: ["guildCenter"],
     }),
     tags: [],
-    cost: [{ definitionId: "coin", amount: 500 }],
+    cost: [
+      { definitionId: "coin", amount: 500 },
+      {
+        definitionId: "longsword",
+        amount: 1,
+      },
+      {
+        definitionId: "tattered_cloth",
+        amount: 5,
+      },
+    ],
     buildTime: 1800,
     maxExpeditions: 1,
   },

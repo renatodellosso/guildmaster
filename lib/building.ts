@@ -166,10 +166,29 @@ export function hasBuildingTag(
   };
 }
 
+/**
+ * Also includes having the building in question
+ */
+function hasUpgradeOf(idSet: Set<BuildingId>, buildingId: BuildingId) {
+  for (const id of idSet) {
+    let currentId: BuildingId | undefined = id;
+    while (currentId) {
+      if (currentId === buildingId) {
+        return true;
+      }
+      const buildingDef: BuildingDefinition = buildings[currentId];
+      currentId = buildingDef.replaces;
+    }
+  }
+
+  return false;
+}
+
 export function buildingFilter(params: {
   hasBuildingTags?: BuildingTag[];
   lacksBuildingTags?: BuildingTag[];
   hasBuildingIds?: BuildingId[];
+  hasUpgradeOf?: BuildingId[];
 }): BuildingDefinition["canBuild"] {
   return (gameContext) => {
     const tags = new Set<BuildingTag>();
@@ -190,6 +209,9 @@ export function buildingFilter(params: {
         : true) &&
       (params.hasBuildingIds
         ? params.hasBuildingIds.every((id) => ids.has(id))
+        : true) &&
+      (params.hasUpgradeOf
+        ? params.hasUpgradeOf.every((id) => hasUpgradeOf(ids, id))
         : true)
     );
   };

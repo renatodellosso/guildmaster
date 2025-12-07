@@ -2,7 +2,12 @@ import { ItemDefinition } from "../item";
 import { finishRegistry, RawRegistry } from "../registry";
 import { EquipmentId, rawEquipments } from "./equipments";
 
-type RawItemId = "coin" | "rat_tail" | "slime";
+type RawItemId =
+  | "coin"
+  | "rat_tail"
+  | "slime"
+  | "tattered_cloth"
+  | "vampiric_dust";
 export type ItemId = RawItemId | EquipmentId;
 
 const rawItems = {
@@ -20,6 +25,17 @@ const rawItems = {
     name: "Slime",
     description: "A blob of gelatinous slime.",
     value: 3,
+  },
+  tattered_cloth: {
+    name: "Tattered Cloth",
+    description: "A piece of old, tattered cloth.",
+    value: 4,
+  },
+  vampiric_dust: {
+    name: "Vampiric Dust",
+    description:
+      "Dust left behind by a vampire, rumored to have dark properties.",
+    value: 25,
   },
 } satisfies RawRegistry<RawItemId, ItemDefinition>;
 

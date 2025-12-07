@@ -1,11 +1,11 @@
 import { activities, ActivityId } from "./content/activities";
 import { GameContext } from "./gameContext";
-import { AdventurerInstance, CreatureInstance } from "./creature";
+import { AdventurerInstance } from "./creature";
 import { getFromOptionalFunc, OptionalFunc, Tickable } from "./utilTypes";
 
 export type ActivityDefinition = Tickable<AdventurerInstance> & {
   id: ActivityId;
-  description: OptionalFunc<string, [CreatureInstance, GameContext]>;
+  description: OptionalFunc<string, [AdventurerInstance, GameContext]>;
   /**
    * Defaults to 1 if not specified.
    */
@@ -13,7 +13,7 @@ export type ActivityDefinition = Tickable<AdventurerInstance> & {
   /**
    * Not specified defaults to true.
    */
-  canReassign?: OptionalFunc<boolean, [CreatureInstance, GameContext]>;
+  canReassign?: OptionalFunc<boolean, [AdventurerInstance, GameContext]>;
 };
 
 export type ActivityInstance = {

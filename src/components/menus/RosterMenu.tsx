@@ -39,7 +39,7 @@ export default function RosterMenu({ context }: { context: Context }) {
               }
             >
               Recruit Adventurer{" "}
-              <ItemList items={recruitmentCost} context={context} />
+              <ItemList items={recruitmentCost} context={context} colorIfAvailable />
             </button>
           )}
           {Object.values(context.game.roster).map((creature) => {

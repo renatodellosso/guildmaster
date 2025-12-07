@@ -1,10 +1,14 @@
-import { getMaxHealth, takeDamage } from "../creatureUtils";
+import { getMaxHealth, heal, takeDamage } from "../creatureUtils";
 import { DamageType, DamageTypeGroups } from "../damage";
 import { formatPercent } from "../format";
 import { RawRegistry, finishRegistry } from "../registry";
 import { StatusEffectDefinition, StatusEffectInstance } from "../statusEffect";
 
-export type StatusEffectId = "poisoned" | "ward" | "divine_shield";
+export type StatusEffectId =
+  | "poisoned"
+  | "ward"
+  | "divine_shield"
+  | "vampirism";
 
 const rawStatusEffects = {
   poisoned: {
@@ -46,6 +50,19 @@ const rawStatusEffects = {
     resistances: (_creature, _gameContext, source) => ({
       [DamageTypeGroups.All]: (source as StatusEffectInstance).strength,
     }),
+  },
+  vampirism: {
+    name: "Vampirism",
+    description: "This person is a vampire.",
+    maxHealth: -50,
+    resistances: {
+      [DamageType.Radiant]: -0.5,
+      [DamageType.Fire]: -0.5,
+      [DamageType.Necrotic]: 0.5,
+    },
+    tick: ({ creature, source }, gameContext) => {
+      heal(creature, (source as StatusEffectInstance).strength, gameContext);
+    },
   },
 } satisfies RawRegistry<StatusEffectId, StatusEffectDefinition>;
 

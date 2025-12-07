@@ -4,7 +4,7 @@ import {
   progressBuildingConstruction,
 } from "../building";
 import { finishRegistry, RawRegistry } from "../registry";
-import { BuildingId } from "./buildings";
+import { BuildingId, buildings } from "./buildings";
 import { dungeons } from "./dungeons";
 
 export type ActivityId = "resting" | "onExpedition" | "building";
@@ -30,7 +30,11 @@ const rawActivities = {
     canReassign: false,
   },
   building: {
-    description: "Constructing a building",
+    description: (creature) => {
+      const buildingId = creature.activity.data as BuildingId;
+      const def = buildings[buildingId];
+      return `Constructing ${def.name}`;
+    },
     healthRegenMultiplier: 1,
     canReassign: true,
     tick: (creature, gameContext) => {

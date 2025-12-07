@@ -2,7 +2,7 @@ import { DungeonDefinition, Encounter } from "../dungeon";
 import { finishRegistry, RawRegistry } from "../registry";
 import { Table } from "../table";
 
-export type DungeonId = "bandit_camp" | "caves" | "sewers";
+export type DungeonId = "bandit_camp" | "caves" | "sewers" | "crypts";
 
 export const rawDungeons = {
   bandit_camp: {
@@ -116,40 +116,98 @@ export const rawDungeons = {
     name: "Sewers",
     encounters: new Table<Encounter>([
       {
-        item: [{
-          id: "plague_rat",
-          count: 4,
-        }],
+        item: [
+          {
+            id: "plague_rat",
+            count: 4,
+          },
+        ],
         weight: 1,
       },
       {
-        item: [{
-          id: "slime_tendril",
-          count: 2,
-        }],
+        item: [
+          {
+            id: "slime_tendril",
+            count: 2,
+          },
+        ],
         weight: 1,
       },
       {
-        item: [{
-          id: "plague_rat",
-          count: 2,
-        },
-        {
-          id: "slime_tendril",
-          count: 1,
-        }],
+        item: [
+          {
+            id: "plague_rat",
+            count: 2,
+          },
+          {
+            id: "slime_tendril",
+            count: 1,
+          },
+        ],
         weight: 1,
       },
       {
-        item: [{
-          id: "green_ooze",
-          count: 1,
-        },
-        {
-          id: "slime_tendril",
-          count: 2,
-        }],
+        item: [
+          {
+            id: "green_ooze",
+            count: 1,
+          },
+          {
+            id: "slime_tendril",
+            count: 2,
+          },
+        ],
         weight: 1,
+      },
+    ]),
+  },
+  crypts: {
+    name: "Crypts",
+    encounters: new Table<Encounter>([
+      {
+        item: [
+          {
+            id: "vampire_thrall",
+            count: 3,
+          },
+        ],
+        weight: 1,
+      },
+      {
+        item: [
+          {
+            id: "vampire_spawn",
+            count: 2,
+          },
+        ],
+        weight: 1,
+      },
+      {
+        item: [
+          {
+            id: "vampire_thrall",
+            count: 1,
+          },
+          {
+            id: "vampire_spawn",
+            count: 1,
+          },
+        ],
+        weight: 1,
+      },
+      {
+        item: [
+          { id: "vampire_thrall", count: 3 },
+          {
+            id: "vampire_spawn",
+            count: 1,
+          },
+          {
+            id: "vampire",
+            count: 1,
+          },
+        ],
+        weight: 0.3,
       },
     ]),
   },

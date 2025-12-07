@@ -20,10 +20,11 @@ export default function ItemList({
         <ItemTooltip key={index} itemInstance={item} context={context}>
           <div
             className={
-              colorIfAvailable &&
-              countInInventory(context.game.inventory, item) >= item.amount
-                ? "text-green-500"
-                : "text-red-500"
+              colorIfAvailable
+                ? countInInventory(context.game.inventory, item) >= item.amount
+                  ? "text-green-500"
+                  : "text-red-500"
+                : ""
             }
           >
             {formatInt(item.amount)}x {itemLib[item.definitionId]?.name} (

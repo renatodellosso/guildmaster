@@ -7,6 +7,8 @@ import { Id } from "../utilTypes";
 import { DamageType } from "../damage";
 import { attack } from "../abilityTemplates";
 import { chance } from "../utils";
+import { getSkill, heal } from "../creatureUtils";
+import { addToExpeditionLog } from "../expedition";
 
 export type CreatureDefId =
   | "human"
@@ -18,7 +20,10 @@ export type CreatureDefId =
   | "rat_king"
   | "plague_rat"
   | "slime_tendril"
-  | "green_ooze";
+  | "green_ooze"
+  | "vampire_thrall"
+  | "vampire_spawn"
+  | "vampire";
 
 const rawCreatures = {
   human: {
@@ -326,6 +331,148 @@ const rawCreatures = {
         {
           weight: 0.2,
           item: { definitionId: "slime_cloak", amount: 1 },
+        },
+      ]),
+    },
+  },
+  vampire_thrall: {
+    name: "Vampire Thrall",
+    maxHealth: 80,
+    xpValue: 100,
+    skills: {},
+    abilities: [
+      attack({
+        name: "Rabid Bite",
+        description: "Bite an enemy.",
+        damage: [
+          {
+            type: DamageType.Piercing,
+            amount: 25,
+          },
+        ],
+        range: 1,
+      }),
+    ],
+    drops: {
+      chance: 0.4,
+      table: new Table<DropTableEntry>([
+        {
+          weight: 1,
+          item: { definitionId: "tattered_cloth", amount: [1, 2] },
+        },
+      ]),
+    },
+  },
+  vampire_spawn: {
+    name: "Vampire Spawn",
+    maxHealth: 120,
+    xpValue: 150,
+    skills: {},
+    abilities: [
+      attack({
+        name: "Vampiric Bite",
+        description: "Bite an enemy and drain their life force.",
+        damage: [
+          {
+            type: DamageType.Piercing,
+            amount: 35,
+          },
+          {
+            type: DamageType.Necrotic,
+            amount: 10,
+          },
+        ],
+        range: 1,
+      }),
+    ],
+    drops: {
+      chance: 0.5,
+      table: new Table<DropTableEntry>([
+        {
+          weight: 1,
+          item: { definitionId: "vampiric_dust", amount: 1 },
+        },
+      ]),
+    },
+  },
+  vampire: {
+    name: "Vampire",
+    maxHealth: 200,
+    xpValue: 300,
+    skills: {},
+    abilities: [
+      attack({
+        name: "Blood Drain",
+        description: "Drain the life force of an enemy.",
+        damage: [
+          {
+            type: DamageType.Piercing,
+            amount: 50,
+          },
+          {
+            type: DamageType.Necrotic,
+            amount: 20,
+          },
+        ],
+        range: 1,
+        onDealDamage: (
+          caster,
+          _targets,
+          damageDealt,
+          _expedition,
+          gameContext
+        ) => {
+          const toHeal =
+            damageDealt.reduce((sum, dmg) => sum + dmg.amount, 0) * 0.5;
+          heal(caster, toHeal, gameContext);
+        },
+      }),
+      attack({
+        name: "Bite",
+        description: "Bite an enemy.",
+        damage: [
+          {
+            type: DamageType.Piercing,
+            amount: 30,
+          },
+          {
+            type: DamageType.Necrotic,
+            amount: 10,
+          },
+        ],
+        range: 1,
+        onDealDamage: (
+          _caster,
+          targets,
+          _damageDealt,
+          expedition,
+          gameContext
+        ) => {
+          for (const target of targets) {
+            const endurance = getSkill(SkillId.Endurance, target, gameContext);
+            if (!chance(Math.max(0, 0.5 / Math.max(endurance, 1)))) {
+              continue;
+            }
+            
+            target.statusEffects.push({
+              definitionId: "vampirism",
+              duration: "infinite",
+              strength: 1,
+            });
+            addToExpeditionLog(
+              expedition,
+              `${target.name} has been afflicted with Vampirism!`
+            );
+          }
+        },
+      }),
+    ],
+    drops: {
+      chance: 1,
+      table: new Table<DropTableEntry>([
+        {
+          weight: 1,
+          item: { definitionId: "vampiric_dust", amount: [3, 7] },
         },
       ]),
     },
