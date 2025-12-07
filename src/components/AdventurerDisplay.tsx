@@ -8,6 +8,9 @@ import {
   getMaxMana,
   getHealthRegen,
   getManaRegen,
+  getActionsPerTurn,
+  getXpMultiplier,
+  getConstructionPerTick,
 } from "@/lib/creatureUtils";
 import { formatBonus, formatInt, formatPercent, titleCase } from "@/lib/format";
 import { Context, getFromOptionalFunc } from "@/lib/utilTypes";
@@ -102,6 +105,18 @@ export function AdventurerDisplay({
           adventurer,
           context.game
         )}
+      </div>
+      <div>
+        Actions Per Turn:{" "}
+        {formatInt(getActionsPerTurn(adventurer, context.game))}
+      </div>
+      <div>
+        XP Multiplier:{" "}
+        {formatPercent(getXpMultiplier(adventurer, context.game))}
+      </div>
+      <div>
+        Construction Per Tick:{" "}
+        {formatInt(getConstructionPerTick(adventurer, context.game))}
       </div>
       <div>
         <strong>Skills:</strong>

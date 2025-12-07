@@ -1,10 +1,7 @@
 import { BuildingId, buildings, BuildingTag } from "./content/buildings";
-import { AdventurerInstance } from "./creature";
-import { getSkill } from "./creatureUtils";
 import { GameContext, GameProvider } from "./gameContext";
 import { removeFromInventory } from "./inventory";
 import { ItemInstance } from "./item";
-import { SkillId } from "./skills";
 import { getFromOptionalFunc, OptionalFunc } from "./utilTypes";
 
 export type BuildingDefinition = GameProvider & {
@@ -129,18 +126,6 @@ function finishBuildingConstruction(
   if (buildingDef.replaces) {
     delete gameContext.buildings[buildingDef.replaces];
   }
-}
-
-export function getConstructionProgressPerTickForWorker(
-  adventurer: AdventurerInstance,
-  gameContext: GameContext
-): number {
-  const constructionSkill = getSkill(
-    SkillId.Construction,
-    adventurer,
-    gameContext
-  );
-  return constructionSkill + 1;
 }
 
 export function doesNotHaveBuildingTag(

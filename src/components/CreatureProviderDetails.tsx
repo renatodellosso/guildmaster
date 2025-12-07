@@ -39,6 +39,24 @@ export default function CreatureProviderDetails({
       context.game,
       source
     );
+  const constructionPerTick =
+    provider.constructionPerTick &&
+    getFromOptionalFunc(
+      provider.constructionPerTick,
+      creature!,
+      0,
+      context.game,
+      source
+    );
+  const xpMultiplier =
+    provider.xpMultiplier &&
+    getFromOptionalFunc(
+      provider.xpMultiplier,
+      creature!,
+      0,
+      context.game,
+      source
+    );
 
   const skills = Object.entries(provider.skills || {}).reduce(
     (acc, [skillId, func]) => {
@@ -59,10 +77,23 @@ export default function CreatureProviderDetails({
     }
   );
 
-  const stats = {
+  const stats: {
+    [key: string]:
+      | number
+      | undefined
+      | {
+          val: number | undefined;
+          format: "int" | "percent";
+        };
+  } = {
     "Max Health": maxHealth,
     "Health Regen": healthRegen,
     "Actions Per Turn": actionsPerTurn,
+    "Construction Per Tick": constructionPerTick,
+    "XP Multiplier": {
+      val: xpMultiplier,
+      format: "percent",
+    },
     ...skills,
   };
 
@@ -84,9 +115,15 @@ export default function CreatureProviderDetails({
     <>
       {Object.entries(stats).map(([statName, stat]) => {
         if (stat === undefined) return null;
+        const format =
+          typeof stat === "object" && "format" in stat ? stat.format : "int";
+        const value =
+          typeof stat === "object" && "val" in stat ? stat.val : stat;
+        if (value === undefined) return null;
+
         return (
           <div key={statName}>
-            {statName}: {formatBonus(stat)}
+            {statName}: {formatBonus(value, format)}
           </div>
         );
       })}

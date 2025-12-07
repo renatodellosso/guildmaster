@@ -1,8 +1,6 @@
 import { ActivityDefinition } from "../activity";
-import {
-  getConstructionProgressPerTickForWorker,
-  progressBuildingConstruction,
-} from "../building";
+import { progressBuildingConstruction } from "../building";
+import { getConstructionPerTick } from "../creatureUtils";
 import { finishRegistry, RawRegistry } from "../registry";
 import { BuildingId, buildings } from "./buildings";
 import { dungeons } from "./dungeons";
@@ -41,7 +39,7 @@ const rawActivities = {
       const buildingId = creature.activity.data as BuildingId;
       const progress = progressBuildingConstruction(
         buildingId,
-        getConstructionProgressPerTickForWorker(creature, gameContext),
+        getConstructionPerTick(creature, gameContext),
         gameContext
       );
 

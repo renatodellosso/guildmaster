@@ -1,11 +1,7 @@
 import { canReassignAdventurer } from "@/lib/activity";
-import {
-  canBuild,
-  getConstructionProgressPerTickForWorker,
-  startBuildingConstruction,
-} from "@/lib/building";
+import { canBuild, startBuildingConstruction } from "@/lib/building";
 import { BuildingId, buildings } from "@/lib/content/buildings";
-import { getSkill } from "@/lib/creatureUtils";
+import { getConstructionPerTick, getSkill } from "@/lib/creatureUtils";
 import { hasInInventory } from "@/lib/inventory";
 import { SkillId } from "@/lib/skills";
 import { Context, getFromOptionalFunc } from "@/lib/utilTypes";
@@ -73,13 +69,7 @@ export default function BuildingsMenu({ context }: { context: Context }) {
                   );
 
                   const workPerTick = workers.reduce((total, worker) => {
-                    return (
-                      total +
-                      getConstructionProgressPerTickForWorker(
-                        worker,
-                        context.game
-                      )
-                    );
+                    return total + getConstructionPerTick(worker, context.game);
                   }, 0);
 
                   return (
@@ -163,8 +153,8 @@ export default function BuildingsMenu({ context }: { context: Context }) {
             <tr>
               <th>Name</th>
               <th>Description</th>
-              <th className="text-right">Cost</th>
-              <th className="text-right">Work to Build</th>
+              <th>Cost</th>
+              <th>Work to Build</th>
               <th>Replaces</th>
               <th></th>
             </tr>

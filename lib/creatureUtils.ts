@@ -358,6 +358,52 @@ export function onKill(
   }
 }
 
+export function getConstructionPerTick(
+  adventurer: AdventurerInstance,
+  gameContext: GameContext
+): number {
+  let progress = getSkill(SkillId.Construction, adventurer, gameContext) + 1;
+
+  const providers = getProviders(adventurer, gameContext);
+
+  for (const provider of providers) {
+    if (provider.def.constructionPerTick) {
+      progress += getFromOptionalFunc(
+        provider.def.constructionPerTick,
+        adventurer,
+        progress,
+        gameContext,
+        provider.source
+      );
+    }
+  }
+
+  return progress;
+}
+
+export function getXpMultiplier(
+  creature: CreatureInstance,
+  gameContext: GameContext
+): number {
+  const providers = getProviders(creature, gameContext);
+
+  let multiplier = 1;
+
+  for (const provider of providers) {
+    if (provider.def.xpMultiplier) {
+      multiplier += getFromOptionalFunc(
+        provider.def.xpMultiplier,
+        creature,
+        multiplier,
+        gameContext,
+        provider.source
+      );
+    }
+  }
+
+  return multiplier;
+}
+
 export function heal(
   creature: CreatureInstance,
   amount: number,
@@ -468,7 +514,7 @@ export function onDie(
     for (const enemyId of enemies.creatures) {
       const enemy = getCreature(enemyId, gameContext);
       if ("xp" in enemy && typeof enemy.xp === "number") {
-        enemy.xp += xpPerCreature;
+        addXp(enemy, xpPerCreature, gameContext);
       }
     }
   }
@@ -506,6 +552,17 @@ export function addStatusEffect(
     }
   }
   creature.statusEffects.push(status);
+}
+
+export function addXp(
+  creature: AdventurerInstance,
+  amount: number,
+  gameContext: GameContext
+) {
+  const mult = getXpMultiplier(creature, gameContext);
+  const totalXp = amount * mult;
+
+  creature.xp += totalXp;
 }
 
 export function getXpForNextLevel(level: number): number {

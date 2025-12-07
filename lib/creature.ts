@@ -98,6 +98,14 @@ export type CreatureProvider = Tickable<{
     gameContext: GameContext,
     source: CreatureProviderSource | undefined
   ) => void;
+  constructionPerTick?: OptionalFunc<
+    number,
+    [CreatureInstance, number, GameContext, CreatureProviderSource | undefined]
+  >;
+  xpMultiplier?: OptionalFunc<
+    number,
+    [CreatureInstance, number, GameContext, CreatureProviderSource | undefined]
+  >;
 };
 
 type DefProvider = MakeRequired<CreatureProvider, "maxHealth">;

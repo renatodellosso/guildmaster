@@ -16,9 +16,15 @@ export type BuildingId =
   | "staging_ground"
   | "medical_tent"
   | "medical_hut"
-  | "infirmary";
+  | "infirmary"
+  | "workshop";
 
-export type BuildingTag = "guildCenter" | "temple" | "housing" | "medical";
+export type BuildingTag =
+  | "guildCenter"
+  | "temple"
+  | "housing"
+  | "medical"
+  | "workshop";
 
 const rawBuildings = {
   firepit: {
@@ -94,8 +100,7 @@ const rawBuildings = {
   },
   barracks: {
     name: "Barracks",
-    description:
-      "A barracks to train and house adventurers, increasing the guild's roster size.",
+    description: "A barracks to train and house adventurers.",
     canBuild: buildingFilter({
       hasUpgradeOf: ["longhall"],
       hasBuildingIds: ["huts"],
@@ -205,6 +210,7 @@ const rawBuildings = {
     ],
     buildTime: 1800,
     maxExpeditions: 1,
+    xpMultiplier: 0.1,
   },
   staging_ground: {
     name: "Staging Ground",
@@ -288,6 +294,17 @@ const rawBuildings = {
     healthRegen: 10,
     maxHealth: 50,
     manaRegen: 2,
+  },
+  workshop: {
+    name: "Workshop",
+    description: "A place for crafting and repairing equipment.",
+    canBuild: buildingFilter({
+      hasBuildingTags: ["guildCenter"],
+    }),
+    tags: ["workshop"],
+    cost: [{ definitionId: "coin", amount: 1500 }],
+    buildTime: 144000,
+    constructionPerTick: 1,
   },
 } satisfies RawRegistry<BuildingId, BuildingDefinition>;
 
