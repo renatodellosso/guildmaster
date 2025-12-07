@@ -64,7 +64,7 @@ export const rawEquipments = {
   rat_tooth_necklace: {
     name: "Rat Tooth Necklace",
     description: "A necklace made from the tooth of a giant rat.",
-    value: 5,
+    value: 50,
     slot: EquipmentSlot.Accessory,
     getDamageToDeal: [
       {
@@ -76,7 +76,7 @@ export const rawEquipments = {
   slime_cloak: {
     name: "Slime Cloak",
     description: "A cloak made from slime, offering minor protection.",
-    value: 20,
+    value: 65,
     slot: EquipmentSlot.Armor,
     maxHealth: 3,
     resistances: {

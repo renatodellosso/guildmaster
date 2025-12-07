@@ -26,6 +26,25 @@ export function formatDamage(damages: Damage[]): string {
     .join(", ");
 }
 
+export function formatDuration(ticks: number): string {
+  const seconds = ticks % 60;
+  const minutes = Math.floor(ticks / 60) % 60;
+  const hours = Math.floor(ticks / 3600);
+
+  const parts: string[] = [];
+  if (hours > 0) {
+    parts.push(`${hours}h`);
+  }
+  if (minutes > 0) {
+    parts.push(`${minutes}m`);
+  }
+  if (seconds > 0 || parts.length === 0) {
+    parts.push(`${seconds}s`);
+  }
+
+  return parts.join("");
+}
+
 export function titleCase(str: string | undefined): string {
   if (!str) return "";
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();

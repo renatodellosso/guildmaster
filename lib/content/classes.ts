@@ -9,7 +9,7 @@ import { SkillId } from "../skills";
 import { round } from "../utils";
 import { getFromOptionalFunc } from "../utilTypes";
 
-export type ClassId = "thug" | "wizard" | "abjurer" | "cleric";
+export type ClassId = "thug" | "wizard" | "abjurer" | "cleric" | "archer";
 
 const rawClasses = {
   thug: {
@@ -206,6 +206,52 @@ const rawClasses = {
         },
         creature,
         gameContext,
+        source
+      ),
+  },
+  archer: {
+    name: "Archer",
+    description: buildClassDescription(
+      "A skilled marksman who excels at ranged combat and precision strikes.",
+      {
+        1: "+2 Piercing damage per level.",
+      }
+    ),
+    canSelect: (creature, gameContext) =>
+      getSkill(SkillId.Ranged, creature, gameContext) >= 1,
+    getDamageToDeal: (prev, _target, _dealer, _gameContext, source) =>
+      (source as number) >= 1
+        ? [
+            ...prev,
+            {
+              type: DamageType.Piercing,
+              amount: (source as number) * 2,
+            },
+          ]
+        : prev,
+    abilities: (_creature, _prev, _gameContext, source) =>
+      requireLevel(
+        {
+          4: [
+            attack({
+              name: "Multi-Shot",
+              description:
+                "Shoot multiple arrows at once, hitting several targets.",
+              damage: [
+                {
+                  type: DamageType.Piercing,
+                  amount: 12,
+                },
+              ],
+              range: 5,
+              targets: 3,
+              priority: AbilityPriority.Medium,
+              skill: SkillId.Ranged,
+            }),
+          ],
+        },
+        _creature,
+        _gameContext,
         source
       ),
   },

@@ -8,7 +8,10 @@ export type BuildingId =
   | "tents"
   | "huts"
   | "altar"
-  | "war_room";
+  | "temple"
+  | "war_room"
+  | "staging_ground";
+
 export type BuildingTag = "guildCenter" | "temple" | "housing";
 
 const rawBuildings = {
@@ -114,6 +117,27 @@ const rawBuildings = {
     manaRegen: 1,
     healthRegen: 1,
   },
+  temple: {
+    name: "Temple",
+    description: "A temple for worship, rituals, and divine blessings.",
+    canBuild: true,
+    replaces: "altar",
+    tags: ["temple"],
+    cost: [
+      { definitionId: "coin", amount: 2000 },
+      {
+        definitionId: "vampiric_dust",
+        amount: 5,
+      },
+      {
+        definitionId: "longsword",
+        amount: 1,
+      },
+    ],
+    buildTime: 8000,
+    manaRegen: 2,
+    healthRegen: 2,
+  },
   war_room: {
     name: "War Room",
     description:
@@ -135,6 +159,19 @@ const rawBuildings = {
     ],
     buildTime: 1800,
     maxExpeditions: 1,
+  },
+  staging_ground: {
+    name: "Staging Ground",
+    description:
+      "A field for adventurers to prepare and stage before expeditions.",
+    canBuild: buildingFilter({
+      hasBuildingIds: ["war_room"],
+    }),
+    tags: [],
+    cost: [{ definitionId: "coin", amount: 2000 }],
+    buildTime: 36000,
+    maxExpeditions: 1,
+    maxPartySize: 1,
   },
 } satisfies RawRegistry<BuildingId, BuildingDefinition>;
 

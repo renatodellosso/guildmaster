@@ -91,7 +91,7 @@ export default function StartExpeditionMenu({
           <PartyMemberSelector
             key={String(memberId)}
             availableMembers={availablePartyMembers}
-            currentText={context.game.roster[memberId].name}
+            currentText={`${context.game.roster[memberId].name} ${getClassString(context.game.roster[memberId])}`}
             context={context}
             onChange={(newSelected) => {
               setParty(party.map((id) => (id === memberId ? newSelected : id)));

@@ -10,8 +10,9 @@ import { hasInInventory } from "@/lib/inventory";
 import { SkillId } from "@/lib/skills";
 import { Context, getFromOptionalFunc } from "@/lib/utilTypes";
 import BuildingTooltip from "../BuildingTooltip";
-import { formatInt } from "@/lib/format";
+import { formatDuration, formatInt } from "@/lib/format";
 import ItemList from "../ItemList";
+import { round } from "@/lib/utils";
 
 export default function BuildingsMenu({ context }: { context: Context }) {
   function startConstruction(buildingId: BuildingId) {
@@ -58,17 +59,28 @@ export default function BuildingsMenu({ context }: { context: Context }) {
                 <th>Work Remaining</th>
                 <th>Workers</th>
                 <th>Progress/Tick</th>
+                <th>Time Remaining</th>
               </tr>
             </thead>
             <tbody>
               {Object.entries(context.game.buildingsUnderConstruction).map(
-                ([buildingId, timeRemaining]) => {
+                ([buildingId, workRemaining]) => {
                   const def = buildings[buildingId as BuildingId];
                   const workers = availableWorkers.filter(
                     (adventurer) =>
                       adventurer.activity.definitionId === "building" &&
                       adventurer.activity.data === buildingId
                   );
+
+                  const workPerTick = workers.reduce((total, worker) => {
+                    return (
+                      total +
+                      getConstructionProgressPerTickForWorker(
+                        worker,
+                        context.game
+                      )
+                    );
+                  }, 0);
 
                   return (
                     <tr key={buildingId}>
@@ -85,7 +97,7 @@ export default function BuildingsMenu({ context }: { context: Context }) {
                         {def.replaces ? buildings[def.replaces].name : "N/A"}
                       </td>
                       <td className="text-right">
-                        {formatInt(timeRemaining)}/{formatInt(def.buildTime)}
+                        {formatInt(workRemaining)}/{formatInt(def.buildTime)}
                       </td>
                       <td>
                         <div className="flex flex-col max-h-48 overflow-y-scroll pr-2">
@@ -116,7 +128,9 @@ export default function BuildingsMenu({ context }: { context: Context }) {
                                     context.updateGameState();
                                   }}
                                 />
-                                <label htmlFor={`${buildingId}-${String(worker.id)}`}>
+                                <label
+                                  htmlFor={`${buildingId}-${String(worker.id)}`}
+                                >
                                   {worker.name} (
                                   {getSkill(
                                     SkillId.Construction,
@@ -130,16 +144,9 @@ export default function BuildingsMenu({ context }: { context: Context }) {
                           )}
                         </div>
                       </td>
+                      <td className="text-right">{workPerTick}</td>
                       <td className="text-right">
-                        {workers.reduce((total, worker) => {
-                          return (
-                            total +
-                            getConstructionProgressPerTickForWorker(
-                              worker,
-                              context.game
-                            )
-                          );
-                        }, 0)}
+                        {formatDuration(round(workRemaining / workPerTick))}
                       </td>
                     </tr>
                   );
