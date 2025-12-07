@@ -23,7 +23,11 @@ export type CreatureDefId =
   | "green_ooze"
   | "vampire_thrall"
   | "vampire_spawn"
-  | "vampire";
+  | "vampire"
+  | "temple_guard"
+  | "paladin"
+  | "veteran_paladin"
+  | "priest";
 
 const rawCreatures = {
   human: {
@@ -490,6 +494,199 @@ const rawCreatures = {
         {
           weight: 1,
           item: { definitionId: "vampiric_dust", amount: [3, 7] },
+        },
+      ]),
+    },
+  },
+  temple_guard: {
+    name: "Temple Guard",
+    maxHealth: 200,
+    xpValue: 300,
+    skills: {},
+    resistances: {
+      [DamageType.Radiant]: 0.5,
+      [DamageType.Necrotic]: -0.2,
+    },
+    abilities: [
+      attack({
+        name: "Holy Strike",
+        description: "Strike an enemy with a weapon imbued with holy energy.",
+        damage: [
+          {
+            type: DamageType.Slashing,
+            amount: 40,
+          },
+          {
+            type: DamageType.Radiant,
+            amount: 20,
+          },
+        ],
+        range: 1,
+      }),
+    ],
+    drops: {
+      chance: 0.3,
+      table: new Table<DropTableEntry>([
+        {
+          weight: 1,
+          item: {
+            definitionId: "coin",
+            amount: [20, 50],
+          },
+        },
+        {
+          weight: 0.2,
+          item: {
+            definitionId: "heavy_pike",
+            amount: 1,
+          },
+        },
+        {
+          weight: 1,
+          item: {
+            definitionId: "cloth",
+            amount: [2, 5],
+          },
+        },
+      ]),
+    },
+  },
+  paladin: {
+    name: "Paladin",
+    maxHealth: 300,
+    xpValue: 800,
+    skills: {},
+    resistances: {
+      [DamageType.Radiant]: 0.7,
+      [DamageType.Necrotic]: -0.3,
+    },
+    abilities: [
+      attack({
+        name: "Divine Smite",
+        description: "Smite an enemy with divine energy.",
+        damage: [
+          {
+            type: DamageType.Slashing,
+            amount: 50,
+          },
+          {
+            type: DamageType.Radiant,
+            amount: 40,
+          },
+        ],
+        range: 1,
+        targets: 3,
+      }),
+    ],
+    drops: {
+      chance: 0.3,
+      table: new Table<DropTableEntry>([
+        {
+          weight: 1,
+          item: {
+            definitionId: "coin",
+            amount: [20, 50],
+          },
+        },
+        {
+          weight: 0.2,
+          item: {
+            definitionId: "longsword",
+            amount: 1,
+          },
+        },
+        {
+          weight: 1,
+          item: {
+            definitionId: "cloth",
+            amount: [2, 5],
+          },
+        },
+      ]),
+    },
+  },
+  veteran_paladin: {
+    name: "Veteran Paladin",
+    maxHealth: 400,
+    xpValue: 1200,
+    skills: {},
+    resistances: {
+      [DamageType.Radiant]: 0.8,
+      [DamageType.Necrotic]: -0.4,
+    },
+    abilities: [
+      attack({
+        name: "Holy Avalanche",
+        description:
+          "Unleash a powerful holy attack that damages all enemies in an area.",
+        damage: [
+          {
+            type: DamageType.Slashing,
+            amount: 60,
+          },
+          {
+            type: DamageType.Radiant,
+            amount: 50,
+          },
+        ],
+        range: 2,
+        targets: 10,
+      }),
+    ],
+    drops: {
+      chance: 0.4,
+      table: new Table<DropTableEntry>([
+        {
+          weight: 1,
+          item: {
+            definitionId: "incense",
+            amount: [2, 5],
+          },
+        },
+        {
+          weight: 0.4,
+          item: {
+            definitionId: "chainmail_armor",
+            amount: 1,
+          },
+        },
+      ]),
+    },
+  },
+  priest: {
+    name: "Priest",
+    maxHealth: 150,
+    xpValue: 400,
+    skills: {},
+    abilities: [
+      attack({
+        name: "Smite Evil",
+        description: "Strike an evil enemy with holy power.",
+        damage: [
+          {
+            type: DamageType.Radiant,
+            amount: 45,
+          },
+        ],
+        range: 3,
+      }),
+    ],
+    drops: {
+      chance: 0.3,
+      table: new Table<DropTableEntry>([
+        {
+          weight: 1,
+          item: {
+            definitionId: "incense",
+            amount: [3, 8],
+          },
+        },
+        {
+          weight: 0.2,
+          item: {
+            definitionId: "holy_sceptre",
+            amount: 1,
+          },
         },
       ]),
     },

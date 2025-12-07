@@ -7,7 +7,10 @@ type RawItemId =
   | "rat_tail"
   | "slime"
   | "tattered_cloth"
-  | "vampiric_dust";
+  | "vampiric_dust"
+  | "incense"
+  | "cloth";
+
 export type ItemId = RawItemId | EquipmentId;
 
 const rawItems = {
@@ -36,6 +39,16 @@ const rawItems = {
     description:
       "Dust left behind by a vampire, rumored to have dark properties.",
     value: 25,
+  },
+  incense: {
+    name: "Incense",
+    description: "A stick of fragrant incense, used in rituals.",
+    value: 10,
+  },
+  cloth: {
+    name: "Cloth",
+    description: "A piece of fine cloth, useful for crafting.",
+    value: 8,
   },
 } satisfies RawRegistry<RawItemId, ItemDefinition>;
 

@@ -46,9 +46,9 @@ const rawStatusEffects = {
   },
   divine_shield: {
     name: "Divine Shield",
-    description: () => "Negates all incoming damage.",
+    description: () => "Resists incoming damage.",
     resistances: (_creature, _gameContext, source) => ({
-      [DamageTypeGroups.All]: (source as StatusEffectInstance).strength,
+      [DamageTypeGroups.All]: (source as StatusEffectInstance).strength / 10,
     }),
   },
   vampirism: {

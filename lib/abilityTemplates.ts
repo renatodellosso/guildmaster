@@ -3,7 +3,13 @@ import { AbilityPriority } from "./abilityPriority";
 import { chooseMultipleRandomLivingTargetsWithinRange } from "./combat";
 import { StatusEffectId, statusEffects } from "./content/statusEffects";
 import { CreatureInstance } from "./creature";
-import { addStatusEffect, getSkill, heal, takeDamage } from "./creatureUtils";
+import {
+  addStatusEffect,
+  getSkill,
+  heal,
+  takeDamage,
+  takeManaDamage,
+} from "./creatureUtils";
 import { Damage } from "./damage";
 import { addToExpeditionLog, Expedition } from "./expedition";
 import { formatDamage, formatInt } from "./format";
@@ -65,6 +71,11 @@ export function attack(
       ),
     activate: (caster, targets, expedition, gameContext) => {
       if (targets.length === 0 || !targets[0]) return;
+
+      if (params.manaCost) {
+        takeManaDamage(caster, params.manaCost);
+      }
+
       const damage = deepCopy(params!.damage);
       if (damage[0])
         damage[0].amount += getSkill(params!.skill!, caster, gameContext);
@@ -128,6 +139,10 @@ export function applyStatusEffect(
     activate: (caster, targets, expedition) => {
       if (targets.length === 0 || !targets[0]) return;
 
+      if (params.manaCost) {
+        takeManaDamage(caster, params.manaCost);
+      }
+
       for (const target of targets) {
         addStatusEffect(target, {
           definitionId: params!.statusEffectId,
@@ -165,6 +180,10 @@ export function healAbility(
       ),
     activate: (caster, targets, expedition, gameContext) => {
       if (targets.length === 0 || !targets[0]) return;
+
+      if (params.manaCost) {
+        takeManaDamage(caster, params.manaCost);
+      }
 
       const scaledAmount =
         params!.amount + getSkill(params!.skill!, caster, gameContext);

@@ -40,7 +40,7 @@ export function LevelUpMenu({
 
   let maxLevelsToAdd = 1;
   while (
-    adventurer.xp >= getXpForNextLevel(adventurer.level + maxLevelsToAdd - 1)
+    adventurer.xp >= getXpForNextLevel(adventurer.level + maxLevelsToAdd)
   ) {
     maxLevelsToAdd++;
   }

@@ -10,7 +10,10 @@ export type EquipmentId =
   | "longsword"
   | "shortbow"
   | "rat_tooth_necklace"
-  | "slime_cloak";
+  | "slime_cloak"
+  | "holy_sceptre"
+  | "chainmail_armor"
+  | "heavy_pike";
 
 export const rawEquipments = {
   shield_bauble: {
@@ -85,5 +88,53 @@ export const rawEquipments = {
     skills: {
       [SkillId.Magic]: 1,
     },
+  },
+  holy_sceptre: {
+    name: "Holy Sceptre",
+    description: "A sceptre imbued with holy power.",
+    value: 100,
+    slot: EquipmentSlot.Weapon,
+    abilities: [
+      attack({
+        name: "Smite",
+        description: "Smite an enemy with holy energy.",
+        damage: [
+          {
+            type: DamageType.Radiant,
+            amount: 45,
+          },
+        ],
+        range: 2,
+      }),
+    ],
+  },
+  chainmail_armor: {
+    name: "Chainmail Armor",
+    description: "Armor made of interlinked metal rings, providing solid protection.",
+    value: 120,
+    slot: EquipmentSlot.Armor,
+    maxHealth: 10,
+    resistances: {
+      [DamageTypeGroups.Physical]: 0.25,
+    },
+  },
+  heavy_pike: {
+    name: "Heavy Pike",
+    description: "A long pole weapon designed for thrusting attacks.",
+    value: 80,
+    slot: EquipmentSlot.Weapon,
+    abilities: [
+      attack({
+        name: "Thrust",
+        description: "Thrust the pike at your target.",
+        damage: [
+          {
+            type: DamageType.Piercing,
+            amount: 30,
+          },
+        ],
+        range: 3,
+      }),
+    ],
   },
 } satisfies RawRegistry<EquipmentId, EquipmentDefinition>;

@@ -9,9 +9,11 @@ export type BuildingId =
   | "tents"
   | "huts"
   | "barracks"
+  | "dormitories"
   | "altar"
   | "temple"
   | "profane_shrine"
+  | "radiant_shrine"
   | "war_room"
   | "staging_ground"
   | "medical_tent"
@@ -114,6 +116,24 @@ const rawBuildings = {
     maxHealth: 20,
     healthRegen: 1,
   },
+  dormitories: {
+    name: "Dormitories",
+    description: "Spacious dormitories to house and train more adventurers.",
+    canBuild: buildingFilter({
+      hasBuildingIds: ["barracks"],
+    }),
+    tags: ["housing"],
+    replaces: "barracks",
+    cost: [
+      { definitionId: "coin", amount: 35000 },
+      { definitionId: "cloth", amount: 100 },
+    ],
+    buildTime: 600000,
+    maxRosterSize: 12,
+    maxPartySize: 2,
+    maxHealth: 35,
+    healthRegen: 2,
+  },
   altar: {
     name: "Altar",
     description: "A sacred altar for worship and rituals.",
@@ -185,8 +205,33 @@ const rawBuildings = {
     healthRegen: 1,
     resistances: {
       [DamageType.Necrotic]: 0.1,
+      [DamageType.Cold]: 0.1,
       [DamageType.Radiant]: -0.1,
       [DamageType.Fire]: -0.1,
+    },
+  },
+  radiant_shrine: {
+    name: "Radiant Shrine",
+    description: "A holy shrine that radiates divine energy.",
+    canBuild: buildingFilter({
+      hasBuildingIds: ["temple"],
+    }),
+    tags: ["temple"],
+    cost: [
+      { definitionId: "coin", amount: 3000 },
+      {
+        definitionId: "incense",
+        amount: 10,
+      },
+    ],
+    buildTime: 60000,
+    manaRegen: 3,
+    healthRegen: 1,
+    resistances: {
+      [DamageType.Radiant]: 0.1,
+      [DamageType.Fire]: 0.1,
+      [DamageType.Necrotic]: -0.1,
+      [DamageType.Cold]: -0.1,
     },
   },
   war_room: {
@@ -285,7 +330,7 @@ const rawBuildings = {
         amount: 100,
       },
       {
-        definitionId: "vampiric_dust",
+        definitionId: "incense",
         amount: 5,
       },
     ],

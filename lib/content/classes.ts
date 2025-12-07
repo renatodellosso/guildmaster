@@ -2,11 +2,11 @@ import { AbilityPriority } from "../abilityPriority";
 import { applyStatusEffect, attack, healAbility } from "../abilityTemplates";
 import { hasBuildingTag } from "../building";
 import { buildClassDescription, ClassDefinition, requireLevel } from "../class";
-import { getMaxMana, getSkill, heal } from "../creatureUtils";
+import { getMaxHealth, getMaxMana, getSkill, heal } from "../creatureUtils";
 import { DamageType, DamageTypeGroups } from "../damage";
 import { finishRegistry, RawRegistry } from "../registry";
 import { SkillId } from "../skills";
-import { round } from "../utils";
+import { chance, round } from "../utils";
 import { getFromOptionalFunc } from "../utilTypes";
 
 export type ClassId =
@@ -15,7 +15,11 @@ export type ClassId =
   | "abjurer"
   | "cleric"
   | "archer"
-  | "vampire";
+  | "vampire"
+  | "barbarian"
+  | "atavist"
+  | "knight"
+  | "paladin";
 
 const rawClasses = {
   thug: {
@@ -291,6 +295,153 @@ const rawClasses = {
         heal(creature, 2 + (source as number), gameContext);
       }
     },
+  },
+  barbarian: {
+    name: "Barbarian",
+    description: buildClassDescription(
+      "A fierce warrior who channels their rage into devastating attacks.",
+      {
+        1: "+1 Melee damage per level.",
+        4: "Gains a chance to critically strike.",
+        8: "Critical multiplier increases based on Melee skill.",
+      }
+    ),
+    canSelect: (creature, gameContext) =>
+      getSkill(SkillId.Melee, creature, gameContext) >= 2 &&
+      "thug" in creature.classes,
+    skills: {
+      [SkillId.Melee]: (_creature, _prev, _gameContext, source) =>
+        source as number,
+    },
+    getDamageToDeal: (prev, _target, dealer, gameContext, source) => {
+      if (chance(0.05 * (source as number))) {
+        return prev.map((dmg) => ({
+          type: dmg.type,
+          amount:
+            dmg.amount *
+            (2 + (source as number) >= 8
+              ? getSkill(SkillId.Melee, dealer, gameContext) / 10
+              : 0),
+        }));
+      }
+      return prev;
+    },
+  },
+  atavist: {
+    name: "Atavist",
+    description: buildClassDescription(
+      "A warrior who taps into their own life force to empower their attacks.",
+      {
+        1: "+3 Melee per level when below 50% health.",
+        5: "Gain a bonus to damage based on how much health is missing.",
+        8: "Every tick, convert 1 health per level to mana while above 50% health.",
+      }
+    ),
+    canSelect: (creature, gameContext) =>
+      getSkill(SkillId.Melee, creature, gameContext) >= 2 &&
+      getSkill(SkillId.Magic, creature, gameContext) >= 1,
+    skills: {
+      [SkillId.Melee]: (creature, _prev, gameContext, source) =>
+        creature.hp <= getMaxHealth(creature, gameContext) / 2
+          ? (source as number) * 3
+          : 0,
+    },
+    getDamageToDeal: (prev, _target, dealer, gameContext, source) => {
+      if ((source as number) < 5) {
+        return prev;
+      }
+
+      const missingHealth = getMaxHealth(dealer, gameContext) - dealer.hp;
+      const bonusDamage =
+        ((source as number) * missingHealth) /
+        getMaxHealth(dealer, gameContext);
+
+      return prev.map((dmg) => ({
+        type: dmg.type,
+        amount: dmg.amount * (1 + bonusDamage),
+      }));
+    },
+    tick: ({ creature, source }, gameContext) => {
+      const maxHealth = getMaxHealth(creature, gameContext);
+      if ((source as number) < 8 || creature.hp <= maxHealth / 2) {
+        return;
+      }
+
+      const healthToConvert = 1 * (source as number);
+      if (creature.hp - healthToConvert <= maxHealth / 2) {
+        return;
+      }
+
+      creature.hp -= healthToConvert;
+      creature.mana = Math.min(
+        creature.mana + healthToConvert,
+        getMaxMana(creature, gameContext)
+      );
+    },
+  },
+  knight: {
+    name: "Knight",
+    description: buildClassDescription(
+      "A noble warrior clad in heavy armor, excelling in defense and melee combat.",
+      {
+        1: "+2 Melee per level.",
+        3: "Increases max health based on Melee skill.",
+        6: "Reduces incoming physical damage based on level.",
+      }
+    ),
+    canSelect: (creature, gameContext) =>
+      getSkill(SkillId.Melee, creature, gameContext) >= 2 &&
+      getSkill(SkillId.Endurance, creature, gameContext) >= 2,
+    skills: {
+      [SkillId.Melee]: (_creature, _prev, _gameContext, source) =>
+        (source as number) * 2,
+    },
+    maxHealth: (creature, _prev, gameContext) =>
+      _prev + getSkill(SkillId.Melee, creature, gameContext) * 2,
+    resistances: (_creature, _gameContext, source) => ({
+      [DamageTypeGroups.Physical]: Math.min(
+        0.1 + 0.03 * (source as number),
+        0.5
+      ),
+    }),
+  },
+  paladin: {
+    name: "Paladin",
+    description: buildClassDescription(
+      "A holy warrior who combines martial prowess with divine magic to protect allies and vanquish evil.",
+      {
+        1: "Provides resistance to radiant and necrotic damage based on level.",
+      }
+    ),
+    canSelect: (creature) =>
+      "cleric" in creature.classes && "knight" in creature.classes,
+    resistances: (_creature, _gameContext, source) => ({
+      [DamageType.Radiant]: Math.min(0.1 + 0.04 * (source as number), 0.6),
+      [DamageType.Necrotic]: Math.min(0.1 + 0.04 * (source as number), 0.6),
+    }),
+    abilities: (creature, _prev, gameContext, source) =>
+      requireLevel(
+        {
+          2: [
+            applyStatusEffect({
+              name: "Holy Shield",
+              description: "Create a holy shield that reduces incoming damage.",
+              statusEffectId: "divine_shield",
+              duration: 2 + Math.floor((source as number) / 3),
+              strength: round(
+                getSkill(SkillId.Magic, creature, gameContext) / 2
+              ),
+              manaCost: 45,
+              side: "ally",
+              targets: 10,
+              priority: AbilityPriority.High,
+            }),
+          ],
+        },
+        creature,
+        gameContext,
+        source
+      ),
   },
 } satisfies RawRegistry<ClassId, ClassDefinition>;
 

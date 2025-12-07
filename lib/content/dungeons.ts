@@ -2,7 +2,12 @@ import { DungeonDefinition, Encounter } from "../dungeon";
 import { finishRegistry, RawRegistry } from "../registry";
 import { Table } from "../table";
 
-export type DungeonId = "bandit_camp" | "caves" | "sewers" | "crypts";
+export type DungeonId =
+  | "bandit_camp"
+  | "caves"
+  | "sewers"
+  | "crypts"
+  | "paladin_keep";
 
 export const rawDungeons = {
   bandit_camp: {
@@ -208,6 +213,59 @@ export const rawDungeons = {
           },
         ],
         weight: 0.1,
+      },
+    ]),
+  },
+  paladin_keep: {
+    name: "Paladin Keep",
+    encounters: new Table<Encounter>([
+      {
+        item: [
+          {
+            id: "temple_guard",
+            count: 3,
+          },
+        ],
+        weight: 1,
+      },
+      {
+        item: [
+          {
+            id: "paladin",
+            count: 2,
+          },
+          {
+            id: "veteran_paladin",
+            count: 1,
+          },
+        ],
+        weight: 1,
+      },
+      {
+        item: [
+          {
+            id: "temple_guard",
+            count: 1,
+          },
+          {
+            id: "paladin",
+            count: 1,
+          },
+        ],
+        weight: 1,
+      },
+      {
+        item: [
+          {
+            id: "priest",
+            count: 1,
+          },
+          {
+            id: "veteran_paladin",
+            count: 2,
+          },
+        ],
+        weight: 1,
       },
     ]),
   },
