@@ -9,6 +9,7 @@ import BuildingTooltip from "../BuildingTooltip";
 import { formatDuration, formatInt } from "@/lib/format";
 import ItemList from "../ItemList";
 import { round } from "@/lib/utils";
+import { Tooltip } from "../Tooltip";
 
 export default function BuildingsMenu({ context }: { context: Context }) {
   function startConstruction(buildingId: BuildingId) {
@@ -53,7 +54,11 @@ export default function BuildingsMenu({ context }: { context: Context }) {
                 <th>Building</th>
                 <th>Replacing</th>
                 <th>Work Remaining</th>
-                <th>Workers</th>
+                <th>
+                  <Tooltip content="Each worker contributes 1 + Construction skill by default.">
+                    Workers (?)
+                  </Tooltip>
+                </th>
                 <th>Progress/Tick</th>
                 <th>Time Remaining</th>
               </tr>
@@ -84,7 +89,16 @@ export default function BuildingsMenu({ context }: { context: Context }) {
                         </BuildingTooltip>
                       </td>
                       <td>
-                        {def.replaces ? buildings[def.replaces].name : "N/A"}
+                        {def.replaces ? (
+                          <BuildingTooltip
+                            building={def.replaces}
+                            context={context}
+                          >
+                            {buildings[def.replaces].name}
+                          </BuildingTooltip>
+                        ) : (
+                          "N/A"
+                        )}
                       </td>
                       <td className="text-right">
                         {formatInt(workRemaining)}/{formatInt(def.buildTime)}

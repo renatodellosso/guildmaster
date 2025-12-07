@@ -3,6 +3,7 @@ import { Context } from "@/lib/utilTypes";
 import { ReactNode } from "react";
 import { Tooltip } from "./Tooltip";
 import {
+  getClassString,
   getMaxHealth,
   getMaxMana,
   getResistances,
@@ -25,6 +26,8 @@ export default function CreatureTooltip({
 
   const tooltip = (
     <>
+      <h3>{creature.name}</h3>
+      <div>{getClassString(creature)}</div>
       <div>
         HP: {formatInt(creature.hp)}/
         {formatInt(getMaxHealth(creature, context.game))}

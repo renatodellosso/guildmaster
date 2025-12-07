@@ -28,6 +28,7 @@ import { classes, ClassId } from "@/lib/content/classes";
 import ClassTooltip from "./ClassTooltip";
 import { canReassignAdventurer } from "@/lib/activity";
 import { EquipmentSlot } from "@/lib/equipmentSlot";
+import { Tooltip } from "./Tooltip";
 
 export function AdventurerDisplay({
   adventurer,
@@ -90,8 +91,11 @@ export function AdventurerDisplay({
         )}
       <div>
         HP: {formatInt(adventurer.hp)}/
-        {formatInt(getMaxHealth(adventurer, context.game))} (
-        {formatBonus(getHealthRegen(adventurer, context.game))}/tick base)
+        {formatInt(getMaxHealth(adventurer, context.game))}{" "}
+        <Tooltip content="3x as much while resting, 0x during expeditions.">
+          ({formatBonus(getHealthRegen(adventurer, context.game))}/tick base
+          (?))
+        </Tooltip>
       </div>
       <div>
         Mana: {formatInt(adventurer.mana)}/

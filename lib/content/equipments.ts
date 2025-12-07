@@ -66,7 +66,8 @@ export const rawEquipments = {
   },
   rat_tooth_necklace: {
     name: "Rat Tooth Necklace",
-    description: "A necklace made from the tooth of a giant rat.",
+    description:
+      "A necklace made from the tooth of a giant rat. +2 piercing damage.",
     value: 50,
     slot: EquipmentSlot.Accessory,
     getDamageToDeal: [
@@ -110,7 +111,8 @@ export const rawEquipments = {
   },
   chainmail_armor: {
     name: "Chainmail Armor",
-    description: "Armor made of interlinked metal rings, providing solid protection.",
+    description:
+      "Armor made of interlinked metal rings, providing solid protection.",
     value: 120,
     slot: EquipmentSlot.Armor,
     maxHealth: 10,

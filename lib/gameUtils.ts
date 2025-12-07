@@ -46,7 +46,7 @@ export function getMaxRosterSize(gameContext: GameContext): number {
 }
 
 export function getMaxPartySize(gameContext: GameContext): number {
-  let maxPartySize = 3;
+  let maxPartySize = 4;
 
   for (const building of getProviders(gameContext)) {
     const def = building.def;

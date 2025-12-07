@@ -8,6 +8,7 @@ import InventoryDisplay from "./InventoryDisplay";
 import CreatureTooltip from "./CreatureTooltip";
 import { dungeons } from "@/lib/content/dungeons";
 import { forceStartRetreat } from "@/lib/combat";
+import { Tooltip } from "./Tooltip";
 
 export default function ExpeditionDisplay({
   expedition,
@@ -79,7 +80,8 @@ export default function ExpeditionDisplay({
         </div>
       </div>
       <div>
-        <strong>Inventory:</strong>
+        <Tooltip content="Will be returned to the guild's inventory if the current fight is won. Will be lost if all allies are defeated.">
+        <strong>Inventory (?):</strong></Tooltip>
         <InventoryDisplay inventory={expedition.inventory} context={context} />
       </div>
     </div>
@@ -96,7 +98,7 @@ function CreatureDisplay({
   const maxMana = getMaxMana(creature, context.game);
 
   return (
-    <li>
+    <li className={creature.hp <= 0 ? "line-through" : ""}>
       <CreatureTooltip creature={creature} context={context}>
         {creature.name} - HP: {formatInt(creature.hp)}/
         {formatInt(getMaxHealth(creature, context.game))}

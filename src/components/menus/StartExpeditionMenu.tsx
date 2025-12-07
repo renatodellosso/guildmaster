@@ -2,7 +2,7 @@ import { canReassignAdventurer } from "@/lib/activity";
 import { activities } from "@/lib/content/activities";
 import { DungeonId, dungeons } from "@/lib/content/dungeons";
 import { AdventurerInstance } from "@/lib/creature";
-import { getClassString } from "@/lib/creatureUtils";
+import { getClassString, getMaxHealth } from "@/lib/creatureUtils";
 import { createExpedition } from "@/lib/expedition";
 import { getMaxPartySize } from "@/lib/gameUtils";
 import { Context, getFromOptionalFunc, Id } from "@/lib/utilTypes";
@@ -91,7 +91,10 @@ export default function StartExpeditionMenu({
           <PartyMemberSelector
             key={String(memberId)}
             availableMembers={availablePartyMembers}
-            currentText={`${context.game.roster[memberId].name} ${getClassString(context.game.roster[memberId])}`}
+            currentText={`${context.game.roster[memberId].name} ${getClassString(context.game.roster[memberId])} (HP: ${context.game.roster[memberId].hp}/${getMaxHealth(
+              context.game.roster[memberId],
+              context.game
+            )})`}
             context={context}
             onChange={(newSelected) => {
               setParty(party.map((id) => (id === memberId ? newSelected : id)));
@@ -151,7 +154,7 @@ function PartyMemberSelector({
             member,
             context.game
           )}
-          )
+          ) (HP: {member.hp}/{getMaxHealth(member, context.game)})
         </option>
       ))}
     </select>
