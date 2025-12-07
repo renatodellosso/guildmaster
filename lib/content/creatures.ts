@@ -337,7 +337,7 @@ const rawCreatures = {
   },
   vampire_thrall: {
     name: "Vampire Thrall",
-    maxHealth: 140,
+    maxHealth: 80,
     xpValue: 100,
     skills: {},
     resistances: {
@@ -350,7 +350,7 @@ const rawCreatures = {
         damage: [
           {
             type: DamageType.Piercing,
-            amount: 45,
+            amount: 25,
           },
         ],
         range: 1,
@@ -368,7 +368,7 @@ const rawCreatures = {
   },
   vampire_spawn: {
     name: "Vampire Spawn",
-    maxHealth: 250,
+    maxHealth: 150,
     xpValue: 150,
     skills: {},
     resistances: {
@@ -382,11 +382,11 @@ const rawCreatures = {
         damage: [
           {
             type: DamageType.Piercing,
-            amount: 45,
+            amount: 35,
           },
           {
             type: DamageType.Necrotic,
-            amount: 20,
+            amount: 10,
           },
         ],
         range: 1,
@@ -404,7 +404,7 @@ const rawCreatures = {
   },
   vampire: {
     name: "Vampire",
-    maxHealth: 450,
+    maxHealth: 250,
     xpValue: 500,
     skills: {},
     actionsPerTurn: 2,
@@ -423,11 +423,11 @@ const rawCreatures = {
         damage: [
           {
             type: DamageType.Piercing,
-            amount: 50,
+            amount: 30,
           },
           {
             type: DamageType.Necrotic,
-            amount: 20,
+            amount: 25,
           },
         ],
         range: 1,

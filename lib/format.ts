@@ -27,6 +27,10 @@ export function formatDamage(damages: Damage[]): string {
 }
 
 export function formatDuration(ticks: number): string {
+  if (isNaN(ticks) || ticks === Infinity) {
+    return "∞";
+  }
+
   const seconds = ticks % 60;
   const minutes = Math.floor(ticks / 60) % 60;
   const hours = Math.floor(ticks / 3600);

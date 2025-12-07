@@ -1,4 +1,5 @@
 import { BuildingDefinition, buildingFilter } from "../building";
+import { DamageType } from "../damage";
 import { finishRegistry, RawRegistry } from "../registry";
 
 export type BuildingId =
@@ -7,12 +8,17 @@ export type BuildingId =
   | "longhall"
   | "tents"
   | "huts"
+  | "barracks"
   | "altar"
   | "temple"
+  | "profane_shrine"
   | "war_room"
-  | "staging_ground";
+  | "staging_ground"
+  | "medical_tent"
+  | "medical_hut"
+  | "infirmary";
 
-export type BuildingTag = "guildCenter" | "temple" | "housing";
+export type BuildingTag = "guildCenter" | "temple" | "housing" | "medical";
 
 const rawBuildings = {
   firepit: {
@@ -86,6 +92,23 @@ const rawBuildings = {
     buildTime: 2400,
     maxRosterSize: 4,
   },
+  barracks: {
+    name: "Barracks",
+    description:
+      "A barracks to train and house adventurers, increasing the guild's roster size.",
+    canBuild: buildingFilter({
+      hasUpgradeOf: ["longhall"],
+      hasBuildingIds: ["huts"],
+    }),
+    tags: ["housing"],
+    replaces: "huts",
+    cost: [{ definitionId: "coin", amount: 3500 }],
+    buildTime: 10000,
+    maxRosterSize: 7,
+    maxPartySize: 2,
+    maxHealth: 20,
+    healthRegen: 1,
+  },
   altar: {
     name: "Altar",
     description: "A sacred altar for worship and rituals.",
@@ -138,6 +161,29 @@ const rawBuildings = {
     manaRegen: 2,
     healthRegen: 2,
   },
+  profane_shrine: {
+    name: "Profane Shrine",
+    description: "A dark shrine that channels unholy energies.",
+    canBuild: buildingFilter({
+      hasBuildingIds: ["temple"],
+    }),
+    tags: ["temple"],
+    cost: [
+      { definitionId: "coin", amount: 3000 },
+      {
+        definitionId: "vampiric_dust",
+        amount: 10,
+      },
+    ],
+    buildTime: 60000,
+    manaRegen: 3,
+    healthRegen: 1,
+    resistances: {
+      [DamageType.Necrotic]: 0.1,
+      [DamageType.Radiant]: -0.1,
+      [DamageType.Fire]: -0.1,
+    },
+  },
   war_room: {
     name: "War Room",
     description:
@@ -172,6 +218,76 @@ const rawBuildings = {
     buildTime: 36000,
     maxExpeditions: 1,
     maxPartySize: 1,
+  },
+  medical_tent: {
+    name: "Medical Tent",
+    description: "A tent equipped to heal and care for injured adventurers.",
+    canBuild: buildingFilter({
+      hasBuildingTags: ["guildCenter"],
+    }),
+    tags: ["medical"],
+    cost: [
+      { definitionId: "coin", amount: 800 },
+      {
+        definitionId: "tattered_cloth",
+        amount: 10,
+      },
+    ],
+    buildTime: 3600,
+    healthRegen: 3,
+  },
+  medical_hut: {
+    name: "Medical Hut",
+    description:
+      "A hut equipped with advanced medical supplies to heal adventurers.",
+    canBuild: buildingFilter({
+      hasBuildingIds: ["medical_tent"],
+    }),
+    tags: ["medical"],
+    cost: [
+      { definitionId: "coin", amount: 3000 },
+      {
+        definitionId: "tattered_cloth",
+        amount: 25,
+      },
+      {
+        definitionId: "slime",
+        amount: 50,
+      },
+    ],
+    buildTime: 14400,
+    replaces: "medical_tent",
+    healthRegen: 6,
+    maxHealth: 20,
+  },
+  infirmary: {
+    name: "Infirmary",
+    description:
+      "A fully equipped infirmary to provide top-notch medical care to adventurers.",
+    canBuild: buildingFilter({
+      hasBuildingIds: ["medical_hut"],
+    }),
+    tags: ["medical"],
+    cost: [
+      { definitionId: "coin", amount: 10000 },
+      {
+        definitionId: "tattered_cloth",
+        amount: 50,
+      },
+      {
+        definitionId: "slime",
+        amount: 100,
+      },
+      {
+        definitionId: "vampiric_dust",
+        amount: 5,
+      },
+    ],
+    buildTime: 72000,
+    replaces: "medical_hut",
+    healthRegen: 10,
+    maxHealth: 50,
+    manaRegen: 2,
   },
 } satisfies RawRegistry<BuildingId, BuildingDefinition>;
 

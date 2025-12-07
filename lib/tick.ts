@@ -73,4 +73,16 @@ function tickCreature(creature: CreatureInstance, gameContext: GameContext) {
   }
 
   regenMana(creature, getManaRegen(creature, gameContext), gameContext);
+
+  fixPotentialErrors(creature);
+}
+
+function fixPotentialErrors(creature: CreatureInstance) {
+  if (isNaN(creature.hp) || creature.hp < 0) {
+    creature.hp = 0;
+  }
+
+  if (isNaN(creature.mana) || creature.mana < 0) {
+    creature.mana = 0;
+  }
 }

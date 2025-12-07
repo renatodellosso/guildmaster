@@ -9,7 +9,13 @@ import { SkillId } from "../skills";
 import { round } from "../utils";
 import { getFromOptionalFunc } from "../utilTypes";
 
-export type ClassId = "thug" | "wizard" | "abjurer" | "cleric" | "archer";
+export type ClassId =
+  | "thug"
+  | "wizard"
+  | "abjurer"
+  | "cleric"
+  | "archer"
+  | "vampire";
 
 const rawClasses = {
   thug: {
@@ -190,7 +196,7 @@ const rawClasses = {
           ],
           4: [
             applyStatusEffect({
-              name: "Divine Smite",
+              name: "Divine Shield",
               description:
                 "Empower your weapon with holy energy to deal extra radiant damage.",
               statusEffectId: "divine_shield",
@@ -254,6 +260,37 @@ const rawClasses = {
         _gameContext,
         source
       ),
+  },
+  vampire: {
+    name: "Vampire",
+    description: buildClassDescription(
+      "A creature of the night that drains the life force of its enemies.",
+      {
+        1: "Heals for a portion of damage dealt, scaled by level.",
+        3: "Regenerates health each tick based on level.",
+      }
+    ),
+    canSelect: (creature) =>
+      creature.statusEffects.some((se) => se.definitionId === "vampirism"),
+    skills: {
+      [SkillId.Melee]: 5,
+      [SkillId.Magic]: 5,
+    },
+    resistances: (_creature, _gameContext, source) => ({
+      [DamageType.Necrotic]: Math.max(0.2 + 0.05 * (source as number), 1),
+      [DamageType.Radiant]: -0.1 - 0.05 * (source as number),
+    }),
+    onDealDamage: (dealer, _target, damageDealt, gameContext, source) => {
+      const totalDamage = damageDealt.reduce((sum, dmg) => sum + dmg.amount, 0);
+      const multiplier = Math.max(0.2 + (source as number) * 0.05, 1.2);
+
+      heal(dealer, totalDamage * multiplier, gameContext);
+    },
+    tick: ({ creature, source }, gameContext) => {
+      if ((source as number) >= 3 && creature.hp > 0) {
+        heal(creature, 2 + (source as number), gameContext);
+      }
+    },
   },
 } satisfies RawRegistry<ClassId, ClassDefinition>;
 

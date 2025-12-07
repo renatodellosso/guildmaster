@@ -24,7 +24,7 @@ const rawActivities = {
         ? dungeons[expedition.dungeonId].name
         : "an unknown location";
 
-      return `On Expedition in ${dungeonName}`;
+      return `On Expedition to ${dungeonName}`;
     },
     healthRegenMultiplier: 0,
     canReassign: false,
