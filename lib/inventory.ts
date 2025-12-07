@@ -2,6 +2,7 @@ import { items } from "./content/items";
 import { GameContext } from "./gameContext";
 import { getSellValueMultiplier } from "./gameUtils";
 import { ItemInstance, matchesItemFilter } from "./item";
+import { round } from "./utils";
 
 export type Inventory = ItemInstance[];
 
@@ -93,8 +94,9 @@ export function sellFromInventory(
   }
 
   const itemDef = items[item.definitionId];
-  const totalValue =
-    getSellValueMultiplier(gameContext) * itemDef.value * item.amount;
+  const totalValue = round(
+    getSellValueMultiplier(gameContext) * itemDef.value * item.amount
+  );
 
   removeFromInventory(inventory, item);
   addToInventory(inventory, { definitionId: "coin", amount: totalValue });

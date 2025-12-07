@@ -57,6 +57,10 @@ export type CreatureProvider = Tickable<{
     DamageResistances,
     [CreatureInstance, GameContext, CreatureProviderSource | undefined]
   >;
+  actionsPerTurn?: OptionalFunc<
+    number,
+    [CreatureInstance, number, GameContext, CreatureProviderSource | undefined]
+  >;
   /**
    * If not a function, this value is treated as a flat bonus to all damage dealt.
    */

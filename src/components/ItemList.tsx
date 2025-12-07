@@ -28,7 +28,7 @@ export default function ItemList({
             }
           >
             {formatInt(item.amount)}x {itemLib[item.definitionId]?.name} (
-            {countInInventory(context.game.inventory, item)})
+            {formatInt(countInInventory(context.game.inventory, item))})
           </div>
         </ItemTooltip>
       ))}

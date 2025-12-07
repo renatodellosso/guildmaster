@@ -1,7 +1,7 @@
 import { Ability } from "./ability";
 import { AbilityPriority } from "./abilityPriority";
 import { chooseMultipleRandomLivingTargetsWithinRange } from "./combat";
-import { StatusEffectId } from "./content/statusEffects";
+import { StatusEffectId, statusEffects } from "./content/statusEffects";
 import { CreatureInstance } from "./creature";
 import { addStatusEffect, getSkill, heal, takeDamage } from "./creatureUtils";
 import { Damage } from "./damage";
@@ -138,7 +138,7 @@ export function applyStatusEffect(
 
       addToExpeditionLog(
         expedition,
-        `${caster.name} uses ${params!.name} on ${targets[0].name}, applying ${params!.statusEffectId} for ${params!.duration} turns.`
+        `${caster.name} uses ${params!.name} on ${targets[0].name}, applying ${statusEffects[params!.statusEffectId].name} for ${params!.duration} turns.`
       );
     },
     priority: params.priority!,

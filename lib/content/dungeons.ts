@@ -197,10 +197,10 @@ export const rawDungeons = {
       },
       {
         item: [
-          { id: "vampire_thrall", count: 3 },
+          { id: "vampire_thrall", count: 5 },
           {
             id: "vampire_spawn",
-            count: 1,
+            count: 2,
           },
           {
             id: "vampire",

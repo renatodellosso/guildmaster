@@ -4,7 +4,7 @@ import { finishRegistry, RawRegistry } from "../registry";
 import { SkillId } from "../skills";
 import { Table } from "../table";
 import { Id } from "../utilTypes";
-import { DamageType } from "../damage";
+import { DamageType, DamageTypeGroups } from "../damage";
 import { attack } from "../abilityTemplates";
 import { chance } from "../utils";
 import { addStatusEffect, getSkill, heal } from "../creatureUtils";
@@ -337,9 +337,12 @@ const rawCreatures = {
   },
   vampire_thrall: {
     name: "Vampire Thrall",
-    maxHealth: 80,
+    maxHealth: 140,
     xpValue: 100,
     skills: {},
+    resistances: {
+      [DamageTypeGroups.Magical]: 0.3,
+    },
     abilities: [
       attack({
         name: "Rabid Bite",
@@ -347,7 +350,7 @@ const rawCreatures = {
         damage: [
           {
             type: DamageType.Piercing,
-            amount: 25,
+            amount: 45,
           },
         ],
         range: 1,
@@ -365,9 +368,13 @@ const rawCreatures = {
   },
   vampire_spawn: {
     name: "Vampire Spawn",
-    maxHealth: 120,
+    maxHealth: 250,
     xpValue: 150,
     skills: {},
+    resistances: {
+      [DamageTypeGroups.Physical]: 0.5,
+      [DamageTypeGroups.Magical]: 0.3,
+    },
     abilities: [
       attack({
         name: "Vampiric Bite",
@@ -375,11 +382,11 @@ const rawCreatures = {
         damage: [
           {
             type: DamageType.Piercing,
-            amount: 35,
+            amount: 45,
           },
           {
             type: DamageType.Necrotic,
-            amount: 10,
+            amount: 20,
           },
         ],
         range: 1,
@@ -397,9 +404,18 @@ const rawCreatures = {
   },
   vampire: {
     name: "Vampire",
-    maxHealth: 200,
-    xpValue: 300,
+    maxHealth: 450,
+    xpValue: 500,
     skills: {},
+    actionsPerTurn: 2,
+    resistances: {
+      [DamageTypeGroups.Physical]: 0.7,
+      [DamageTypeGroups.Elemental]: 0.2,
+      [DamageTypeGroups.Magical]: 0.4,
+    },
+    tick: ({ creature }, gameContext) => {
+      heal(creature, 10, gameContext);
+    },
     abilities: [
       attack({
         name: "Blood Drain",
@@ -450,7 +466,7 @@ const rawCreatures = {
         ) => {
           for (const target of targets) {
             const endurance = getSkill(SkillId.Endurance, target, gameContext);
-            if (!chance(Math.max(0, 0.5 / Math.max(endurance, 1)))) {
+            if (!chance(Math.max(0, 0.2 / Math.max(endurance, 1)))) {
               continue;
             }
 

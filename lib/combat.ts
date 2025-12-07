@@ -1,6 +1,7 @@
 import { selectAbilityForCreature } from "./ability";
 import { RetreatTriggerId, retreatTriggers } from "./content/retreatTriggers";
 import { AdventurerInstance, CreatureInstance } from "./creature";
+import { getActionsPerTurn } from "./creatureUtils";
 import { Expedition, startCombat } from "./expedition";
 import { GameContext } from "./gameContext";
 import { addToInventory } from "./inventory";
@@ -46,24 +47,27 @@ function takeTurnForCreature(
     return;
   }
 
-  const ability = selectAbilityForCreature(creature, expedition, gameContext);
+  const actions = getActionsPerTurn(creature, gameContext);
+  for (let i = 0; i < actions; i++) {
+    const ability = selectAbilityForCreature(creature, expedition, gameContext);
 
-  if (!ability) {
-    return;
+    if (!ability) {
+      return;
+    }
+
+    const rawTargets = ability.ability.selectTargets(
+      creature,
+      expedition,
+      gameContext,
+      ability.source
+    );
+
+    const targets = rawTargets.map((targetOrId) =>
+      getCreature(targetOrId, gameContext)
+    );
+
+    ability.ability.activate(creature, targets, expedition, gameContext);
   }
-
-  const rawTargets = ability.ability.selectTargets(
-    creature,
-    expedition,
-    gameContext,
-    ability.source
-  );
-
-  const targets = rawTargets.map((targetOrId) =>
-    getCreature(targetOrId, gameContext)
-  );
-
-  ability.ability.activate(creature, targets, expedition, gameContext);
 }
 
 function isEntireSideDead(side: CombatSide, gameContext: GameContext): boolean {

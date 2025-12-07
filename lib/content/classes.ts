@@ -25,6 +25,8 @@ const rawClasses = {
       getSkill(SkillId.Endurance, creature, gameContext) >= 1,
     maxHealth: (_creature, _prev, _gameContext, source) =>
       25 + ((source as number) - 1) * 5,
+    actionsPerTurn: (_creature, _prev, _gameContext, source) =>
+      (source as number) >= 15 ? 1 : 0,
     skills: {
       [SkillId.Melee]: (creature, _prev, _gameContext, source) =>
         (source as number) >= 2
@@ -55,7 +57,7 @@ const rawClasses = {
         source
       ),
     tick: ({ creature, source }, gameContext) => {
-      if ((source as number) >= 7) {
+      if ((source as number) >= 7 && creature.hp > 0) {
         heal(
           creature,
           1 + getSkill(SkillId.Endurance, creature, gameContext) / 10,

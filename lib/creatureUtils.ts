@@ -240,6 +240,29 @@ export function getResistances(
   return mergeResistances(resistancesList);
 }
 
+export function getActionsPerTurn(
+  creature: CreatureInstance,
+  gameContext: GameContext
+): number {
+  const providers = getProviders(creature, gameContext);
+
+  let actions = 1;
+
+  for (const provider of providers) {
+    if (provider.def.actionsPerTurn) {
+      actions += getFromOptionalFunc(
+        provider.def.actionsPerTurn,
+        creature,
+        actions,
+        gameContext,
+        provider.source
+      );
+    }
+  }
+
+  return actions;
+}
+
 export function getDamageToDeal(
   baseDamage: Damage[],
   caster: CreatureInstance,

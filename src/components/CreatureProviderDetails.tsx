@@ -30,6 +30,15 @@ export default function CreatureProviderDetails({
       context.game,
       source
     );
+  const actionsPerTurn =
+    provider.actionsPerTurn &&
+    getFromOptionalFunc(
+      provider.actionsPerTurn,
+      creature!,
+      0,
+      context.game,
+      source
+    );
 
   const skills = Object.entries(provider.skills || {}).reduce(
     (acc, [skillId, func]) => {
@@ -53,6 +62,7 @@ export default function CreatureProviderDetails({
   const stats = {
     "Max Health": maxHealth,
     "Health Regen": healthRegen,
+    "Actions Per Turn": actionsPerTurn,
     ...skills,
   };
 

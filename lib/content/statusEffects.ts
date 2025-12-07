@@ -62,7 +62,8 @@ const rawStatusEffects = {
       [DamageType.Necrotic]: 0.3,
     },
     tick: ({ creature, source }, gameContext) => {
-      heal(creature, (source as StatusEffectInstance).strength, gameContext);
+      if (creature.hp > 0)
+        heal(creature, (source as StatusEffectInstance).strength, gameContext);
     },
   },
 } satisfies RawRegistry<StatusEffectId, StatusEffectDefinition>;

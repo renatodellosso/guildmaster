@@ -9,7 +9,7 @@ export type BuildingId =
   | "huts"
   | "altar"
   | "war_room";
-export type BuildingTag = "guildCenter" | "temple";
+export type BuildingTag = "guildCenter" | "temple" | "housing";
 
 const rawBuildings = {
   firepit: {
@@ -44,6 +44,7 @@ const rawBuildings = {
     description: "A spacious hall for adventurers to gather, eat, and rest.",
     canBuild: buildingFilter({
       hasBuildingIds: ["bonfire"],
+      lacksBuildingTags: ["housing"],
     }),
     tags: ["guildCenter"],
     cost: [{ definitionId: "coin", amount: 1000 }],
@@ -71,7 +72,7 @@ const rawBuildings = {
       hasBuildingIds: ["tents"],
     }),
     replaces: "tents",
-    tags: [],
+    tags: ["housing"],
     cost: [
       { definitionId: "coin", amount: 500 },
       {
