@@ -277,7 +277,7 @@ const rawClasses = {
       [SkillId.Magic]: 5,
     },
     resistances: (_creature, _gameContext, source) => ({
-      [DamageType.Necrotic]: Math.max(0.2 + 0.05 * (source as number), 1),
+      [DamageType.Necrotic]: Math.min(0.2 + 0.05 * (source as number), 1),
       [DamageType.Radiant]: -0.1 - 0.05 * (source as number),
     }),
     onDealDamage: (dealer, _target, damageDealt, gameContext, source) => {

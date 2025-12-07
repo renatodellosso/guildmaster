@@ -1,6 +1,6 @@
 import { classes, ClassId } from "@/lib/content/classes";
 import { AdventurerInstance } from "@/lib/creature";
-import { getSkill } from "@/lib/creatureUtils";
+import { getSkill, getXpForNextLevel } from "@/lib/creatureUtils";
 import { SkillId } from "@/lib/skills";
 import { getFromOptionalFunc, Context } from "@/lib/utilTypes";
 import { useState } from "react";
@@ -38,11 +38,19 @@ export function LevelUpMenu({
         : maxClass;
     }, availableClasses[0]?.id);
 
+  let maxLevelsToAdd = 1;
+  while (
+    adventurer.xp >= getXpForNextLevel(adventurer.level + maxLevelsToAdd - 1)
+  ) {
+    maxLevelsToAdd++;
+  }
+
   const [errorMessage, setErrorMessage] = useState<string>();
   const [skill, setSkill] = useState<SkillId>(highestSkill);
   const [selectedClass, setSelectedClass] = useState<ClassId>(
     highestClass as ClassId
   );
+  const [levelsToAdd, setLevelsToAdd] = useState<number>(1);
 
   function levelUp() {
     if (!skill || (!selectedClass && availableClasses.length > 0)) {
@@ -50,21 +58,21 @@ export function LevelUpMenu({
       return;
     }
 
-    adventurer.level += 1;
+    adventurer.level += levelsToAdd;
 
     // Increase selected skill by 1
     const currentSkillValue = getSkill(skill, adventurer, context.game);
     if (!adventurer.skills) {
       adventurer.skills = {};
     }
-    adventurer.skills[skill] = currentSkillValue + 1;
+    adventurer.skills[skill] = currentSkillValue + levelsToAdd;
 
     // Add selected class
     if (selectedClass) {
       if (!adventurer.classes[selectedClass]) {
         adventurer.classes[selectedClass] = 0;
       }
-      adventurer.classes[selectedClass]!++;
+      adventurer.classes[selectedClass]! += levelsToAdd;
     }
 
     close();
@@ -75,11 +83,12 @@ export function LevelUpMenu({
       <div className="flex gap-1">
         <button onClick={close}>Back</button>
         <h2>
-          Leveling {adventurer.name} up to level {adventurer.level + 1}
+          Leveling {adventurer.name} up to level{" "}
+          {adventurer.level + levelsToAdd}
         </h2>
       </div>
       <div className="flex gap-2">
-        <p>Select a skill to increase by 1:</p>
+        <p>Select a skill to increase by {levelsToAdd}:</p>
         <select
           value={skill}
           onChange={(e) => setSkill(e.target.value as SkillId)}
@@ -90,7 +99,8 @@ export function LevelUpMenu({
               {formatInt(getSkill(skill as SkillId, adventurer, context.game))}{" "}
               &rarr;{" "}
               {formatInt(
-                getSkill(skill as SkillId, adventurer, context.game) + 1
+                getSkill(skill as SkillId, adventurer, context.game) +
+                  levelsToAdd
               )}
               )
             </option>
@@ -117,6 +127,22 @@ export function LevelUpMenu({
               ))}
             </select>
           </ClassTooltip>
+        </div>
+      )}
+      {maxLevelsToAdd > 1 && (
+        <div className="flex gap-2">
+          <p>How many levels to add:</p>
+          <input
+            type="number"
+            min={1}
+            max={maxLevelsToAdd}
+            value={levelsToAdd}
+            onChange={(e) =>
+              setLevelsToAdd(
+                Math.max(1, Math.min(maxLevelsToAdd, Number(e.target.value)))
+              )
+            }
+          />
         </div>
       )}
       <button onClick={levelUp}>Confirm</button>
