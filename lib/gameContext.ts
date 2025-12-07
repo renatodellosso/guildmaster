@@ -43,4 +43,8 @@ export type GameProvider = CreatureProvider & {
     number,
     [GameProvider, number, GameContext, GameProviderSource | undefined]
   >;
+  sellValueMultiplier?: OptionalFunc<
+    number,
+    [GameProvider, number, GameContext, GameProviderSource | undefined]
+  >;
 };

@@ -44,6 +44,7 @@ export default function MainGameWindow({
         <InventoryDisplay
           inventory={context.game.inventory}
           context={context}
+          canSell={true}
         />
       </div>
       <BuildingsMenu context={context} />

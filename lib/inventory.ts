@@ -1,3 +1,6 @@
+import { items } from "./content/items";
+import { GameContext } from "./gameContext";
+import { getSellValueMultiplier } from "./gameUtils";
 import { ItemInstance, matchesItemFilter } from "./item";
 
 export type Inventory = ItemInstance[];
@@ -69,4 +72,23 @@ export function hasInInventory(
   const existingItem = inventory.find((i) => matchesItemFilter(i, item));
 
   return existingItem !== undefined && existingItem.amount >= item.amount;
+}
+
+export function sellFromInventory(
+  item: ItemInstance,
+  inventory: Inventory,
+  gameContext: GameContext
+): number {
+  if (!hasInInventory(inventory, item)) {
+    return 0;
+  }
+
+  const itemDef = items[item.definitionId];
+  const totalValue =
+    getSellValueMultiplier(gameContext) * itemDef.value * item.amount;
+
+  removeFromInventory(inventory, item);
+  addToInventory(inventory, { definitionId: "coin", amount: totalValue });
+
+  return totalValue;
 }

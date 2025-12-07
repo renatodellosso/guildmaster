@@ -108,6 +108,27 @@ export function getStartingSkillChance(gameContext: GameContext): number {
   return chance;
 }
 
+export function getSellValueMultiplier(gameContext: GameContext): number {
+  let multiplier = 0.5;
+
+  for (const building of getProviders(gameContext)) {
+    const def = building.def;
+    if (!def.sellValueMultiplier) {
+      continue;
+    }
+
+    multiplier += getFromOptionalFunc(
+      def.sellValueMultiplier,
+      def,
+      multiplier,
+      gameContext,
+      building.source
+    );
+  }
+
+  return Math.min(Math.max(multiplier, 0), 1);
+}
+
 export function addNewAdventurer(
   gameContext: GameContext,
   skillCount: number = 0
