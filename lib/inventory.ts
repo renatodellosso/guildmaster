@@ -74,6 +74,15 @@ export function hasInInventory(
   return existingItem !== undefined && existingItem.amount >= item.amount;
 }
 
+export function countInInventory(
+  inventory: Inventory,
+  itemFilter: ItemInstance
+): number {
+  const existingItem = inventory.find((i) => matchesItemFilter(i, itemFilter));
+
+  return existingItem ? existingItem.amount : 0;
+}
+
 export function sellFromInventory(
   item: ItemInstance,
   inventory: Inventory,

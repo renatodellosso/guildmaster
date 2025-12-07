@@ -1,41 +1,54 @@
 import { Ability } from "./ability";
 import { AbilityPriority } from "./abilityPriority";
-import {
-  chooseMultipleRandomLivingTargetsWithinRange,
-  chooseRandomLivingTargetWithinRange,
-} from "./combat";
+import { chooseMultipleRandomLivingTargetsWithinRange } from "./combat";
 import { StatusEffectId } from "./content/statusEffects";
 import { CreatureInstance } from "./creature";
-import { getSkill, takeDamage } from "./creatureUtils";
+import { getSkill, heal, takeDamage } from "./creatureUtils";
 import { Damage } from "./damage";
 import { addToExpeditionLog, Expedition } from "./expedition";
-import { formatDamage } from "./format";
+import { formatDamage, formatInt } from "./format";
 import { GameContext } from "./gameContext";
 import { SkillId } from "./skills";
 import { deepCopy } from "./utils";
+import { MakeRequired } from "./utilTypes";
 
-export function attack(params: {
+type AttackParams = {
   name: string;
   description: string;
-  damage: Damage[];
   range?: number;
   manaCost?: number;
   priority?: AbilityPriority;
   skill?: SkillId;
   targets?: number;
-  onDealDamage?: (
-    caster: CreatureInstance,
-    target: CreatureInstance,
-    damageDealt: Damage[],
-    expedition: Expedition,
-    gameContext: GameContext
-  ) => void;
-}): Ability {
+};
+
+type ParsedAttackParams = MakeRequired<
+  AttackParams,
+  "range" | "manaCost" | "priority" | "skill" | "targets"
+>;
+
+function initParams<T extends AttackParams>(params: T): ParsedAttackParams & T {
   params.manaCost = params.manaCost ?? 0;
   params.range = params.range ?? 1;
   params.targets = params.targets ?? 1;
   params.priority = params.priority ?? AbilityPriority.Low;
   params.skill = params.range > 1 ? SkillId.Ranged : SkillId.Melee;
+  return params as ParsedAttackParams & T;
+}
+
+export function attack(
+  params: AttackParams & {
+    damage: Damage[];
+    onDealDamage?: (
+      caster: CreatureInstance,
+      targets: CreatureInstance[],
+      damageDealt: Damage[],
+      expedition: Expedition,
+      gameContext: GameContext
+    ) => void;
+  }
+): Ability {
+  params = initParams(params);
 
   return {
     name: params.name,
@@ -67,7 +80,7 @@ export function attack(params: {
       if (damageTaken.length > 0 && params!.onDealDamage) {
         params!.onDealDamage(
           caster,
-          targets[0],
+          targets,
           damageTaken,
           expedition!,
           gameContext
@@ -81,22 +94,19 @@ export function attack(params: {
         )} damage.`
       );
     },
-    priority: params.priority,
+    priority: params.priority!,
   };
 }
 
-export function applyStatusEffect(params: {
-  name: string;
-  description: string;
-  statusEffectId: StatusEffectId;
-  duration: number;
-  strength?: number;
-  manaCost?: number;
-  priority?: AbilityPriority;
-  side: "ally" | "enemy";
-}): Ability {
-  params.manaCost = params.manaCost ?? 0;
-  params.priority = params.priority ?? AbilityPriority.Low;
+export function applyStatusEffect(
+  params: AttackParams & {
+    side: "ally" | "enemy";
+    statusEffectId: StatusEffectId;
+    duration: number;
+    strength?: number;
+  }
+): Ability {
+  params = initParams(params);
   params.strength = params.strength ?? 1;
 
   return {
@@ -108,26 +118,66 @@ export function applyStatusEffect(params: {
         params!.side === "ally"
           ? expedition.combat.allies
           : expedition.combat.enemies;
-      return chooseRandomLivingTargetWithinRange(
+      return chooseMultipleRandomLivingTargetsWithinRange(
         potentialTargets,
         gameContext,
-        3
+        3,
+        params!.targets!
       );
     },
     activate: (caster, targets, expedition) => {
       if (targets.length === 0 || !targets[0]) return;
 
-      targets[0].statusEffects.push({
-        definitionId: params!.statusEffectId,
-        duration: params!.duration,
-        strength: params!.strength!,
-      });
+      for (const target of targets) {
+        target.statusEffects.push({
+          definitionId: params!.statusEffectId,
+          duration: params!.duration,
+          strength: params!.strength!,
+        });
+      }
 
       addToExpeditionLog(
         expedition,
         `${caster.name} uses ${params!.name} on ${targets[0].name}, applying ${params!.statusEffectId} for ${params!.duration} turns.`
       );
     },
-    priority: params.priority,
+    priority: params.priority!,
+  };
+}
+
+export function healAbility(
+  params: AttackParams & {
+    amount: number;
+  }
+): Ability {
+  params = initParams(params);
+
+  return {
+    name: params.name,
+    description: `${params.description} Heals ${params.amount} HP to ${params.targets} target${params.targets !== 1 ? "s" : ""}.`,
+    canActivate: (caster) => caster.mana >= (params!.manaCost ?? 0),
+    selectTargets: (_caster, expedition, gameContext) =>
+      chooseMultipleRandomLivingTargetsWithinRange(
+        expedition.combat.allies,
+        gameContext,
+        3,
+        params!.targets!
+      ),
+    activate: (caster, targets, expedition, gameContext) => {
+      if (targets.length === 0 || !targets[0]) return;
+
+      const scaledAmount =
+        params!.amount + getSkill(params!.skill!, caster, gameContext);
+
+      for (const target of targets) {
+        heal(target, scaledAmount, gameContext);
+      }
+
+      addToExpeditionLog(
+        expedition,
+        `${caster.name} uses ${params!.name} on ${targets[0].name}, healing ${formatInt(scaledAmount)} HP.`
+      );
+    },
+    priority: params.priority!,
   };
 }

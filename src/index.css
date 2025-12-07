@@ -51,3 +51,7 @@ td,
 th {
   @apply px-1;
 }
+
+tr:hover {
+  @apply bg-gray-800;
+}

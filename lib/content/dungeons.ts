@@ -2,7 +2,7 @@ import { DungeonDefinition, Encounter } from "../dungeon";
 import { finishRegistry, RawRegistry } from "../registry";
 import { Table } from "../table";
 
-export type DungeonId = "bandit_camp";
+export type DungeonId = "bandit_camp" | "caves" | "sewers";
 
 export const rawDungeons = {
   bandit_camp: {
@@ -59,6 +59,96 @@ export const rawDungeons = {
             count: 1,
           },
         ],
+        weight: 1,
+      },
+    ]),
+  },
+  caves: {
+    name: "Caves",
+    encounters: new Table<Encounter>([
+      {
+        item: [
+          {
+            id: "rat",
+            count: 4,
+          },
+        ],
+        weight: 1,
+      },
+      {
+        item: [
+          {
+            id: "cave_crawler",
+            count: 3,
+          },
+        ],
+        weight: 1,
+      },
+      {
+        item: [
+          {
+            id: "rat",
+            count: 2,
+          },
+          {
+            id: "cave_crawler",
+            count: 2,
+          },
+        ],
+        weight: 1,
+      },
+      {
+        item: [
+          {
+            id: "rat_king",
+            count: 1,
+          },
+          {
+            id: "rat",
+            count: 2,
+          },
+        ],
+        weight: 1,
+      },
+    ]),
+  },
+  sewers: {
+    name: "Sewers",
+    encounters: new Table<Encounter>([
+      {
+        item: [{
+          id: "plague_rat",
+          count: 4,
+        }],
+        weight: 1,
+      },
+      {
+        item: [{
+          id: "slime_tendril",
+          count: 2,
+        }],
+        weight: 1,
+      },
+      {
+        item: [{
+          id: "plague_rat",
+          count: 2,
+        },
+        {
+          id: "slime_tendril",
+          count: 1,
+        }],
+        weight: 1,
+      },
+      {
+        item: [{
+          id: "green_ooze",
+          count: 1,
+        },
+        {
+          id: "slime_tendril",
+          count: 2,
+        }],
         weight: 1,
       },
     ]),

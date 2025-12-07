@@ -3,11 +3,17 @@ import { DamageType, DamageTypeGroups } from "../damage";
 import { EquipmentSlot } from "../equipmentSlot";
 import { EquipmentDefinition } from "../item";
 import { RawRegistry } from "../registry";
+import { SkillId } from "../skills";
 
-export type EquipmentId = "shieldBauble" | "longsword" | "shortbow";
+export type EquipmentId =
+  | "shield_bauble"
+  | "longsword"
+  | "shortbow"
+  | "rat_tooth_necklace"
+  | "slime_cloak";
 
 export const rawEquipments = {
-  shieldBauble: {
+  shield_bauble: {
     name: "Shield Bauble",
     description: "A small bauble that provides minor protection.",
     value: 15,
@@ -54,5 +60,30 @@ export const rawEquipments = {
         range: 3,
       }),
     ],
+  },
+  rat_tooth_necklace: {
+    name: "Rat Tooth Necklace",
+    description: "A necklace made from the tooth of a giant rat.",
+    value: 5,
+    slot: EquipmentSlot.Accessory,
+    getDamageToDeal: [
+      {
+        type: DamageType.Piercing,
+        amount: 2,
+      },
+    ],
+  },
+  slime_cloak: {
+    name: "Slime Cloak",
+    description: "A cloak made from slime, offering minor protection.",
+    value: 20,
+    slot: EquipmentSlot.Armor,
+    maxHealth: 3,
+    resistances: {
+      [DamageTypeGroups.Elemental]: 0.15,
+    },
+    skills: {
+      [SkillId.Magic]: 1,
+    },
   },
 } satisfies RawRegistry<EquipmentId, EquipmentDefinition>;

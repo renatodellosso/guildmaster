@@ -13,7 +13,10 @@ import {
   Damage,
   DamageResistances,
   getDamageAfterResistances,
+  mergeDamages,
   mergeResistances,
+  removeNonPositiveDamages,
+  subtractDamage,
 } from "./damage";
 import { rollDrops } from "./drops";
 import { addToExpeditionLog, Expedition } from "./expedition";
@@ -248,14 +251,17 @@ export function getDamageToDeal(
 
   for (const provider of providers) {
     if (provider.def.getDamageToDeal) {
-      finalDamage = getFromOptionalFunc(
-        provider.def.getDamageToDeal,
-        finalDamage,
-        caster,
-        target,
-        gameContext,
-        provider.source
-      );
+      finalDamage =
+        typeof provider.def.getDamageToDeal === "function"
+          ? provider.def.getDamageToDeal(
+              finalDamage,
+              caster,
+              target,
+              gameContext,
+              provider.source
+            )
+          : [...finalDamage, ...provider.def.getDamageToDeal];
+      finalDamage = mergeDamages(finalDamage);
     }
   }
 
@@ -265,7 +271,7 @@ export function getDamageToDeal(
 export function getDamageToTake(
   baseDamage: Damage[],
   creature: CreatureInstance,
-  dealtBy: CreatureInstance,
+  dealtBy: CreatureInstance | undefined,
   gameContext: GameContext
 ): Damage[] {
   const providers = getProviders(creature, gameContext);
@@ -274,14 +280,17 @@ export function getDamageToTake(
 
   for (const provider of providers) {
     if (provider.def.getDamageToTake) {
-      finalDamage = getFromOptionalFunc(
-        provider.def.getDamageToTake,
-        finalDamage,
-        creature,
-        dealtBy,
-        gameContext,
-        provider.source
-      );
+      finalDamage =
+        typeof provider.def.getDamageToTake === "function"
+          ? provider.def.getDamageToTake(
+              finalDamage,
+              creature,
+              dealtBy,
+              gameContext,
+              provider.source
+            )
+          : subtractDamage(finalDamage, provider.def.getDamageToTake);
+      finalDamage = mergeDamages(finalDamage);
     }
   }
 
@@ -357,22 +366,25 @@ export function regenMana(
 
 export function takeDamage(
   creature: CreatureInstance,
-  dealtBy: CreatureInstance,
+  dealtBy: CreatureInstance | undefined,
   damage: Damage[],
   gameContext: GameContext,
   expedition?: Expedition
 ) {
   damage = deepCopy(damage);
-  damage = getDamageToDeal(damage, dealtBy, creature, gameContext);
+  if (dealtBy) {
+    damage = getDamageToDeal(damage, dealtBy, creature, gameContext);
+  }
   damage = getDamageToTake(damage, creature, dealtBy, gameContext);
 
   const resistances = getResistances(creature, gameContext);
-  const finalDamages = getDamageAfterResistances(damage, resistances);
+  damage = getDamageAfterResistances(damage, resistances);
+  damage = removeNonPositiveDamages(damage);
 
   const originalHp = creature.hp;
   const damageDealt: Damage[] = [];
 
-  for (const dmg of finalDamages) {
+  for (const dmg of damage) {
     const toDeal = Math.min(creature.hp, dmg.amount);
     if (toDeal <= 0) continue;
 
@@ -383,11 +395,11 @@ export function takeDamage(
   creature.hp = Math.max(creature.hp, 0);
 
   if (originalHp > 0 && creature.hp === 0) {
-    onKill(dealtBy, creature, gameContext);
+    if (dealtBy) onKill(dealtBy, creature, gameContext);
     onDie(creature, gameContext, expedition);
   }
 
-  onDealDamage(dealtBy, creature, damageDealt, gameContext);
+  if (dealtBy) onDealDamage(dealtBy, creature, damageDealt, gameContext);
   return damageDealt;
 }
 
@@ -521,4 +533,12 @@ export function randomName(): string {
   name += chooseRandom(suffixes);
 
   return name;
+}
+
+export function getClassString(creature: CreatureInstance): string {
+  const list = Object.entries(creature.classes || {})
+    .map(([cls, level]) => `${classes[cls as ClassId].name} ${level}`)
+    .join(", ");
+
+  return list != "" ? `(${list})` : "";
 }

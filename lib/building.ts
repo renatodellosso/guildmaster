@@ -147,12 +147,50 @@ export function doesNotHaveBuildingTag(
   tag: BuildingTag
 ): BuildingDefinition["canBuild"] {
   return (gameContext) => {
+    const func = hasBuildingTag(tag);
+    return !getFromOptionalFunc(func, gameContext);
+  };
+}
+
+export function hasBuildingTag(
+  tag: BuildingTag
+): BuildingDefinition["canBuild"] {
+  return (gameContext) => {
     for (const buildingInstance of Object.values(gameContext.buildings)) {
       const buildingDef = buildings[buildingInstance.definitionId];
       if (buildingDef.tags.includes(tag)) {
-        return false;
+        return true;
       }
     }
-    return true;
+    return false;
+  };
+}
+
+export function buildingFilter(params: {
+  hasBuildingTags?: BuildingTag[];
+  lacksBuildingTags?: BuildingTag[];
+  hasBuildingIds?: BuildingId[];
+}): BuildingDefinition["canBuild"] {
+  return (gameContext) => {
+    const tags = new Set<BuildingTag>();
+    const ids = new Set<BuildingId>();
+
+    for (const buildingInstance of Object.values(gameContext.buildings)) {
+      const buildingDef = buildings[buildingInstance.definitionId];
+      buildingDef.tags.forEach((tag) => tags.add(tag));
+      ids.add(buildingInstance.definitionId);
+    }
+
+    return (
+      (params.hasBuildingTags
+        ? params.hasBuildingTags.every((tag) => tags.has(tag))
+        : true) &&
+      (params.lacksBuildingTags
+        ? params.lacksBuildingTags.every((tag) => !tags.has(tag))
+        : true) &&
+      (params.hasBuildingIds
+        ? params.hasBuildingIds.every((id) => ids.has(id))
+        : true)
+    );
   };
 }

@@ -88,12 +88,12 @@ export function AdventurerDisplay({
       <div>
         HP: {formatInt(adventurer.hp)}/
         {formatInt(getMaxHealth(adventurer, context.game))} (
-        {formatBonus(getHealthRegen(adventurer, context.game))}/tick)
+        {formatBonus(getHealthRegen(adventurer, context.game))}/tick base)
       </div>
       <div>
         Mana: {formatInt(adventurer.mana)}/
         {formatInt(getMaxMana(adventurer, context.game))} (
-        {formatBonus(getManaRegen(adventurer, context.game))}/tick)
+        {formatBonus(getManaRegen(adventurer, context.game))}/tick base)
       </div>
       <div>
         Activity:{" "}

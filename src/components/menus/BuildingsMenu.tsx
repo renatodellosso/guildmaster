@@ -99,6 +99,7 @@ export default function BuildingsMenu({ context }: { context: Context }) {
                               >
                                 <input
                                   type="checkbox"
+                                  id={`${buildingId}-${String(worker.id)}`}
                                   checked={workers.includes(worker)}
                                   onChange={() => {
                                     if (workers.includes(worker)) {
@@ -115,7 +116,7 @@ export default function BuildingsMenu({ context }: { context: Context }) {
                                     context.updateGameState();
                                   }}
                                 />
-                                <label>
+                                <label htmlFor={`${buildingId}-${String(worker.id)}`}>
                                   {worker.name} (
                                   {getSkill(
                                     SkillId.Construction,
@@ -184,16 +185,16 @@ export default function BuildingsMenu({ context }: { context: Context }) {
                       context.game
                     )}
                   </td>
-                  <td
-                    className={
-                      hasInInventory(context.game.inventory, buildingDef.cost)
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }
-                  >
-                    <ItemList items={buildingDef.cost} context={context} />
+                  <td>
+                    <ItemList
+                      items={buildingDef.cost}
+                      context={context}
+                      colorIfAvailable
+                    />
                   </td>
-                  <td>{formatInt(buildingDef.buildTime)}</td>
+                  <td className="text-right">
+                    {formatInt(buildingDef.buildTime)}
+                  </td>
                   <td>
                     {buildingDef.replaces
                       ? buildings[buildingDef.replaces].name

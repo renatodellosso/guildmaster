@@ -57,6 +57,9 @@ export type CreatureProvider = Tickable<{
     DamageResistances,
     [CreatureInstance, GameContext, CreatureProviderSource | undefined]
   >;
+  /**
+   * If not a function, this value is treated as a flat bonus to all damage dealt.
+   */
   getDamageToDeal?: OptionalFunc<
     Damage[],
     [
@@ -67,12 +70,13 @@ export type CreatureProvider = Tickable<{
       CreatureProviderSource | undefined,
     ]
   >;
+  /** If not a function, this value is treated as a flat minus to all damage taken. */
   getDamageToTake?: OptionalFunc<
     Damage[],
     [
       Damage[],
       CreatureInstance,
-      CreatureInstance,
+      CreatureInstance | undefined,
       GameContext,
       CreatureProviderSource | undefined,
     ]

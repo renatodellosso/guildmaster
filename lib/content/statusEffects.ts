@@ -4,7 +4,7 @@ import { formatPercent } from "../format";
 import { RawRegistry, finishRegistry } from "../registry";
 import { StatusEffectDefinition, StatusEffectInstance } from "../statusEffect";
 
-export type StatusEffectId = "poisoned" | "ward";
+export type StatusEffectId = "poisoned" | "ward" | "divine_shield";
 
 const rawStatusEffects = {
   poisoned: {
@@ -17,6 +17,7 @@ const rawStatusEffects = {
         getMaxHealth(creature, gameContext) * 0.005 * instance.strength;
       takeDamage(
         creature,
+        undefined,
         [
           {
             type: DamageType.Poison,
@@ -38,6 +39,13 @@ const rawStatusEffects = {
         [DamageTypeGroups.All]: 0.1 * (source as StatusEffectInstance).strength,
       };
     },
+  },
+  divine_shield: {
+    name: "Divine Shield",
+    description: () => "Negates all incoming damage.",
+    resistances: (_creature, _gameContext, source) => ({
+      [DamageTypeGroups.All]: (source as StatusEffectInstance).strength,
+    }),
   },
 } satisfies RawRegistry<StatusEffectId, StatusEffectDefinition>;
 

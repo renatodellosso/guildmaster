@@ -128,3 +128,31 @@ export function matchesDamageType(
       return false;
   }
 }
+
+export function removeNonPositiveDamages(damages: Damage[]): Damage[] {
+  return damages.filter((damage) => damage.amount > 0);
+}
+
+export function subtractDamage(
+  damages: Damage[],
+  damageToSubtract: Damage[]
+): Damage[] {
+  const result: Damage[] = [];
+
+  for (const damage of damages) {
+    const subtractAmount =
+      damageToSubtract
+        .filter((d) => matchesDamageType(damage.type, d.type))
+        .reduce((sum, d) => sum + d.amount, 0) || 0;
+
+    const newAmount = damage.amount - subtractAmount;
+    if (newAmount > 0) {
+      result.push({
+        type: damage.type,
+        amount: newAmount,
+      });
+    }
+  }
+
+  return result;
+}

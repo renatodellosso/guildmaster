@@ -1,12 +1,15 @@
 import { AbilityPriority } from "../abilityPriority";
-import { applyStatusEffect, attack } from "../abilityTemplates";
+import { applyStatusEffect, attack, healAbility } from "../abilityTemplates";
+import { hasBuildingTag } from "../building";
 import { buildClassDescription, ClassDefinition, requireLevel } from "../class";
 import { getMaxMana, getSkill, heal } from "../creatureUtils";
 import { DamageType, DamageTypeGroups } from "../damage";
 import { finishRegistry, RawRegistry } from "../registry";
 import { SkillId } from "../skills";
+import { round } from "../utils";
+import { getFromOptionalFunc } from "../utilTypes";
 
-export type ClassId = "thug" | "wizard" | "abjurer";
+export type ClassId = "thug" | "wizard" | "abjurer" | "cleric";
 
 const rawClasses = {
   thug: {
@@ -155,6 +158,54 @@ const rawClasses = {
               creature.mana / getMaxMana(creature, gameContext) / 4,
           }
         : {},
+  },
+  cleric: {
+    name: "Cleric",
+    description:
+      "A holy acolyte who channels divine power to heal allies and smite foes.",
+    canSelect: (creature, gameContext) => {
+      return (
+        getFromOptionalFunc(hasBuildingTag("temple"), gameContext) &&
+        getSkill(SkillId.Magic, creature, gameContext) >= 1
+      );
+    },
+    maxMana: (_creature, _prev, _gameContext, source) =>
+      25 + ((source as number) - 1) * 5,
+    abilities: (creature, _prev, gameContext, source) =>
+      requireLevel(
+        {
+          0: [
+            healAbility({
+              name: "Healing Touch",
+              description:
+                "Heal an ally with a touch imbued with divine energy.",
+              amount: 15,
+              range: 1,
+              manaCost: 8,
+              priority: AbilityPriority.Medium,
+              skill: SkillId.Magic,
+            }),
+          ],
+          4: [
+            applyStatusEffect({
+              name: "Divine Smite",
+              description:
+                "Empower your weapon with holy energy to deal extra radiant damage.",
+              statusEffectId: "divine_shield",
+              duration: 3,
+              manaCost: 12,
+              strength: round(
+                getSkill(SkillId.Magic, creature, gameContext) / 3
+              ),
+              side: "ally",
+              priority: AbilityPriority.Medium,
+            }),
+          ],
+        },
+        creature,
+        gameContext,
+        source
+      ),
   },
 } satisfies RawRegistry<ClassId, ClassDefinition>;
 

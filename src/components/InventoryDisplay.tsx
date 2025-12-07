@@ -76,7 +76,7 @@ export default function InventoryDisplay({
                   {formatInt(item.value * instance.amount)} (
                   {formatInt(item.value)} each)
                 </td>
-                {canSell && (
+                {canSell && instance.definitionId !== "coin" && (
                   <td>
                     <button onClick={() => sell(index)}>Sell</button>
                   </td>

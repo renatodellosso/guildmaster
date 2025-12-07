@@ -1,9 +1,11 @@
 import { canReassignAdventurer } from "@/lib/activity";
+import { activities } from "@/lib/content/activities";
 import { DungeonId, dungeons } from "@/lib/content/dungeons";
-import { CreatureInstance } from "@/lib/creature";
+import { AdventurerInstance } from "@/lib/creature";
+import { getClassString } from "@/lib/creatureUtils";
 import { createExpedition } from "@/lib/expedition";
 import { getMaxPartySize } from "@/lib/gameUtils";
-import { Context, Id } from "@/lib/utilTypes";
+import { Context, getFromOptionalFunc, Id } from "@/lib/utilTypes";
 import { useState } from "react";
 
 export default function StartExpeditionMenu({
@@ -79,6 +81,7 @@ export default function StartExpeditionMenu({
           <PartyMemberSelector
             availableMembers={availablePartyMembers}
             currentText={"Add to front"}
+            context={context}
             onChange={(newSelected) => {
               setParty([newSelected, ...party]);
             }}
@@ -89,6 +92,7 @@ export default function StartExpeditionMenu({
             key={String(memberId)}
             availableMembers={availablePartyMembers}
             currentText={context.game.roster[memberId].name}
+            context={context}
             onChange={(newSelected) => {
               setParty(party.map((id) => (id === memberId ? newSelected : id)));
             }}
@@ -98,6 +102,7 @@ export default function StartExpeditionMenu({
           <PartyMemberSelector
             availableMembers={availablePartyMembers}
             currentText={"Add to back"}
+            context={context}
             onChange={(newSelected) => {
               setParty([...party, newSelected]);
             }}
@@ -113,10 +118,12 @@ export default function StartExpeditionMenu({
 function PartyMemberSelector({
   availableMembers,
   currentText,
+  context,
   onChange,
 }: {
-  availableMembers: CreatureInstance[];
+  availableMembers: AdventurerInstance[];
   currentText: string;
+  context: Context;
   onChange: (newSelected: Id) => void;
 }) {
   return (
@@ -138,7 +145,13 @@ function PartyMemberSelector({
       <option value={"current"}>{currentText}</option>
       {availableMembers.map((member) => (
         <option key={String(member.id)} value={member.name}>
-          {member.name}
+          {member.name} {getClassString(member)} (
+          {getFromOptionalFunc(
+            activities[member.activity.definitionId].description,
+            member,
+            context.game
+          )}
+          )
         </option>
       ))}
     </select>

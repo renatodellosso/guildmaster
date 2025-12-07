@@ -1,14 +1,16 @@
-import { BuildingDefinition, doesNotHaveBuildingTag } from "../building";
+import { BuildingDefinition, buildingFilter } from "../building";
 import { finishRegistry, RawRegistry } from "../registry";
 
-export type BuildingId = "firepit" | "bonfire" | "tents";
-export type BuildingTag = "guildCenter";
+export type BuildingId = "firepit" | "bonfire" | "tents" | "altar";
+export type BuildingTag = "guildCenter" | "temple";
 
 const rawBuildings = {
   firepit: {
     name: "Firepit",
     description: "A simple firepit to keep adventurers warm and cook food.",
-    canBuild: doesNotHaveBuildingTag("guildCenter"),
+    canBuild: buildingFilter({
+      lacksBuildingTags: ["guildCenter"],
+    }),
     tags: ["guildCenter"],
     cost: [{ definitionId: "coin", amount: 30 }],
     buildTime: 60,
@@ -19,7 +21,9 @@ const rawBuildings = {
     name: "Bonfire",
     description:
       "A large bonfire to keep adventurers warm and cook food for a larger group.",
-    canBuild: doesNotHaveBuildingTag("guildCenter"),
+    canBuild: buildingFilter({
+      hasBuildingIds: ["firepit"],
+    }),
     tags: ["guildCenter"],
     cost: [{ definitionId: "coin", amount: 200 }],
     buildTime: 300,
@@ -36,6 +40,37 @@ const rawBuildings = {
     cost: [{ definitionId: "coin", amount: 100 }],
     buildTime: 600,
     maxRosterSize: 2,
+  },
+  altar: {
+    name: "Altar",
+    description: "A sacred altar for worship and rituals.",
+    canBuild: buildingFilter({
+      hasBuildingTags: ["guildCenter"],
+      lacksBuildingTags: ["temple"],
+    }),
+    tags: ["temple"],
+    cost: [
+      { definitionId: "rat_tail", amount: 15 },
+      {
+        definitionId: "slime",
+        amount: 10,
+      },
+      {
+        definitionId: "coin",
+        amount: 250,
+      },
+      {
+        definitionId: "rat_tooth_necklace",
+        amount: 1,
+      },
+      {
+        definitionId: "shield_bauble",
+        amount: 1,
+      },
+    ],
+    buildTime: 1200,
+    manaRegen: 1,
+    healthRegen: 1,
   },
 } satisfies RawRegistry<BuildingId, BuildingDefinition>;
 
