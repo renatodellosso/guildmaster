@@ -1,4 +1,4 @@
-import { rollDrops } from "@/lib/drops";
+import { DropTableEntry, rollDrops } from "@/lib/drops";
 import { ItemInstance } from "@/lib/item";
 import { Table } from "@/lib/table";
 import { describe, it, expect } from "vitest";
@@ -13,7 +13,7 @@ describe(rollDrops.name, () => {
       chance: 0.5,
       table: {
         roll: () => ({ definitionId: "coin", amount: 1 }),
-      } as any,
+      } as Table<DropTableEntry>,
     };
 
     const result = rollDrops(drops);
@@ -32,7 +32,7 @@ describe(rollDrops.name, () => {
       chance: 0.5,
       table: {
         roll: () => ({ definitionId: "coin", amount: 2 }),
-      } as any,
+      } as Table<DropTableEntry>,
     };
 
     const result = rollDrops(drops);
@@ -53,7 +53,7 @@ describe(rollDrops.name, () => {
 
     const drops = {
       chance: 1,
-      table: new Table<any>([{ weight: 1, item: nestedTable }]),
+      table: new Table<DropTableEntry>([{ weight: 1, item: nestedTable }]),
     };
 
     const result = rollDrops(drops);

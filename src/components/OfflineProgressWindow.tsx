@@ -1,6 +1,6 @@
 import { tick } from "@/lib/tick";
 import { Context } from "@/lib/utilTypes";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export function OfflineProgressWindow({
   context,
@@ -11,11 +11,16 @@ export function OfflineProgressWindow({
 }) {
   const [ticksRemaining, setTicksRemaining] = useState<number>(-1);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout>();
+  const [startedProcessing, setStartedProcessing] = useState(false);
 
-  useEffect(() => {
+  const processOfflineProgress = useCallback(() => {
+    if (startedProcessing) return;
+    setStartedProcessing(true);
+
     const now = Date.now();
     const deltaSeconds = (now - context.game.lastTick) / 1000;
     const ticksToProcess = Math.floor(deltaSeconds);
+
     setTicksRemaining(ticksToProcess);
 
     const blockSize = 1000; // Number of ticks to process per render
@@ -37,7 +42,11 @@ export function OfflineProgressWindow({
     }
 
     processBlock();
-  }, []);
+  }, [startedProcessing, context, finish]);
+
+  useEffect(() => {
+    processOfflineProgress();
+  }, [processOfflineProgress]);
 
   const hoursRemaining = Math.floor(ticksRemaining / 3600);
   const minutesRemaining = Math.floor((ticksRemaining % 3600) / 60);

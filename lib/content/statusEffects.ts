@@ -13,7 +13,7 @@ export type StatusEffectId =
 const rawStatusEffects = {
   poisoned: {
     name: "Poisoned",
-    description: (_creature, instance, _gameContext) =>
+    description: (_creature, instance) =>
       `Deals ${formatPercent(0.005 * instance.strength)} of max HP as poison damage each turn.`,
     tick: ({ creature, source }, gameContext) => {
       const instance = source as StatusEffectInstance;
@@ -34,7 +34,7 @@ const rawStatusEffects = {
   },
   ward: {
     name: "Ward",
-    description: (_creature, instance, _gameContext) =>
+    description: (_creature, instance) =>
       `Reduces incoming magic damage by ${formatPercent(
         0.1 * instance.strength
       )}.`,

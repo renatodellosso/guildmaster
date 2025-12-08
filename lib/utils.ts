@@ -42,9 +42,15 @@ export function deepCopy<T>(obj: T): T {
   if (Array.isArray(obj)) {
     return obj.map((item) => deepCopy(item)) as unknown as T;
   } else if (obj && typeof obj === "object") {
-    const copy: any = {};
+    const copy: T = {} as T;
     for (const key in obj) {
-      copy[key] = deepCopy((obj as any)[key]);
+      copy[key] = deepCopy(
+        (
+          obj as {
+            [key: string]: T[Extract<keyof T, string>];
+          }
+        )[key]
+      );
     }
     return copy;
   } else {
