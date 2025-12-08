@@ -11,4 +11,5 @@ export default defineConfig({
       "@/lib": path.resolve(__dirname, "lib"),
     },
   },
+  base: "/<REPO>/",
 });

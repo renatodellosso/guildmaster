@@ -9,3 +9,6 @@ jobs:
     uses: ./.github/workflows/ci.yml
   formatting:
     uses: ./.github/workflows/formatting.yml
+  deploy:
+    # needs: ci
+    uses: ./.github/workflows/deploy.yml
