@@ -81,7 +81,8 @@ export default function ExpeditionDisplay({
       </div>
       <div>
         <Tooltip content="Will be returned to the guild's inventory if the current fight is won. Will be lost if all allies are defeated.">
-        <strong>Inventory (?):</strong></Tooltip>
+          <strong>Inventory (?):</strong>
+        </Tooltip>
         <InventoryDisplay inventory={expedition.inventory} context={context} />
       </div>
     </div>

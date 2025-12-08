@@ -1,4 +1,9 @@
-import { DamageType, getDamageAfterResistances, mergeDamages, mergeResistances } from "@/lib/damage";
+import {
+  DamageType,
+  getDamageAfterResistances,
+  mergeDamages,
+  mergeResistances,
+} from "@/lib/damage";
 import { round } from "@/lib/utils";
 import { describe, expect, it } from "vitest";
 
@@ -27,8 +32,7 @@ describe(mergeResistances.name, () => {
 
     // Round to 2 decimal places for easier comparison
     for (const key in merged) {
-      merged[key as DamageType] =
-        round(merged[key as DamageType] as number, 2);
+      merged[key as DamageType] = round(merged[key as DamageType] as number, 2);
     }
 
     expect(merged).toEqual({
