@@ -20,53 +20,53 @@ export default function CreatureProviderDetails({
 }) {
   const maxHealth =
     provider.maxHealth &&
-    getFromOptionalFunc(provider.maxHealth, creature!, 0, context.game, source);
+    getFromOptionalFunc(provider.maxHealth, {
+      creature: creature!,
+      source,
+      gameContext: context.game,
+      prev: 0,
+    });
   const healthRegen =
     provider.healthRegen &&
-    getFromOptionalFunc(
-      provider.healthRegen,
-      creature!,
-      0,
-      context.game,
-      source
-    );
+    getFromOptionalFunc(provider.healthRegen, {
+      creature: creature!,
+      prev: 0,
+      gameContext: context.game,
+      source,
+    });
   const actionsPerTurn =
     provider.actionsPerTurn &&
-    getFromOptionalFunc(
-      provider.actionsPerTurn,
-      creature!,
-      0,
-      context.game,
-      source
-    );
+    getFromOptionalFunc(provider.actionsPerTurn, {
+      creature: creature!,
+      prev: 0,
+      gameContext: context.game,
+      source,
+    });
   const constructionPerTick =
     provider.constructionPerTick &&
-    getFromOptionalFunc(
-      provider.constructionPerTick,
-      creature!,
-      0,
-      context.game,
-      source
-    );
+    getFromOptionalFunc(provider.constructionPerTick, {
+      creature: creature!,
+      prev: 0,
+      gameContext: context.game,
+      source,
+    });
   const xpMultiplier =
     provider.xpMultiplier &&
-    getFromOptionalFunc(
-      provider.xpMultiplier,
-      creature!,
-      0,
-      context.game,
-      source
-    );
+    getFromOptionalFunc(provider.xpMultiplier, {
+      creature: creature!,
+      prev: 0,
+      gameContext: context.game,
+      source,
+    });
 
   const skills = Object.entries(provider.skills || {}).reduce(
     (acc, [skillId, func]) => {
-      const bonus = getFromOptionalFunc(
-        func,
-        creature!,
-        0,
-        context.game,
-        source
-      );
+      const bonus = getFromOptionalFunc(func, {
+        creature: creature!,
+        prev: 0,
+        gameContext: context.game,
+        source,
+      });
       if (bonus !== 0) {
         acc[skillId] = bonus;
       }
@@ -98,7 +98,11 @@ export default function CreatureProviderDetails({
   };
 
   const resistances = provider.resistances
-    ? getFromOptionalFunc(provider.resistances, creature!, context.game, source)
+    ? getFromOptionalFunc(provider.resistances, {
+        creature: creature!,
+        gameContext: context.game,
+        source,
+      })
     : {};
 
   const abilities =

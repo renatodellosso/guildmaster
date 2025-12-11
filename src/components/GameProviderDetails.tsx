@@ -14,58 +14,52 @@ export default function GameProviderDetails({
 }) {
   const maxRosterSize =
     provider.maxRosterSize &&
-    getFromOptionalFunc(
-      provider.maxRosterSize,
+    getFromOptionalFunc(provider.maxRosterSize, {
       provider,
-      0,
-      context.game,
-      source
-    );
+      prev: 0,
+      gameContext: context.game,
+      source,
+    });
   const maxPartySize =
     provider.maxPartySize &&
-    getFromOptionalFunc(
-      provider.maxPartySize,
+    getFromOptionalFunc(provider.maxPartySize, {
       provider,
-      0,
-      context.game,
-      source
-    );
+      prev: 0,
+      gameContext: context.game,
+      source,
+    });
   const maxExpeditions =
     provider.maxExpeditions &&
-    getFromOptionalFunc(
-      provider.maxExpeditions,
+    getFromOptionalFunc(provider.maxExpeditions, {
       provider,
-      0,
-      context.game,
-      source
-    );
+      prev: 0,
+      gameContext: context.game,
+      source,
+    });
   const recruitmentCost =
     provider.recruitmentCost &&
-    getFromOptionalFunc(
-      provider.recruitmentCost,
+    getFromOptionalFunc(provider.recruitmentCost, {
       provider,
-      [],
-      context.game,
-      source
-    );
+      prev: [],
+      gameContext: context.game,
+      source,
+    });
   const startingSkillChance =
     provider.startingSkillChance &&
-    getFromOptionalFunc(
-      provider.startingSkillChance,
+    getFromOptionalFunc(provider.startingSkillChance, {
       provider,
-      0,
-      context.game,
-      source
-    );
+      prev: 0,
+      gameContext: context.game,
+      source,
+    });
   const sellValueMultiplier =
     provider.sellValueMultiplier &&
-    getFromOptionalFunc(
-      provider.sellValueMultiplier,
+    getFromOptionalFunc(provider.sellValueMultiplier, {
       provider,
-      1,
-      context.game,
-      source
-    );
+      prev: 0.5,
+      gameContext: context.game,
+      source,
+    });
 
   const stats = {
     "Max Roster Size": maxRosterSize,

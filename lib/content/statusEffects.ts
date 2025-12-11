@@ -38,7 +38,7 @@ const rawStatusEffects = {
       `Reduces incoming magic damage by ${formatPercent(
         0.1 * instance.strength
       )}.`,
-    resistances: (_creature, _gameContext, source) => {
+    resistances: ({ source }) => {
       return {
         [DamageTypeGroups.All]: 0.1 * (source as StatusEffectInstance).strength,
       };
@@ -47,7 +47,7 @@ const rawStatusEffects = {
   divine_shield: {
     name: "Divine Shield",
     description: () => "Resists incoming damage.",
-    resistances: (_creature, _gameContext, source) => ({
+    resistances: ({ source }) => ({
       [DamageTypeGroups.All]: (source as StatusEffectInstance).strength / 10,
     }),
   },

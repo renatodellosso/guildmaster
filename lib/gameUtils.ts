@@ -33,13 +33,12 @@ export function getMaxRosterSize(gameContext: GameContext): number {
       continue;
     }
 
-    maxRosterSize += getFromOptionalFunc(
-      def.maxRosterSize,
-      def,
-      maxRosterSize,
+    maxRosterSize += getFromOptionalFunc(def.maxRosterSize, {
+      provider: def,
+      prev: maxRosterSize,
       gameContext,
-      building.source
-    );
+      source: building.source,
+    });
   }
 
   return maxRosterSize;
@@ -54,13 +53,12 @@ export function getMaxPartySize(gameContext: GameContext): number {
       continue;
     }
 
-    maxPartySize += getFromOptionalFunc(
-      def.maxPartySize,
-      def,
-      maxPartySize,
+    maxPartySize += getFromOptionalFunc(def.maxPartySize, {
+      provider: def,
+      prev: maxPartySize,
       gameContext,
-      building.source
-    );
+      source: building.source,
+    });
   }
 
   return maxPartySize;
@@ -75,13 +73,12 @@ export function getMaxExpeditions(gameContext: GameContext): number {
       continue;
     }
 
-    maxExpeditions += getFromOptionalFunc(
-      def.maxExpeditions,
-      def,
-      maxExpeditions,
+    maxExpeditions += getFromOptionalFunc(def.maxExpeditions, {
+      provider: def,
+      prev: maxExpeditions,
       gameContext,
-      building.source
-    );
+      source: building.source,
+    });
   }
 
   return maxExpeditions;
@@ -96,13 +93,12 @@ export function getRecruitmentCost(gameContext: GameContext): ItemInstance[] {
       continue;
     }
 
-    cost = getFromOptionalFunc(
-      def.recruitmentCost,
-      def,
-      cost,
+    cost = getFromOptionalFunc(def.recruitmentCost, {
+      provider: def,
+      prev: cost,
       gameContext,
-      building.source
-    );
+      source: building.source,
+    });
   }
 
   return cost;
@@ -117,13 +113,12 @@ export function getStartingSkillChance(gameContext: GameContext): number {
       continue;
     }
 
-    chance += getFromOptionalFunc(
-      def.startingSkillChance,
-      def,
-      chance,
+    chance += getFromOptionalFunc(def.startingSkillChance, {
+      provider: def,
+      prev: chance,
       gameContext,
-      building.source
-    );
+      source: building.source,
+    });
   }
 
   return chance;
@@ -138,13 +133,12 @@ export function getSellValueMultiplier(gameContext: GameContext): number {
       continue;
     }
 
-    multiplier += getFromOptionalFunc(
-      def.sellValueMultiplier,
-      def,
-      multiplier,
+    multiplier += getFromOptionalFunc(def.sellValueMultiplier, {
+      provider: def,
+      prev: multiplier,
       gameContext,
-      building.source
-    );
+      source: building.source,
+    });
   }
 
   return Math.min(Math.max(multiplier, 0), 1);

@@ -21,91 +21,76 @@ export type CreatureProviderSource =
   | BuildingInstance
   | number; // For class levels
 
+export type CreatureProviderArgsBase = {
+  creature: CreatureInstance;
+  gameContext: GameContext;
+  source?: CreatureProviderSource;
+};
+
+export type CreatureProviderArgsNumber = CreatureProviderArgsBase & {
+  prev: number;
+};
+
 export type CreatureProvider = Tickable<{
   creature: CreatureInstance;
   source: CreatureProviderSource;
 }> & {
-  maxHealth?: OptionalFunc<
-    number,
-    [CreatureInstance, number, GameContext, CreatureProviderSource | undefined]
-  >;
-  healthRegen?: OptionalFunc<
-    number,
-    [CreatureInstance, number, GameContext, CreatureProviderSource | undefined]
-  >;
-  maxMana?: OptionalFunc<
-    number,
-    [CreatureInstance, number, GameContext, CreatureProviderSource | undefined]
-  >;
-  manaRegen?: OptionalFunc<
-    number,
-    [CreatureInstance, number, GameContext, CreatureProviderSource | undefined]
-  >;
+  maxHealth?: OptionalFunc<number, [CreatureProviderArgsNumber]>;
+  healthRegen?: OptionalFunc<number, [CreatureProviderArgsNumber]>;
+  maxMana?: OptionalFunc<number, [CreatureProviderArgsNumber]>;
+  manaRegen?: OptionalFunc<number, [CreatureProviderArgsNumber]>;
   skills?: Partial<{
     [key in keyof SkillList]: OptionalFunc<
       number,
-      [
-        CreatureInstance,
-        number,
-        GameContext,
-        CreatureProviderSource | undefined,
-      ]
+      [CreatureProviderArgsNumber]
     >;
   }>;
   abilities?: OptionalFunc<Ability[], AbilityFuncParamsWithoutTargets>;
-  resistances?: OptionalFunc<
-    DamageResistances,
-    [CreatureInstance, GameContext, CreatureProviderSource | undefined]
-  >;
-  actionsPerTurn?: OptionalFunc<
-    number,
-    [CreatureInstance, number, GameContext, CreatureProviderSource | undefined]
-  >;
+  resistances?: OptionalFunc<DamageResistances, [CreatureProviderArgsBase]>;
+  actionsPerTurn?: OptionalFunc<number, [CreatureProviderArgsNumber]>;
   /**
    * If not a function, this value is treated as a flat bonus to all damage dealt.
    */
   getDamageToDeal?: OptionalFunc<
     Damage[],
     [
-      Damage[],
-      CreatureInstance,
-      CreatureInstance,
-      GameContext,
-      CreatureProviderSource | undefined,
+      {
+        prev: Damage[];
+        target: CreatureInstance;
+        dealer: CreatureInstance;
+        gameContext: GameContext;
+        source: CreatureProviderSource | undefined;
+      },
     ]
   >;
   /** If not a function, this value is treated as a flat minus to all damage taken. */
   getDamageToTake?: OptionalFunc<
     Damage[],
     [
-      Damage[],
-      CreatureInstance,
-      CreatureInstance | undefined,
-      GameContext,
-      CreatureProviderSource | undefined,
+      {
+        prev: Damage[];
+        creature: CreatureInstance;
+        dealer: CreatureInstance | undefined;
+        gameContext: GameContext;
+        source: CreatureProviderSource | undefined;
+      },
     ]
   >;
-  onDealDamage?: (
-    caster: CreatureInstance,
-    target: CreatureInstance,
-    damageDealt: Damage[],
-    gameContext: GameContext,
-    source: CreatureProviderSource | undefined
-  ) => void;
-  onKill?: (
-    killer: CreatureInstance,
-    killed: CreatureInstance,
-    gameContext: GameContext,
-    source: CreatureProviderSource | undefined
-  ) => void;
-  constructionPerTick?: OptionalFunc<
-    number,
-    [CreatureInstance, number, GameContext, CreatureProviderSource | undefined]
-  >;
-  xpMultiplier?: OptionalFunc<
-    number,
-    [CreatureInstance, number, GameContext, CreatureProviderSource | undefined]
-  >;
+  onDealDamage?: (args: {
+    dealer: CreatureInstance;
+    target: CreatureInstance;
+    damageDealt: Damage[];
+    gameContext: GameContext;
+    source: CreatureProviderSource | undefined;
+  }) => void;
+  onKill?: (args: {
+    killer: CreatureInstance;
+    killed: CreatureInstance;
+    gameContext: GameContext;
+    source: CreatureProviderSource | undefined;
+  }) => void;
+  constructionPerTick?: OptionalFunc<number, [CreatureProviderArgsNumber]>;
+  xpMultiplier?: OptionalFunc<number, [CreatureProviderArgsNumber]>;
 };
 
 type DefProvider = MakeRequired<CreatureProvider, "maxHealth">;

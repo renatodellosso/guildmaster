@@ -26,29 +26,24 @@ export type GameContext = {
 
 export type GameProviderSource = BuildingInstance;
 
+export type GameProviderArgsBase = {
+  provider: GameProvider;
+  gameContext: GameContext;
+  source?: GameProviderSource;
+};
+
+export type GameProviderArgsNumber = GameProviderArgsBase & {
+  prev: number;
+};
+
 export type GameProvider = CreatureProvider & {
-  maxRosterSize?: OptionalFunc<
-    number,
-    [GameProvider, number, GameContext, GameProviderSource | undefined]
-  >;
-  maxPartySize?: OptionalFunc<
-    number,
-    [GameProvider, number, GameContext, GameProviderSource | undefined]
-  >;
-  maxExpeditions?: OptionalFunc<
-    number,
-    [GameProvider, number, GameContext, GameProviderSource | undefined]
-  >;
+  maxRosterSize?: OptionalFunc<number, [GameProviderArgsNumber]>;
+  maxPartySize?: OptionalFunc<number, [GameProviderArgsNumber]>;
+  maxExpeditions?: OptionalFunc<number, [GameProviderArgsNumber]>;
   recruitmentCost?: OptionalFunc<
     ItemInstance[],
-    [GameProvider, ItemInstance[], GameContext, GameProviderSource | undefined]
+    [GameProviderArgsBase & { prev: ItemInstance[] }]
   >;
-  startingSkillChance?: OptionalFunc<
-    number,
-    [GameProvider, number, GameContext, GameProviderSource | undefined]
-  >;
-  sellValueMultiplier?: OptionalFunc<
-    number,
-    [GameProvider, number, GameContext, GameProviderSource | undefined]
-  >;
+  startingSkillChance?: OptionalFunc<number, [GameProviderArgsNumber]>;
+  sellValueMultiplier?: OptionalFunc<number, [GameProviderArgsNumber]>;
 };

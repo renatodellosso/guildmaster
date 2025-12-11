@@ -96,13 +96,12 @@ export function getMaxHealth(
 
   for (const provider of providers) {
     if (provider.def.maxHealth) {
-      maxHp += getFromOptionalFunc(
-        provider.def.maxHealth,
+      maxHp += getFromOptionalFunc(provider.def.maxHealth, {
         creature,
-        maxHp,
         gameContext,
-        provider.source
-      );
+        source: provider.source,
+        prev: maxHp,
+      });
     }
   }
 
@@ -125,13 +124,12 @@ export function getHealthRegen(
 
   for (const provider of providers) {
     if (provider.def.healthRegen) {
-      regen += getFromOptionalFunc(
-        provider.def.healthRegen,
+      regen += getFromOptionalFunc(provider.def.healthRegen, {
         creature,
-        regen,
+        prev: regen,
         gameContext,
-        provider.source
-      );
+        source: provider.source,
+      });
     }
   }
 
@@ -148,13 +146,12 @@ export function getMaxMana(
 
   for (const provider of providers) {
     if (provider.def.maxMana) {
-      maxMana += getFromOptionalFunc(
-        provider.def.maxMana,
+      maxMana += getFromOptionalFunc(provider.def.maxMana, {
         creature,
-        maxMana,
+        prev: maxMana,
         gameContext,
-        provider.source
-      );
+        source: provider.source,
+      });
     }
   }
 
@@ -173,13 +170,12 @@ export function getManaRegen(
 
   for (const provider of providers) {
     if (provider.def.manaRegen) {
-      regen += getFromOptionalFunc(
-        provider.def.manaRegen,
+      regen += getFromOptionalFunc(provider.def.manaRegen, {
         creature,
-        regen,
+        prev: regen,
         gameContext,
-        provider.source
-      );
+        source: provider.source,
+      });
     }
   }
 
@@ -204,13 +200,12 @@ export function getSkill(
 
   for (const provider of providers) {
     if (provider.def.skills?.[skill]) {
-      val += getFromOptionalFunc(
-        provider.def.skills[skill],
+      val += getFromOptionalFunc(provider.def.skills[skill], {
         creature,
-        val,
+        prev: val,
         gameContext,
-        provider.source
-      );
+        source: provider.source,
+      });
     }
   }
 
@@ -227,12 +222,11 @@ export function getResistances(
 
   for (const provider of providers) {
     if (provider.def.resistances) {
-      const res = getFromOptionalFunc(
-        provider.def.resistances,
+      const res = getFromOptionalFunc(provider.def.resistances, {
         creature,
         gameContext,
-        provider.source
-      );
+        source: provider.source,
+      });
       resistancesList.push(res);
     }
   }
@@ -250,13 +244,12 @@ export function getActionsPerTurn(
 
   for (const provider of providers) {
     if (provider.def.actionsPerTurn) {
-      actions += getFromOptionalFunc(
-        provider.def.actionsPerTurn,
+      actions += getFromOptionalFunc(provider.def.actionsPerTurn, {
         creature,
-        actions,
+        prev: actions,
         gameContext,
-        provider.source
-      );
+        source: provider.source,
+      });
     }
   }
 
@@ -277,13 +270,13 @@ export function getDamageToDeal(
     if (provider.def.getDamageToDeal) {
       finalDamage =
         typeof provider.def.getDamageToDeal === "function"
-          ? provider.def.getDamageToDeal(
-              finalDamage,
-              caster,
+          ? provider.def.getDamageToDeal({
+              prev: finalDamage,
+              dealer: caster,
               target,
               gameContext,
-              provider.source
-            )
+              source: provider.source,
+            })
           : [...finalDamage, ...provider.def.getDamageToDeal];
       finalDamage = mergeDamages(finalDamage);
     }
@@ -306,13 +299,13 @@ export function getDamageToTake(
     if (provider.def.getDamageToTake) {
       finalDamage =
         typeof provider.def.getDamageToTake === "function"
-          ? provider.def.getDamageToTake(
-              finalDamage,
+          ? provider.def.getDamageToTake({
+              prev: finalDamage,
               creature,
-              dealtBy,
+              dealer: dealtBy,
               gameContext,
-              provider.source
-            )
+              source: provider.source,
+            })
           : subtractDamage(finalDamage, provider.def.getDamageToTake);
       finalDamage = mergeDamages(finalDamage);
     }
@@ -332,13 +325,13 @@ export function onDealDamage(
 
   for (const provider of providers) {
     if (provider.def.onDealDamage) {
-      provider.def.onDealDamage(
-        caster,
+      provider.def.onDealDamage({
+        dealer: caster,
         target,
         damageDealt,
         gameContext,
-        source
-      );
+        source,
+      });
     }
   }
 }
@@ -353,7 +346,12 @@ export function onKill(
 
   for (const provider of providers) {
     if (provider.def.onKill) {
-      provider.def.onKill(killer, killed, gameContext, source);
+      provider.def.onKill({
+        killer,
+        killed,
+        gameContext,
+        source,
+      });
     }
   }
 }
@@ -368,13 +366,12 @@ export function getConstructionPerTick(
 
   for (const provider of providers) {
     if (provider.def.constructionPerTick) {
-      progress += getFromOptionalFunc(
-        provider.def.constructionPerTick,
-        adventurer,
-        progress,
+      progress += getFromOptionalFunc(provider.def.constructionPerTick, {
+        creature: adventurer,
+        prev: progress,
         gameContext,
-        provider.source
-      );
+        source: provider.source,
+      });
     }
   }
 
@@ -392,11 +389,11 @@ export function getXpMultiplier(
   for (const provider of providers) {
     if (provider.def.xpMultiplier) {
       multiplier += getFromOptionalFunc(
-        provider.def.xpMultiplier,
+        provider.def.xpMultiplier,{
         creature,
-        multiplier,
+        prev: multiplier,
         gameContext,
-        provider.source
+        source: provider.source}
       );
     }
   }

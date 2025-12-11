@@ -33,14 +33,12 @@ const rawClasses = {
     ),
     canSelect: (creature, gameContext) =>
       getSkill(SkillId.Endurance, creature, gameContext) >= 1,
-    maxHealth: (_creature, _prev, _gameContext, source) =>
-      25 + ((source as number) - 1) * 5,
-    actionsPerTurn: (_creature, _prev, _gameContext, source) =>
-      (source as number) >= 15 ? 1 : 0,
+    maxHealth: ({ source }) => 25 + ((source as number) - 1) * 5,
+    actionsPerTurn: ({ source }) => ((source as number) >= 15 ? 1 : 0),
     skills: {
-      [SkillId.Melee]: (creature, _prev, _gameContext, source) =>
+      [SkillId.Melee]: ({ creature, gameContext, source }) =>
         (source as number) >= 2
-          ? getSkill(SkillId.Endurance, creature, _gameContext) / 3
+          ? getSkill(SkillId.Endurance, creature, gameContext) / 3
           : 0,
     },
     abilities: (_creature, _prev, _gameContext, source) =>
@@ -82,8 +80,7 @@ const rawClasses = {
       "A master of arcane arts who wields powerful spells to overcome their foes.",
     canSelect: (creature, gameContext) =>
       getSkill(SkillId.Magic, creature, gameContext) >= 1,
-    maxMana: (_creature, _prev, _gameContext, source) =>
-      30 + ((source as number) - 1) * 5,
+    maxMana: ({ source }) => 30 + ((source as number) - 1) * 5,
     abilities: (_creature, _prev, _gameContext, source) =>
       requireLevel(
         {
@@ -140,9 +137,9 @@ const rawClasses = {
       getSkill(SkillId.Endurance, creature, gameContext) >= 2 &&
       creature.classes["wizard"] !== undefined &&
       creature.classes["wizard"] > 1,
-    maxHealth: (creature, _prev, _gameContext, source) =>
+    maxHealth: ({ creature, source, gameContext }) =>
       (source as number) * 3 +
-      getSkill(SkillId.Magic, creature, _gameContext) * 5,
+      getSkill(SkillId.Magic, creature, gameContext) * 5,
     abilities: (_creature, _prev, _gameContext, source) =>
       requireLevel(
         {
@@ -163,7 +160,7 @@ const rawClasses = {
         _gameContext,
         source
       ),
-    resistances: (creature, gameContext, source) =>
+    resistances: ({ creature, gameContext, source }) =>
       (source as number) >= 5
         ? {
             [DamageTypeGroups.All]:
@@ -181,8 +178,7 @@ const rawClasses = {
         getSkill(SkillId.Magic, creature, gameContext) >= 1
       );
     },
-    maxMana: (_creature, _prev, _gameContext, source) =>
-      25 + ((source as number) - 1) * 5,
+    maxMana: ({ source }) => 25 + ((source as number) - 1) * 5,
     abilities: (creature, _prev, gameContext, source) =>
       requireLevel(
         {
@@ -229,7 +225,7 @@ const rawClasses = {
     ),
     canSelect: (creature, gameContext) =>
       getSkill(SkillId.Ranged, creature, gameContext) >= 1,
-    getDamageToDeal: (prev, _target, _dealer, _gameContext, source) =>
+    getDamageToDeal: ({ prev, source }) =>
       (source as number) >= 1
         ? [
             ...prev,
@@ -280,11 +276,11 @@ const rawClasses = {
       [SkillId.Melee]: 5,
       [SkillId.Magic]: 5,
     },
-    resistances: (_creature, _gameContext, source) => ({
+    resistances: ({ source }) => ({
       [DamageType.Necrotic]: Math.min(0.2 + 0.05 * (source as number), 1),
       [DamageType.Radiant]: -0.1 - 0.05 * (source as number),
     }),
-    onDealDamage: (dealer, _target, damageDealt, gameContext, source) => {
+    onDealDamage: ({ dealer, damageDealt, gameContext, source }) => {
       const totalDamage = damageDealt.reduce((sum, dmg) => sum + dmg.amount, 0);
       const multiplier = Math.max(0.2 + (source as number) * 0.05, 1.2);
 
@@ -310,10 +306,9 @@ const rawClasses = {
       getSkill(SkillId.Melee, creature, gameContext) >= 2 &&
       "thug" in creature.classes,
     skills: {
-      [SkillId.Melee]: (_creature, _prev, _gameContext, source) =>
-        source as number,
+      [SkillId.Melee]: ({ source }) => source as number,
     },
-    getDamageToDeal: (prev, _target, dealer, gameContext, source) => {
+    getDamageToDeal: ({ prev, source, dealer, gameContext }) => {
       if (chance(0.05 * (source as number))) {
         return prev.map((dmg) => ({
           type: dmg.type,
@@ -341,12 +336,12 @@ const rawClasses = {
       getSkill(SkillId.Melee, creature, gameContext) >= 2 &&
       getSkill(SkillId.Magic, creature, gameContext) >= 1,
     skills: {
-      [SkillId.Melee]: (creature, _prev, gameContext, source) =>
+      [SkillId.Melee]: ({ creature, gameContext, source }) =>
         creature.hp <= getMaxHealth(creature, gameContext) / 2
           ? (source as number) * 3
           : 0,
     },
-    getDamageToDeal: (prev, _target, dealer, gameContext, source) => {
+    getDamageToDeal: ({ prev, source, dealer, gameContext }) => {
       if ((source as number) < 5) {
         return prev;
       }
@@ -393,12 +388,11 @@ const rawClasses = {
       getSkill(SkillId.Melee, creature, gameContext) >= 2 &&
       getSkill(SkillId.Endurance, creature, gameContext) >= 2,
     skills: {
-      [SkillId.Melee]: (_creature, _prev, _gameContext, source) =>
-        (source as number) * 2,
+      [SkillId.Melee]: ({ source }) => (source as number) * 2,
     },
-    maxHealth: (creature, _prev, gameContext) =>
-      _prev + getSkill(SkillId.Melee, creature, gameContext) * 2,
-    resistances: (_creature, _gameContext, source) => ({
+    maxHealth: ({ creature, gameContext }) =>
+      getSkill(SkillId.Melee, creature, gameContext) * 2,
+    resistances: ({ source }) => ({
       [DamageTypeGroups.Physical]: Math.min(
         0.1 + 0.03 * (source as number),
         0.5
@@ -415,7 +409,7 @@ const rawClasses = {
     ),
     canSelect: (creature) =>
       "cleric" in creature.classes && "knight" in creature.classes,
-    resistances: (_creature, _gameContext, source) => ({
+    resistances: ({ source }) => ({
       [DamageType.Radiant]: Math.min(0.1 + 0.04 * (source as number), 0.6),
       [DamageType.Necrotic]: Math.min(0.1 + 0.04 * (source as number), 0.6),
     }),
