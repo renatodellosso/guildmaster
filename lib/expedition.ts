@@ -14,6 +14,7 @@ export type Expedition = {
   inventory: Inventory;
   turnNumber: number;
   log: string[];
+  regenerating: boolean;
 };
 
 /**
@@ -68,6 +69,7 @@ export function createExpedition(
     combat: undefined as unknown as Combat,
     log: [],
     turnNumber: 0,
+    regenerating: false,
   };
 
   expedition.combat = startCombat(expedition, gameContext);

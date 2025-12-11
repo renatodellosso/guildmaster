@@ -52,23 +52,29 @@ export default function ExpeditionDisplay({
               );
             })}
           </ul>
-          <strong>
-            Enemies{" "}
-            {combat.enemies.retreatTimer > -1 &&
-              ` (Retreating in ${combat.enemies.retreatTimer} turns)`}
-          </strong>
-          <ul>
-            {combat.enemies.creatures.map((creatureId) => {
-              const creature = getCreature(creatureId, context.game);
-              return (
-                <CreatureDisplay
-                  key={String(creature.id)}
-                  creature={creature}
-                  context={context}
-                />
-              );
-            })}
-          </ul>
+          {expedition.regenerating ? (
+            <i>Regenerating health...</i>
+          ) : (
+            <>
+              <strong>
+                Enemies{" "}
+                {combat.enemies.retreatTimer > -1 &&
+                  ` (Retreating in ${combat.enemies.retreatTimer} turns)`}
+              </strong>
+              <ul>
+                {combat.enemies.creatures.map((creatureId) => {
+                  const creature = getCreature(creatureId, context.game);
+                  return (
+                    <CreatureDisplay
+                      key={String(creature.id)}
+                      creature={creature}
+                      context={context}
+                    />
+                  );
+                })}
+              </ul>
+            </>
+          )}
         </div>
         <div>
           <strong>Expedition Log:</strong>

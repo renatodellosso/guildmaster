@@ -1,8 +1,13 @@
 import { selectAbilityForCreature } from "./ability";
 import { RetreatTriggerId, retreatTriggers } from "./content/retreatTriggers";
 import { AdventurerInstance, CreatureInstance } from "./creature";
-import { getActionsPerTurn } from "./creatureUtils";
-import { Expedition, startCombat } from "./expedition";
+import {
+  getActionsPerTurn,
+  getHealthRegen,
+  getMaxHealth,
+  heal,
+} from "./creatureUtils";
+import { addToExpeditionLog, Expedition, startCombat } from "./expedition";
 import { GameContext } from "./gameContext";
 import { addToInventory } from "./inventory";
 import { getCreature, randRange } from "./utils";
@@ -170,6 +175,24 @@ export function takeCombatTurn(
   combat.enemies = tmp;
 }
 
+export function regenerate(expedition: Expedition, gameContext: GameContext) {
+  for (const creatureOrId of expedition.combat.allies.creatures) {
+    const creature = getCreature(creatureOrId, gameContext);
+    const regen = getHealthRegen(creature, gameContext);
+    heal(creature, regen, gameContext);
+  }
+
+  if (
+    expedition.combat.allies.creatures.every((creatureOrId) => {
+      const creature = getCreature(creatureOrId, gameContext);
+      return creature.hp >= getMaxHealth(creature, gameContext);
+    })
+  ) {
+    expedition.regenerating = false;
+    expedition.combat = startCombat(expedition, gameContext);
+  }
+}
+
 export function handleCombatTick(
   expedition: Expedition,
   gameContext: GameContext
@@ -190,8 +213,14 @@ export function handleCombatTick(
     }
   }
 
+  if (expedition.regenerating) {
+    regenerate(expedition, gameContext);
+    handleRetreat(expedition.combat, endExpedition, gameContext);
+    return;
+  }
+
   function onVictory() {
-    console.log("Expedition victorious!");
+    addToExpeditionLog(expedition, "The expedition has defeated all enemies!");
 
     addToInventory(gameContext.inventory, expedition.inventory);
     expedition.inventory = [];
@@ -205,9 +234,12 @@ export function handleCombatTick(
   }
 
   function onDefeat() {
-    console.log("Expedition defeated!");
+    addToExpeditionLog(
+      expedition,
+      "The expedition has been defeated and is falling back!"
+    );
 
-    endExpedition();
+    expedition.regenerating = true;
   }
 
   takeCombatTurn(expedition, onVictory, onDefeat, gameContext);
@@ -216,6 +248,14 @@ export function handleCombatTick(
 }
 
 export function forceStartRetreat(expedition: Expedition) {
+  if (expedition.combat.allies.retreatTimer !== -1) {
+    return;
+  }
+
+  if (expedition.regenerating) {
+    expedition.combat.allies.retreatTimer = 1; // Retreat next tick
+  }
+
   expedition.combat.allies.retreatTimer = RETREAT_TIMER_START;
 }
 
