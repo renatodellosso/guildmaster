@@ -388,13 +388,12 @@ export function getXpMultiplier(
 
   for (const provider of providers) {
     if (provider.def.xpMultiplier) {
-      multiplier += getFromOptionalFunc(
-        provider.def.xpMultiplier,{
+      multiplier += getFromOptionalFunc(provider.def.xpMultiplier, {
         creature,
         prev: multiplier,
         gameContext,
-        source: provider.source}
-      );
+        source: provider.source,
+      });
     }
   }
 
