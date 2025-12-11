@@ -164,7 +164,9 @@ const rawClasses = {
       (source as number) >= 5
         ? {
             [DamageTypeGroups.All]:
-              creature.mana / getMaxMana(creature, gameContext) / 4,
+              creature.mana /
+              Math.max(getMaxMana(creature, gameContext), 1) /
+              4,
           }
         : {},
   },
