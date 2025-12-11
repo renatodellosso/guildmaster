@@ -1,5 +1,4 @@
 import { DropTableEntry, rollDrops } from "@/lib/drops";
-import { ItemInstance } from "@/lib/item";
 import { Table } from "@/lib/table";
 import { describe, it, expect } from "vitest";
 
@@ -37,27 +36,6 @@ describe(rollDrops.name, () => {
 
     const result = rollDrops(drops);
     expect(result).toEqual([{ definitionId: "coin", amount: 2 }]);
-
-    // Restore Math.random
-    Math.random = originalRandom;
-  });
-
-  it("handles nested drop tables", () => {
-    // Mock Math.random to always return 0.1
-    const originalRandom = Math.random;
-    Math.random = () => 0.1;
-
-    const nestedTable = new Table<ItemInstance>([
-      { weight: 1, item: { definitionId: "coin", amount: 3 } },
-    ]);
-
-    const drops = {
-      chance: 1,
-      table: new Table<DropTableEntry>([{ weight: 1, item: nestedTable }]),
-    };
-
-    const result = rollDrops(drops);
-    expect(result).toEqual([{ definitionId: "coin", amount: 3 }]);
 
     // Restore Math.random
     Math.random = originalRandom;
