@@ -17,6 +17,7 @@ describe(startCombat.name, () => {
       inventory: [],
       log: [],
       turnNumber: 0,
+      regenerating: false,
     };
 
     const enemyIds = new Set<Id>();
@@ -52,6 +53,7 @@ describe(startCombat.name, () => {
       inventory: [],
       log: [],
       turnNumber: 0,
+      regenerating: false,
     };
 
     dungeons[expedition.dungeonId].encounters = new Table<Encounter>([
