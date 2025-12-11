@@ -1,4 +1,5 @@
 import { ReactNode, useEffect, useRef, useState } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 
 export function Tooltip({
   children,
@@ -56,7 +57,13 @@ export function Tooltip({
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {children}
+        <ErrorBoundary
+          fallback={
+            <span className="text-red-500">Error rendering tooltip.</span>
+          }
+        >
+          {children}
+        </ErrorBoundary>
       </span>
       {isHovered && contentWrapper}
     </>

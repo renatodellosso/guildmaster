@@ -12,7 +12,7 @@ export type ClassDefinition = CreatureProvider & {
   name: string;
   description: OptionalFunc<
     string,
-    [CreatureInstance, GameContext, CreatureProviderSource]
+    [CreatureInstance | undefined, GameContext, CreatureProviderSource]
   >;
   canSelect: OptionalFunc<boolean, [CreatureInstance, GameContext]>;
 };

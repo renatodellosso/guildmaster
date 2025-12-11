@@ -4,9 +4,13 @@ import { Registry } from "@/lib/registry";
 import CreatureDetails from "../CreatureDetails";
 import { createCreatureInstance } from "@/lib/creature";
 import { creatures } from "@/lib/content/creatures";
+import { classes, ClassId } from "@/lib/content/classes";
+import ClassDetails from "../ClassDetails";
+import { ErrorBoundary } from "react-error-boundary";
 
 enum TabId {
   Creatures = "Creatures",
+  Classes = "Classes",
 }
 
 export default function CodexMenu({ context }: { context: Context }) {
@@ -25,6 +29,13 @@ export default function CodexMenu({ context }: { context: Context }) {
             context={context}
           />
         )}
+      />
+    ),
+    Classes: (
+      <CodexTab
+        registry={classes}
+        getName={(_id, entry) => entry.name}
+        render={(id) => <ClassEntry classId={id} context={context} />}
       />
     ),
   };
@@ -77,8 +88,47 @@ function CodexTab<TId extends Id, TEntry>({
           <p>Select an entry to view details</p>
         </div>
       ) : (
-        <div className="m-2">{render(selectedId, registry[selectedId]!)}</div>
+        <div className="m-2">
+          <ErrorBoundary
+            fallback={
+              <span className="text-red-500">Error rendering codex entry.</span>
+            }
+          >
+            {render(selectedId, registry[selectedId]!)}
+          </ErrorBoundary>
+        </div>
       )}
+    </div>
+  );
+}
+
+function ClassEntry({
+  classId,
+  context,
+}: {
+  classId: ClassId;
+  context: Context;
+}) {
+  const [level, setLevel] = useState<number>(1);
+
+  return (
+    <div className="flex flex-col">
+      <label>
+        Level:{" "}
+        <input
+          type="number"
+          min={1}
+          value={level}
+          onChange={(e) => setLevel(Math.max(1, parseInt(e.target.value) || 1))}
+          className="w-16"
+        />
+      </label>
+      <ClassDetails
+        classId={classId}
+        context={context}
+        level={level}
+        creature={createCreatureInstance("human", context.game)}
+      />
     </div>
   );
 }

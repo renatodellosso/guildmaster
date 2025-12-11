@@ -1,9 +1,9 @@
-import { classes, ClassId } from "@/lib/content/classes";
+import { ClassId } from "@/lib/content/classes";
 import { CreatureInstance } from "@/lib/creature";
-import { Context, getFromOptionalFunc } from "@/lib/utilTypes";
+import { Context } from "@/lib/utilTypes";
 import { ReactNode } from "react";
 import { Tooltip } from "./Tooltip";
-import CreatureProviderDetails from "./CreatureProviderDetails";
+import ClassDetails from "./ClassDetails";
 
 export default function ClassTooltip({
   classId,
@@ -22,29 +22,15 @@ export default function ClassTooltip({
     return <>{children}</>;
   }
 
-  const cls = classes[classId];
   const classLevel = level || creature.classes[classId] || 1;
 
   const tooltip = (
-    <>
-      <strong>
-        {cls.name} {classLevel}
-      </strong>
-      <p>
-        {getFromOptionalFunc(
-          cls.description,
-          creature,
-          context.game,
-          classLevel
-        )}
-      </p>
-      <CreatureProviderDetails
-        provider={cls}
-        source={classLevel}
-        creature={creature}
-        context={context}
-      />
-    </>
+    <ClassDetails
+      classId={classId}
+      creature={creature}
+      context={context}
+      level={classLevel}
+    />
   );
 
   return <Tooltip content={tooltip}>{children}</Tooltip>;
