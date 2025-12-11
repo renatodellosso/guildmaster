@@ -398,8 +398,7 @@ const rawClasses = {
     canSelect: (creature, gameContext) =>
       getSkill(SkillId.Melee, creature, gameContext) >= 2 &&
       getSkill(SkillId.Endurance, creature, gameContext) >= 2,
-    canSelectText:
-      "Requires at least 2 points in Melee and Endurance skills.",
+    canSelectText: "Requires at least 2 points in Melee and Endurance skills.",
     skills: {
       [SkillId.Melee]: ({ source }) => (source as number) * 2,
     },

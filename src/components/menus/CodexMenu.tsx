@@ -7,10 +7,13 @@ import { creatures } from "@/lib/content/creatures";
 import { classes, ClassId } from "@/lib/content/classes";
 import ClassDetails from "../ClassDetails";
 import { ErrorBoundary } from "react-error-boundary";
+import DungeonDetails from "../DungeonDetails";
+import { dungeons } from "@/lib/content/dungeons";
 
 enum TabId {
   Creatures = "Creatures",
   Classes = "Classes",
+  Dungeons = "Dungeons",
 }
 
 export default function CodexMenu({ context }: { context: Context }) {
@@ -21,7 +24,7 @@ export default function CodexMenu({ context }: { context: Context }) {
   } = {
     Creatures: (
       <CodexTab
-        key ="creatures"
+        key="creatures"
         registry={creatures}
         getName={(_id, entry) => entry.name}
         render={(id) => (
@@ -34,10 +37,18 @@ export default function CodexMenu({ context }: { context: Context }) {
     ),
     Classes: (
       <CodexTab
-        key ="classes"
+        key="classes"
         registry={classes}
         getName={(_id, entry) => entry.name}
         render={(id) => <ClassEntry classId={id} context={context} />}
+      />
+    ),
+    Dungeons: (
+      <CodexTab
+        key="dungeons"
+        registry={dungeons}
+        getName={(_id, entry) => entry.name}
+        render={(id) => <DungeonDetails dungeonId={id} context={context} />}
       />
     ),
   };
