@@ -4,6 +4,7 @@ import { DungeonId, dungeons } from "@/lib/content/dungeons";
 import { AdventurerInstance } from "@/lib/creature";
 import { getClassString, getMaxHealth } from "@/lib/creatureUtils";
 import { createExpedition } from "@/lib/expedition";
+import { formatInt } from "@/lib/format";
 import { getMaxPartySize } from "@/lib/gameUtils";
 import { Context, getFromOptionalFunc, Id } from "@/lib/utilTypes";
 import { useState } from "react";
@@ -91,9 +92,8 @@ export default function StartExpeditionMenu({
           <PartyMemberSelector
             key={String(memberId)}
             availableMembers={availablePartyMembers}
-            currentText={`${context.game.roster[memberId].name} ${getClassString(context.game.roster[memberId])} (HP: ${context.game.roster[memberId].hp}/${getMaxHealth(
-              context.game.roster[memberId],
-              context.game
+            currentText={`${context.game.roster[memberId].name} ${getClassString(context.game.roster[memberId])} (Max HP: ${formatInt(
+              getMaxHealth(context.game.roster[memberId], context.game)
             )})`}
             context={context}
             onChange={(newSelected) => {
@@ -154,7 +154,7 @@ function PartyMemberSelector({
             member,
             context.game
           )}
-          ) (HP: {member.hp}/{getMaxHealth(member, context.game)})
+          ) (Max HP: {formatInt(getMaxHealth(member, context.game))})
         </option>
       ))}
     </select>
