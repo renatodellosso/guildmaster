@@ -56,11 +56,13 @@ export default function CreatureDetails({
       {resistances && Object.entries(resistances).length > 0 && (
         <div>
           <strong>Resistances:</strong>
-          {Object.entries(resistances).map(([resistanceType, value]) => (
-            <div key={resistanceType}>
-              {titleCase(resistanceType)}: {formatPercent(value)}
-            </div>
-          ))}
+          <ul>
+            {Object.entries(resistances).map(([resistanceType, value]) => (
+              <li key={resistanceType}>
+                {titleCase(resistanceType)}: {formatPercent(value)}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
       {creature.statusEffects && creature.statusEffects.length > 0 && (
