@@ -7,9 +7,9 @@ export type Drops = {
   table: Table<DropTableEntry>;
 };
 
-export type DropTableEntry =
-  | (Omit<ItemInstance, "amount"> & { amount: number | [number, number] })
-  | Table<DropTableEntry>;
+export type DropTableEntry = Omit<ItemInstance, "amount"> & {
+  amount: number | [number, number];
+};
 
 export function rollDrops(drops: Drops): ItemInstance[] {
   const results: ItemInstance[] = [];

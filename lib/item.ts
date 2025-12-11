@@ -1,5 +1,8 @@
+import { CreatureDefId, creatures } from "./content/creatures";
+import { DungeonId } from "./content/dungeons";
 import { ItemId, items } from "./content/items";
 import { CreatureProvider } from "./creature";
+import { findDungeonsWithCreature } from "./creatureUtils";
 import { EquipmentSlot } from "./equipmentSlot";
 
 export type ItemDefinition = {
@@ -65,4 +68,42 @@ export function isEquipment(item: ItemInstance): boolean {
   }
   const def = items[item.definitionId];
   return "slot" in def;
+}
+
+export function findCreaturesThatDrop(itemId: ItemId): Set<CreatureDefId> {
+  const creaturesThatDrop = new Set<CreatureDefId>();
+
+  for (const creature of Object.values(creatures)) {
+    if (!creature.drops) {
+      continue;
+    }
+
+    for (const drop of creature.drops.table.items) {
+      if (drop.item.definitionId === itemId) {
+        creaturesThatDrop.add(creature.id);
+        break;
+      }
+    }
+  }
+
+  return creaturesThatDrop;
+}
+
+export function findCreaturesAndDungeonsThatDrop(itemId: ItemId): Set<{
+  creatureId: CreatureDefId;
+  dungeonIds: Set<DungeonId>;
+}> {
+  const results = new Set<{
+    creatureId: CreatureDefId;
+    dungeonIds: Set<DungeonId>;
+  }>();
+
+  const creatures = findCreaturesThatDrop(itemId);
+
+  for (const creatureId of creatures) {
+    const dungeons = findDungeonsWithCreature(creatureId);
+    results.add({ creatureId, dungeonIds: dungeons });
+  }
+
+  return results;
 }

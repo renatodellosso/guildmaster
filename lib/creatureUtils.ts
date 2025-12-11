@@ -1,6 +1,7 @@
 import { buildings } from "./content/buildings";
 import { classes, ClassId } from "./content/classes";
-import { creatures } from "./content/creatures";
+import { CreatureDefId, creatures } from "./content/creatures";
+import { DungeonId, dungeons } from "./content/dungeons";
 import { items } from "./content/items";
 import { statusEffects } from "./content/statusEffects";
 import {
@@ -643,4 +644,21 @@ export function getClassString(creature: CreatureInstance): string {
     .join(", ");
 
   return list != "" ? `(${list})` : "";
+}
+
+export function findDungeonsWithCreature(
+  creatureId: CreatureDefId
+): Set<DungeonId> {
+  const dungeonNames = new Set<DungeonId>();
+
+  for (const [dungeonId, dungeon] of Object.entries(dungeons)) {
+    for (const encounter of dungeon.encounters.items) {
+      if (encounter.item.some((c) => c.id === creatureId)) {
+        dungeonNames.add(dungeonId as DungeonId);
+        break;
+      }
+    }
+  }
+
+  return dungeonNames;
 }
