@@ -59,14 +59,16 @@ export default function ItemTooltip({
         <div>
           <strong>Dropped by:</strong>{" "}
           <ul className="ml-2">
-            {[...droppedBy].map(
-              ({ creatureId, dungeonIds }) =>
-                `${creatures[creatureId].name} (in ${[...dungeonIds]
-                  .map((dungeonId) => dungeons[dungeonId].name)
-                  .join(", ")})`
-            ).map((text, index) => (
-              <li key={index}>{text}</li>
-            ))}
+            {[...droppedBy]
+              .map(
+                ({ creatureId, dungeonIds }) =>
+                  `${creatures[creatureId].name} (in ${[...dungeonIds]
+                    .map((dungeonId) => dungeons[dungeonId].name)
+                    .join(", ")})`
+              )
+              .map((text, index) => (
+                <li key={index}>{text}</li>
+              ))}
           </ul>
         </div>
       )}
