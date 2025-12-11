@@ -70,8 +70,14 @@ export function isEquipment(item: ItemInstance): boolean {
   return "slot" in def;
 }
 
-export function findCreaturesThatDrop(itemId: ItemId): Set<CreatureDefId> {
-  const creaturesThatDrop = new Set<CreatureDefId>();
+export function findCreaturesThatDrop(itemId: ItemId): Set<{
+  id: CreatureDefId;
+  amount: number | [number, number];
+}> {
+  const creaturesThatDrop = new Set<{
+    id: CreatureDefId;
+    amount: number | [number, number];
+  }>();
 
   for (const creature of Object.values(creatures)) {
     if (!creature.drops) {
@@ -80,7 +86,7 @@ export function findCreaturesThatDrop(itemId: ItemId): Set<CreatureDefId> {
 
     for (const drop of creature.drops.table.items) {
       if (drop.item.definitionId === itemId) {
-        creaturesThatDrop.add(creature.id);
+        creaturesThatDrop.add({ id: creature.id, amount: drop.item.amount });
         break;
       }
     }
@@ -91,18 +97,24 @@ export function findCreaturesThatDrop(itemId: ItemId): Set<CreatureDefId> {
 
 export function findCreaturesAndDungeonsThatDrop(itemId: ItemId): Set<{
   creatureId: CreatureDefId;
+  amount: number | [number, number];
   dungeonIds: Set<DungeonId>;
 }> {
   const results = new Set<{
     creatureId: CreatureDefId;
+    amount: number | [number, number];
     dungeonIds: Set<DungeonId>;
   }>();
 
   const creatures = findCreaturesThatDrop(itemId);
 
-  for (const creatureId of creatures) {
-    const dungeons = findDungeonsWithCreature(creatureId);
-    results.add({ creatureId, dungeonIds: dungeons });
+  for (const creature of creatures) {
+    const dungeons = findDungeonsWithCreature(creature.id);
+    results.add({
+      creatureId: creature.id,
+      amount: creature.amount,
+      dungeonIds: dungeons,
+    });
   }
 
   return results;
