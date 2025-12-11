@@ -21,6 +21,7 @@ export default function CodexMenu({ context }: { context: Context }) {
   } = {
     Creatures: (
       <CodexTab
+        key ="creatures"
         registry={creatures}
         getName={(_id, entry) => entry.name}
         render={(id) => (
@@ -33,6 +34,7 @@ export default function CodexMenu({ context }: { context: Context }) {
     ),
     Classes: (
       <CodexTab
+        key ="classes"
         registry={classes}
         getName={(_id, entry) => entry.name}
         render={(id) => <ClassEntry classId={id} context={context} />}
@@ -114,7 +116,7 @@ function ClassEntry({
   return (
     <div className="flex flex-col">
       <label>
-        Level:{" "}
+        Viewing Level:{" "}
         <input
           type="number"
           min={1}

@@ -8,6 +8,7 @@ import BuildingsMenu from "./menus/BuildingsMenu";
 import { ComponentType, useState } from "react";
 import OptionsMenu from "./menus/OptionsMenu";
 import CodexMenu from "./menus/CodexMenu";
+import { ErrorBoundary } from "react-error-boundary";
 
 enum MenuId {
   Expeditions = "Expeditions",
@@ -70,7 +71,11 @@ export default function MainGameWindow({
           </button>
         ))}
       </div>
-      <MenuComponent context={context} />
+      <ErrorBoundary
+        fallback={<span className="text-red-500">Error rendering menu.</span>}
+      >
+        <MenuComponent context={context} />
+      </ErrorBoundary>
     </div>
   );
 }

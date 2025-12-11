@@ -33,6 +33,7 @@ const rawClasses = {
     ),
     canSelect: (creature, gameContext) =>
       getSkill(SkillId.Endurance, creature, gameContext) >= 1,
+    canSelectText: "Requires at least 1 point in Endurance skill.",
     maxHealth: ({ source }) => 25 + ((source as number) - 1) * 5,
     actionsPerTurn: ({ source }) => ((source as number) >= 15 ? 1 : 0),
     skills: {
@@ -80,6 +81,7 @@ const rawClasses = {
       "A master of arcane arts who wields powerful spells to overcome their foes.",
     canSelect: (creature, gameContext) =>
       getSkill(SkillId.Magic, creature, gameContext) >= 1,
+    canSelectText: "Requires at least 1 point in Magic skill.",
     maxMana: ({ source }) => 30 + ((source as number) - 1) * 5,
     abilities: (_creature, _prev, _gameContext, source) =>
       requireLevel(
@@ -136,7 +138,9 @@ const rawClasses = {
     canSelect: (creature, gameContext) =>
       getSkill(SkillId.Endurance, creature, gameContext) >= 2 &&
       creature.classes["wizard"] !== undefined &&
-      creature.classes["wizard"] > 1,
+      creature.classes["wizard"] >= 2,
+    canSelectText:
+      "Requires at least 2 points in Endurance skill and Wizard class level 2+.",
     maxHealth: ({ creature, source, gameContext }) =>
       (source as number) * 3 +
       getSkill(SkillId.Magic, creature, gameContext) * 5,
@@ -174,12 +178,11 @@ const rawClasses = {
     name: "Cleric",
     description:
       "A holy acolyte who channels divine power to heal allies and smite foes.",
-    canSelect: (creature, gameContext) => {
-      return (
-        getFromOptionalFunc(hasBuildingTag("temple"), gameContext) &&
-        getSkill(SkillId.Magic, creature, gameContext) >= 1
-      );
-    },
+    canSelect: (creature, gameContext) =>
+      getFromOptionalFunc(hasBuildingTag("temple"), gameContext) &&
+      getSkill(SkillId.Magic, creature, gameContext) >= 1,
+    canSelectText:
+      "Requires a Temple building and at least 1 point in Magic skill.",
     maxMana: ({ source }) => 25 + ((source as number) - 1) * 5,
     abilities: (creature, _prev, gameContext, source) =>
       requireLevel(
@@ -227,6 +230,7 @@ const rawClasses = {
     ),
     canSelect: (creature, gameContext) =>
       getSkill(SkillId.Ranged, creature, gameContext) >= 1,
+    canSelectText: "Requires at least 1 point in Ranged skill.",
     getDamageToDeal: ({ prev, source }) =>
       (source as number) >= 1
         ? [
@@ -274,6 +278,7 @@ const rawClasses = {
     ),
     canSelect: (creature) =>
       creature.statusEffects.some((se) => se.definitionId === "vampirism"),
+    canSelectText: "Requires the Vampirism status effect.",
     skills: {
       [SkillId.Melee]: 5,
       [SkillId.Magic]: 5,
@@ -307,6 +312,8 @@ const rawClasses = {
     canSelect: (creature, gameContext) =>
       getSkill(SkillId.Melee, creature, gameContext) >= 2 &&
       "thug" in creature.classes,
+    canSelectText:
+      "Requires at least 2 points in Melee skill and level 1+ Thug class.",
     skills: {
       [SkillId.Melee]: ({ source }) => source as number,
     },
@@ -337,6 +344,8 @@ const rawClasses = {
     canSelect: (creature, gameContext) =>
       getSkill(SkillId.Melee, creature, gameContext) >= 2 &&
       getSkill(SkillId.Magic, creature, gameContext) >= 1,
+    canSelectText:
+      "Requires at least 2 points in Melee skill and 1 point in Magic skill.",
     skills: {
       [SkillId.Melee]: ({ creature, gameContext, source }) =>
         creature.hp <= getMaxHealth(creature, gameContext) / 2
@@ -389,6 +398,8 @@ const rawClasses = {
     canSelect: (creature, gameContext) =>
       getSkill(SkillId.Melee, creature, gameContext) >= 2 &&
       getSkill(SkillId.Endurance, creature, gameContext) >= 2,
+    canSelectText:
+      "Requires at least 2 points in Melee and Endurance skills.",
     skills: {
       [SkillId.Melee]: ({ source }) => (source as number) * 2,
     },
@@ -411,6 +422,7 @@ const rawClasses = {
     ),
     canSelect: (creature) =>
       "cleric" in creature.classes && "knight" in creature.classes,
+    canSelectText: "Requires level 1+ Cleric and Knight classes.",
     resistances: ({ source }) => ({
       [DamageType.Radiant]: Math.min(0.1 + 0.04 * (source as number), 0.6),
       [DamageType.Necrotic]: Math.min(0.1 + 0.04 * (source as number), 0.6),

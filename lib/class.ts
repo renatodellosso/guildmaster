@@ -15,6 +15,7 @@ export type ClassDefinition = CreatureProvider & {
     [CreatureInstance | undefined, GameContext, CreatureProviderSource]
   >;
   canSelect: OptionalFunc<boolean, [CreatureInstance, GameContext]>;
+  canSelectText: string;
 };
 
 export function buildClassDescription(

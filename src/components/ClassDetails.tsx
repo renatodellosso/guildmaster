@@ -24,6 +24,7 @@ export default function ClassDetails({
       <p>
         {getFromOptionalFunc(cls.description, creature, context.game, level)}
       </p>
+      <em>{cls.canSelectText}</em>
       <CreatureProviderDetails
         provider={cls}
         source={level}
