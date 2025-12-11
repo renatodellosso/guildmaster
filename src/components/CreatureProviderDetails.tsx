@@ -12,11 +12,13 @@ export default function CreatureProviderDetails({
   source,
   creature,
   context,
+  formatAsBonus = true,
 }: {
   provider: CreatureProvider;
   source: CreatureProviderSource | undefined;
   creature: CreatureInstance | undefined;
   context: Context;
+  formatAsBonus?: boolean;
 }) {
   const maxHealth =
     provider.maxHealth &&
@@ -125,9 +127,15 @@ export default function CreatureProviderDetails({
           typeof stat === "object" && "val" in stat ? stat.val : stat;
         if (value === undefined) return null;
 
+        const formatted = formatAsBonus
+          ? formatBonus(value, format)
+          : format === "percent"
+            ? formatPercent(value)
+            : Math.round(value).toString();
+
         return (
           <div key={statName}>
-            {statName}: {formatBonus(value, format)}
+            {statName}: {formatted}
           </div>
         );
       })}

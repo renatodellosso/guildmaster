@@ -58,7 +58,7 @@ export default function ItemTooltip({
       {droppedBy.size > 0 && (
         <div>
           <strong>Dropped by:</strong>{" "}
-          <ul className="ml-2">
+          <ul>
             {[...droppedBy]
               .map(
                 ({ creatureId, dungeonIds }) =>

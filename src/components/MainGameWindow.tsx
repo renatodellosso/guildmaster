@@ -7,12 +7,14 @@ import { GameContext } from "@/lib/gameContext";
 import BuildingsMenu from "./menus/BuildingsMenu";
 import { ComponentType, useState } from "react";
 import OptionsMenu from "./menus/OptionsMenu";
+import CodexMenu from "./menus/CodexMenu";
 
 enum MenuId {
   Expeditions = "Expeditions",
   Roster = "Roster",
   Buildings = "Buildings",
   Inventory = "Inventory",
+  Codex = "Codex",
   Options = "Options",
 }
 
@@ -41,6 +43,7 @@ export default function MainGameWindow({
         />
       </div>
     ),
+    Codex: CodexMenu,
     Options: ({ context }: { context: Context }) => (
       <OptionsMenu
         context={context}

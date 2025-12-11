@@ -55,3 +55,7 @@ th {
 tr:hover {
   @apply bg-gray-800;
 }
+
+ul {
+  @apply ml-2;
+}
