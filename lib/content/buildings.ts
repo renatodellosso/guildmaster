@@ -64,11 +64,10 @@ const rawBuildings = {
     description: "A spacious hall for adventurers to gather, eat, and rest.",
     canBuild: buildingFilter({
       hasBuildingIds: ["bonfire"],
-      lacksBuildingTags: ["housing"],
     }),
     tags: ["guildCenter"],
     cost: [{ definitionId: "coin", amount: 35000 }],
-    buildTime: 4000,
+    buildTime: 100000,
     replaces: "bonfire",
     healthRegen: 2,
     maxPartySize: 2,
@@ -78,7 +77,9 @@ const rawBuildings = {
   tents: {
     name: "Tents",
     description: "Tents to provide shelter for adventurers.",
-    canBuild: true,
+    canBuild: buildingFilter({
+      lacksBuildingTags: ["housing"],
+    }),
     tags: [],
     cost: [{ definitionId: "coin", amount: 100 }],
     buildTime: 600,
@@ -351,13 +352,13 @@ const rawBuildings = {
     }),
     tags: ["workshop"],
     cost: [{ definitionId: "coin", amount: 25000 }],
-    buildTime: 144000,
+    buildTime: 14000,
     constructionPerTick: 1,
   },
   market_stall: {
     name: "Market Stall",
     description:
-      "A stall to trade goods and resources with adventurers. Unlocks auto-selling.",
+      "A stall to trade goods and resources with adventurers. Unlocks autoselling.",
     canBuild: buildingFilter({
       hasBuildingTags: ["guildCenter"],
     }),

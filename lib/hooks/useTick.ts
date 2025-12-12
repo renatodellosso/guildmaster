@@ -22,7 +22,7 @@ export default function useTick(
 
     setGameContext({
       ...gameContext,
-      lastTick: now,
+      lastTick: gameContext.lastTick + delta * 1000,
     });
 
     setSaveCounter((prev) => {
@@ -39,7 +39,11 @@ export default function useTick(
   }, [gameContext, setGameContext, saveInterval]);
 
   useEffect(() => {
-    const interval = setInterval(handleTick, 1000 / ticksPerSecond);
+    const interval = setInterval(() => {
+      if (Date.now() - gameContext.lastTick >= 1000 / ticksPerSecond) {
+        handleTick();
+      }
+    }, 250 / ticksPerSecond);
     return () => clearInterval(interval);
   }, [gameContext, setGameContext, ticksPerSecond, handleTick]);
 

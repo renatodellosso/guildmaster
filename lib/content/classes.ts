@@ -19,7 +19,8 @@ export type ClassId =
   | "barbarian"
   | "atavist"
   | "knight"
-  | "paladin";
+  | "paladin"
+  | "craftsman";
 
 const rawClasses = {
   thug: {
@@ -449,6 +450,20 @@ const rawClasses = {
         gameContext,
         source
       ),
+  },
+  craftsman: {
+    name: "Craftsman",
+    description: buildClassDescription(
+      "A skilled artisan. Adds a 10% construction speed multiplier per level.",
+      {}
+    ),
+    canSelect: (creature, gameContext) =>
+      getFromOptionalFunc(hasBuildingTag("workshop"), gameContext) &&
+      getSkill(SkillId.Construction, creature, gameContext) >= 3,
+    canSelectText: "Requires a Workshop building and level 3+ Crafting skill.",
+    constructionPerTick: ({ creature, source, gameContext }) =>
+      getSkill(SkillId.Construction, creature, gameContext) *
+      (1 + 0.1 * (source as number)),
   },
 } satisfies RawRegistry<ClassId, ClassDefinition>;
 

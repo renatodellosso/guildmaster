@@ -92,7 +92,7 @@ export function AdventurerDisplay({
       <div>
         HP: {formatInt(adventurer.hp)}/
         {formatInt(getMaxHealth(adventurer, context.game))}{" "}
-        <Tooltip content="3x as much while resting, 0x during expeditions.">
+        <Tooltip content="3x as much while resting, 0x during combat.">
           ({formatBonus(getHealthRegen(adventurer, context.game))}/tick base
           (?))
         </Tooltip>
