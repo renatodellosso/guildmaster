@@ -5,6 +5,7 @@ import { Context } from "@/lib/utilTypes";
 import ItemTooltip from "./ItemTooltip";
 import { getSellValueMultiplier } from "@/lib/gameUtils";
 import { ItemInstance } from "@/lib/item";
+import { Tooltip } from "./Tooltip";
 
 export default function InventoryDisplay({
   inventory,
@@ -149,7 +150,9 @@ export default function InventoryDisplay({
         stall.autoSellItems &&
         stall.autoSellItems.length > 0 && (
           <div className="mt-4">
-            <h2>Auto-selling:</h2>
+            <Tooltip content="Items marked here will be automatically sold by the Market Stall every tick.">
+              <h2>Auto-selling (?):</h2>
+            </Tooltip>
             <table>
               <thead className="border-b">
                 <tr>
