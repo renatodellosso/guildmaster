@@ -1,6 +1,8 @@
 import { BuildingDefinition, buildingFilter } from "../building";
 import { DamageType } from "../damage";
+import { countInInventory, sellFromInventory } from "../inventory";
 import { finishRegistry, RawRegistry } from "../registry";
+import { ItemId } from "./items";
 
 export type BuildingId =
   | "firepit"
@@ -19,7 +21,8 @@ export type BuildingId =
   | "medical_tent"
   | "medical_hut"
   | "infirmary"
-  | "workshop";
+  | "workshop"
+  | "market_stall";
 
 export type BuildingTag =
   | "guildCenter"
@@ -64,7 +67,7 @@ const rawBuildings = {
       lacksBuildingTags: ["housing"],
     }),
     tags: ["guildCenter"],
-    cost: [{ definitionId: "coin", amount: 1000 }],
+    cost: [{ definitionId: "coin", amount: 35000 }],
     buildTime: 4000,
     replaces: "bonfire",
     healthRegen: 2,
@@ -347,9 +350,51 @@ const rawBuildings = {
       hasBuildingTags: ["guildCenter"],
     }),
     tags: ["workshop"],
-    cost: [{ definitionId: "coin", amount: 1500 }],
+    cost: [{ definitionId: "coin", amount: 25000 }],
     buildTime: 144000,
     constructionPerTick: 1,
+  },
+  market_stall: {
+    name: "Market Stall",
+    description:
+      "A stall to trade goods and resources with adventurers. Unlocks auto-selling.",
+    canBuild: buildingFilter({
+      hasBuildingTags: ["guildCenter"],
+    }),
+    tags: [],
+    cost: [{ definitionId: "coin", amount: 15000 }],
+    buildTime: 7200,
+    tick: ({ source }, context) => {
+      const building = source as
+        | undefined
+        | {
+            autoSellItems?: ItemId[];
+          };
+
+      if (!building || !building.autoSellItems) {
+        return;
+      }
+
+      const autoSellItems = building.autoSellItems;
+      const inventory = context.inventory;
+
+      for (const itemId of autoSellItems) {
+        const count = countInInventory(inventory, {
+          definitionId: itemId,
+          amount: 1,
+        });
+
+        if (count > 0) {
+          sellFromInventory(
+            { definitionId: itemId, amount: count },
+            inventory,
+            context
+          );
+
+          console.log(`Auto-sold ${count} x ${itemId}`);
+        }
+      }
+    },
   },
 } satisfies RawRegistry<BuildingId, BuildingDefinition>;
 

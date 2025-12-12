@@ -41,6 +41,7 @@ export default function MainGameWindow({
           inventory={context.game.inventory}
           context={context}
           canSell={true}
+          allowAutoSell={true}
         />
       </div>
     ),
