@@ -1,4 +1,5 @@
 import {
+  createCreatureInstance,
   CreatureInstance,
   CreatureProvider,
   CreatureProviderSource,
@@ -117,32 +118,42 @@ export default function CreatureProviderDetails({
       source
     );
 
-  const damage = Array.isArray(provider.getDamageToDeal)
-    ? provider.getDamageToDeal
+  const damage = provider.getDamageToDeal
+    ? Array.isArray(provider.getDamageToDeal)
+      ? provider.getDamageToDeal
+      : getFromOptionalFunc(provider.getDamageToDeal, {
+          prev: [],
+          target: createCreatureInstance("human", context.game),
+          dealer: creature!,
+          gameContext: context.game,
+          source,
+        })
     : [];
 
   return (
     <>
-      {Object.entries(stats).map(([statName, stat]) => {
-        if (stat === undefined) return null;
-        const format =
-          typeof stat === "object" && "format" in stat ? stat.format : "int";
-        const value =
-          typeof stat === "object" && "val" in stat ? stat.val : stat;
-        if (value === undefined) return null;
+      {Object.entries(stats)
+        .filter(([_, stat]) => stat != 0)
+        .map(([statName, stat]) => {
+          if (stat === undefined) return null;
+          const format =
+            typeof stat === "object" && "format" in stat ? stat.format : "int";
+          const value =
+            typeof stat === "object" && "val" in stat ? stat.val : stat;
+          if (value === undefined) return null;
 
-        const formatted = formatAsBonus
-          ? formatBonus(value, format)
-          : format === "percent"
-            ? formatPercent(value)
-            : Math.round(value).toString();
+          const formatted = formatAsBonus
+            ? formatBonus(value, format)
+            : format === "percent"
+              ? formatPercent(value)
+              : Math.round(value).toString();
 
-        return (
-          <div key={statName}>
-            {statName}: {formatted}
-          </div>
-        );
-      })}
+          return (
+            <div key={statName}>
+              {statName}: {formatted}
+            </div>
+          );
+        })}
       {resistances && Object.entries(resistances).length > 0 && (
         <div>
           <strong>Resistances:</strong>

@@ -193,7 +193,7 @@ const rawClasses = {
               name: "Healing Touch",
               description:
                 "Heal an ally with a touch imbued with divine energy.",
-              amount: 15,
+              amount: 15 + (source as number),
               range: 1,
               manaCost: 8,
               priority: AbilityPriority.Medium,
@@ -286,7 +286,7 @@ const rawClasses = {
     },
     resistances: ({ source }) => ({
       [DamageType.Necrotic]: Math.min(0.2 + 0.05 * (source as number), 1),
-      [DamageType.Radiant]: -0.1 - 0.05 * (source as number),
+      [DamageType.Radiant]: Math.max(-0.1 - 0.025 * (source as number), -0.5),
     }),
     onDealDamage: ({ dealer, damageDealt, gameContext, source }) => {
       const totalDamage = damageDealt.reduce((sum, dmg) => sum + dmg.amount, 0);
