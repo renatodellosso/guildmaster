@@ -9,7 +9,7 @@ import {
 } from "@/lib/creatureUtils";
 import { formatInt, titleCase, formatPercent } from "@/lib/format";
 import { SkillId } from "@/lib/skills";
-import { Context } from "@/lib/utilTypes";
+import { Context, getFromOptionalFunc } from "@/lib/utilTypes";
 import StatusEffectDisplay from "./StatusEffectDisplay";
 import { creatures } from "@/lib/content/creatures";
 import { items } from "@/lib/content/items";
@@ -42,6 +42,10 @@ export default function CreatureDetails({
       <div>
         Mana: {formatInt(creature.mana)}/
         {formatInt(getMaxMana(creature, context.game))}
+      </div>
+      <div>
+        XP Value:{" "}
+        {formatInt(getFromOptionalFunc(def.xpValue, creature, context.game) || 0)}
       </div>
       <div>
         <strong>Skills:</strong>

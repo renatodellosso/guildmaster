@@ -353,7 +353,7 @@ const rawBuildings = {
     tags: ["workshop"],
     cost: [{ definitionId: "coin", amount: 25000 }],
     buildTime: 14000,
-    constructionPerTick: 1,
+    constructionPerTick: 2,
   },
   market_stall: {
     name: "Market Stall",
