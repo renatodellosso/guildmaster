@@ -375,7 +375,10 @@ const rawClasses = {
       }
 
       const healthToConvert = 1 * (source as number);
-      if (creature.hp - healthToConvert <= maxHealth / 2) {
+      if (
+        creature.hp - healthToConvert <= maxHealth / 2 ||
+        creature.mana >= getMaxMana(creature, gameContext)
+      ) {
         return;
       }
 
