@@ -9,7 +9,9 @@ type RawItemId =
   | "tattered_cloth"
   | "vampiric_dust"
   | "incense"
-  | "cloth";
+  | "cloth"
+  | "scroll"
+  | "bottle";
 
 export type ItemId = RawItemId | EquipmentId;
 
@@ -49,6 +51,16 @@ const rawItems = {
     name: "Cloth",
     description: "A piece of fine cloth, useful for crafting.",
     value: 8,
+  },
+  scroll: {
+    name: "Scroll",
+    description: "A magical scroll containing a spell.",
+    value: 50,
+  },
+  bottle: {
+    name: "Bottle",
+    description: "An empty glass bottle, useful for holding liquids.",
+    value: 5,
   },
 } satisfies RawRegistry<RawItemId, ItemDefinition>;
 

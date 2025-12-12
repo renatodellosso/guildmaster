@@ -21,8 +21,11 @@ export type BuildingId =
   | "medical_tent"
   | "medical_hut"
   | "infirmary"
+  | "hospital"
   | "workshop"
-  | "market_stall";
+  | "market_stall"
+  | "library"
+  | "alchemy_lab";
 
 export type BuildingTag =
   | "guildCenter"
@@ -205,6 +208,7 @@ const rawBuildings = {
       },
     ],
     buildTime: 60000,
+    replaces: "temple",
     manaRegen: 3,
     healthRegen: 1,
     resistances: {
@@ -229,8 +233,9 @@ const rawBuildings = {
       },
     ],
     buildTime: 60000,
-    manaRegen: 3,
-    healthRegen: 1,
+    replaces: "temple",
+    manaRegen: 1,
+    healthRegen: 3,
     resistances: {
       [DamageType.Radiant]: 0.1,
       [DamageType.Fire]: 0.1,
@@ -279,6 +284,7 @@ const rawBuildings = {
     description: "A tent equipped to heal and care for injured adventurers.",
     canBuild: buildingFilter({
       hasBuildingTags: ["guildCenter"],
+      lacksBuildingTags: ["medical"],
     }),
     tags: ["medical"],
     cost: [
@@ -344,6 +350,33 @@ const rawBuildings = {
     maxHealth: 50,
     manaRegen: 2,
   },
+  hospital: {
+    name: "Hospital",
+    description:
+      "A state-of-the-art hospital to provide exceptional medical care to adventurers.",
+    canBuild: true,
+    tags: ["medical"],
+    cost: [
+      { definitionId: "coin", amount: 50000 },
+      {
+        definitionId: "cloth",
+        amount: 100,
+      },
+      {
+        definitionId: "slime",
+        amount: 250,
+      },
+      {
+        definitionId: "incense",
+        amount: 20,
+      },
+    ],
+    buildTime: 300000,
+    replaces: "infirmary",
+    healthRegen: 15,
+    manaRegen: 5,
+    maxHealth: 100,
+  },
   workshop: {
     name: "Workshop",
     description: "A place for crafting and repairing equipment.",
@@ -365,6 +398,7 @@ const rawBuildings = {
     tags: [],
     cost: [{ definitionId: "coin", amount: 15000 }],
     buildTime: 7200,
+    sellValueMultiplier: 0.1,
     tick: ({ source }, context) => {
       const building = source as
         | undefined
@@ -396,6 +430,57 @@ const rawBuildings = {
         }
       }
     },
+  },
+  library: {
+    name: "Library",
+    description:
+      "A repository of knowledge that enhances adventurers' skills and abilities.",
+    canBuild: buildingFilter({
+      hasUpgradeOf: ["longhall"],
+    }),
+    tags: [],
+    cost: [
+      { definitionId: "coin", amount: 50000 },
+      {
+        definitionId: "scroll",
+        amount: 20,
+      },
+    ],
+    buildTime: 1000000,
+    xpMultiplier: 0.2,
+    manaRegen: 5,
+    resistances: {
+      [DamageType.Force]: 0.1,
+    },
+  },
+  alchemy_lab: {
+    name: "Alchemy Lab",
+    description:
+      "A lab for brewing potions and elixirs to aid adventurers on their quests.",
+    canBuild: buildingFilter({
+      hasBuildingIds: ["workshop"],
+    }),
+    tags: [],
+    cost: [
+      { definitionId: "coin", amount: 40000 },
+      {
+        definitionId: "bottle",
+        amount: 50,
+      },
+      {
+        definitionId: "slime",
+        amount: 100,
+      },
+    ],
+    buildTime: 800000,
+    manaRegen: 3,
+    healthRegen: 2,
+    getDamageToDeal: [
+      {
+        type: DamageType.Poison,
+        amount: 10,
+      },
+    ],
   },
 } satisfies RawRegistry<BuildingId, BuildingDefinition>;
 

@@ -148,7 +148,7 @@ export default function BuildingsMenu({ context }: { context: Context }) {
                           )}
                         </div>
                       </td>
-                      <td className="text-right">{workPerTick}</td>
+                      <td className="text-right">{formatInt(workPerTick)}</td>
                       <td className="text-right">
                         {formatDuration(round(workRemaining / workPerTick))}
                       </td>

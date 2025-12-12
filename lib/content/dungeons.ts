@@ -7,7 +7,8 @@ export type DungeonId =
   | "caves"
   | "sewers"
   | "crypts"
-  | "paladin_keep";
+  | "paladin_keep"
+  | "mage_tower";
 
 export const rawDungeons = {
   bandit_camp: {
@@ -263,6 +264,59 @@ export const rawDungeons = {
           {
             id: "veteran_paladin",
             count: 2,
+          },
+        ],
+        weight: 1,
+      },
+    ]),
+  },
+  mage_tower: {
+    name: "Mage Tower",
+    encounters: new Table<Encounter>([
+      {
+        item: [
+          {
+            id: "familiar",
+            count: 3,
+          },
+        ],
+        weight: 1,
+      },
+      {
+        item: [
+          {
+            id: "apprentice_mage",
+            count: 2,
+          },
+        ],
+        weight: 1,
+      },
+      {
+        item: [
+          {
+            id: "familiar",
+            count: 3,
+          },
+          {
+            id: "apprentice_mage",
+            count: 2,
+          },
+        ],
+        weight: 1,
+      },
+      {
+        item: [
+          {
+            id: "archmage",
+            count: 1,
+          },
+          {
+            id: "apprentice_mage",
+            count: 2,
+          },
+          {
+            id: "familiar",
+            count: 4,
           },
         ],
         weight: 1,

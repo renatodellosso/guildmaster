@@ -117,6 +117,10 @@ export default function CreatureProviderDetails({
       source
     );
 
+  const damage = Array.isArray(provider.getDamageToDeal)
+    ? provider.getDamageToDeal
+    : [];
+
   return (
     <>
       {Object.entries(stats).map(([statName, stat]) => {
@@ -145,6 +149,16 @@ export default function CreatureProviderDetails({
           {Object.entries(resistances).map(([resistanceType, value]) => (
             <div key={resistanceType}>
               {titleCase(resistanceType)}: {formatPercent(value)}
+            </div>
+          ))}
+        </div>
+      )}
+      {damage && damage.length > 0 && (
+        <div>
+          <strong>Damage to Deal:</strong>
+          {damage.map((dmg, index) => (
+            <div key={index}>
+              {titleCase(dmg.type)}: {formatBonus(dmg.amount, "int")}
             </div>
           ))}
         </div>

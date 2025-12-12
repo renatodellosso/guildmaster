@@ -13,7 +13,10 @@ export type EquipmentId =
   | "slime_cloak"
   | "holy_sceptre"
   | "chainmail_armor"
-  | "heavy_pike";
+  | "heavy_pike"
+  | "wizard_hat"
+  | "apprentice_robe"
+  | "telekinetic_gloves";
 
 export const rawEquipments = {
   shield_bauble: {
@@ -138,5 +141,38 @@ export const rawEquipments = {
         range: 3,
       }),
     ],
+  },
+  wizard_hat: {
+    name: "Wizard Hat",
+    description: "A pointed hat that enhances magical abilities.",
+    value: 1800,
+    slot: EquipmentSlot.Accessory,
+    skills: {
+      [SkillId.Magic]: 25,
+    },
+    manaRegen: 5,
+  },
+  apprentice_robe: {
+    name: "Apprentice Robe",
+    description: "A robe worn by novice spellcasters.",
+    value: 700,
+    slot: EquipmentSlot.Armor,
+    maxHealth: 4,
+    resistances: {
+      [DamageTypeGroups.Elemental]: 0.25,
+    },
+    skills: {
+      [SkillId.Magic]: 10,
+    },
+  },
+  telekinetic_gloves: {
+    name: "Telekinetic Gloves",
+    description: "Gloves that enhance telekinetic abilities.",
+    value: 1000,
+    slot: EquipmentSlot.Accessory,
+    skills: {
+      [SkillId.Magic]: 15,
+    },
+    constructionPerTick: 10,
   },
 } satisfies RawRegistry<EquipmentId, EquipmentDefinition>;

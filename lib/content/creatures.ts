@@ -27,7 +27,10 @@ export type CreatureDefId =
   | "temple_guard"
   | "paladin"
   | "veteran_paladin"
-  | "priest";
+  | "priest"
+  | "familiar"
+  | "apprentice_mage"
+  | "archmage";
 
 const rawCreatures = {
   human: {
@@ -685,6 +688,148 @@ const rawCreatures = {
           weight: 0.2,
           item: {
             definitionId: "holy_sceptre",
+            amount: 1,
+          },
+        },
+      ]),
+    },
+  },
+  familiar: {
+    name: "Familiar",
+    maxHealth: 30,
+    xpValue: 20,
+    skills: {},
+    abilities: [
+      attack({
+        name: "Magic Missile",
+        description: "Launch a magical projectile at an enemy.",
+        damage: [
+          {
+            type: DamageType.Force,
+            amount: 8,
+          },
+        ],
+        range: 4,
+        targets: 6,
+      }),
+    ],
+    drops: {
+      chance: 0.1,
+      table: new Table<DropTableEntry>([
+        {
+          weight: 1,
+          item: {
+            definitionId: "scroll",
+            amount: 1,
+          },
+        },
+        {
+          weight: 0.02,
+          item: {
+            definitionId: "telekinetic_gloves",
+            amount: 1,
+          },
+        },
+      ]),
+    },
+  },
+  apprentice_mage: {
+    name: "Apprentice Mage",
+    maxHealth: 80,
+    xpValue: 500,
+    skills: {},
+    abilities: [
+      attack({
+        name: "Firebolt",
+        description: "Hurl a bolt of fire at an enemy.",
+        damage: [
+          {
+            type: DamageType.Fire,
+            amount: 75,
+          },
+        ],
+        range: 5,
+      }),
+    ],
+    drops: {
+      chance: 0.5,
+      table: new Table<DropTableEntry>([
+        {
+          weight: 1,
+          item: {
+            definitionId: "scroll",
+            amount: [1, 2],
+          },
+        },
+        {
+          weight: 0.2,
+          item: {
+            definitionId: "apprentice_robe",
+            amount: 1,
+          },
+        },
+      ]),
+    },
+  },
+  archmage: {
+    name: "Archmage",
+    maxHealth: 200,
+    xpValue: 2000,
+    skills: {},
+    abilities: [
+      attack({
+        name: "Arcane Blast",
+        description: "Release a blast of arcane energy at an enemy.",
+        damage: [
+          {
+            type: DamageType.Psychic,
+            amount: 250,
+          },
+        ],
+        range: 6,
+        targets: 4,
+      }),
+      attack({
+        name: "Chain Lightning",
+        description: "Strike an enemy with lightning that jumps to others.",
+        damage: [
+          {
+            type: DamageType.Lightning,
+            amount: 150,
+          },
+        ],
+        range: 5,
+        targets: 5,
+      }),
+    ],
+    drops: {
+      chance: 1,
+      table: new Table<DropTableEntry>([
+        {
+          weight: 1,
+          item: {
+            definitionId: "scroll",
+            amount: [1, 3],
+          },
+        },
+        {
+          weight: 0.5,
+          item: {
+            definitionId: "bottle",
+            amount: 1,
+          },
+        },
+        {
+          weight: 0.2,
+          item: {
+            definitionId: "coin",
+            amount: [250, 500],
+          },
+        },
+        {
+          weight: 0.1,
+          item: {
+            definitionId: "wizard_hat",
             amount: 1,
           },
         },

@@ -45,7 +45,9 @@ export default function CreatureDetails({
       </div>
       <div>
         XP Value:{" "}
-        {formatInt(getFromOptionalFunc(def.xpValue, creature, context.game) || 0)}
+        {formatInt(
+          getFromOptionalFunc(def.xpValue, creature, context.game) || 0
+        )}
       </div>
       <div>
         <strong>Skills:</strong>
