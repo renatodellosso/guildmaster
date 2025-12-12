@@ -2,7 +2,7 @@ import { canReassignAdventurer } from "@/lib/activity";
 import { canBuild, startBuildingConstruction } from "@/lib/building";
 import { BuildingId, buildings } from "@/lib/content/buildings";
 import { getConstructionPerTick, getSkill } from "@/lib/creatureUtils";
-import { hasInInventory } from "@/lib/inventory";
+import { addToInventory, hasInInventory } from "@/lib/inventory";
 import { SkillId } from "@/lib/skills";
 import { Context, getFromOptionalFunc } from "@/lib/utilTypes";
 import BuildingTooltip from "../BuildingTooltip";
@@ -61,6 +61,7 @@ export default function BuildingsMenu({ context }: { context: Context }) {
                 </th>
                 <th>Progress/Tick</th>
                 <th>Time Remaining</th>
+                <th />
               </tr>
             </thead>
             <tbody>
@@ -151,6 +152,31 @@ export default function BuildingsMenu({ context }: { context: Context }) {
                       <td className="text-right">{formatInt(workPerTick)}</td>
                       <td className="text-right">
                         {formatDuration(round(workRemaining / workPerTick))}
+                      </td>
+                      <td>
+                        <button
+                          onClick={() => {
+                            // Remove all workers
+                            workers.forEach((worker) => {
+                              worker.activity = { definitionId: "resting" };
+                            });
+
+                            // Refund costs
+                            addToInventory(
+                              context.game.inventory,
+                              def.cost
+                            );
+
+                            // Remove construction
+                            delete context.game.buildingsUnderConstruction[
+                              buildingId as BuildingId
+                            ];
+
+                            context.updateGameState();
+                          }}
+                        >
+                          Cancel
+                        </button>
                       </td>
                     </tr>
                   );
