@@ -156,16 +156,19 @@ export default function BuildingsMenu({ context }: { context: Context }) {
                       <td>
                         <button
                           onClick={() => {
+                            if (
+                              !confirm(`Cancel construction of ${def.name}?`)
+                            ) {
+                              return;
+                            }
+
                             // Remove all workers
                             workers.forEach((worker) => {
                               worker.activity = { definitionId: "resting" };
                             });
 
                             // Refund costs
-                            addToInventory(
-                              context.game.inventory,
-                              def.cost
-                            );
+                            addToInventory(context.game.inventory, def.cost);
 
                             // Remove construction
                             delete context.game.buildingsUnderConstruction[

@@ -97,8 +97,25 @@ export default function InventoryDisplay({
     context.updateGameState();
   }
 
+  let totalValue = 0;
+  if (canSell) {
+    const sellValueMultiplier = getSellValueMultiplier(context.game);
+    totalValue = inventory.reduce((sum, instance) => {
+      const def = items[instance.definitionId];
+      if (def.id === "coin") {
+        return sum + def.value * instance.amount;
+      }
+      return sum + def.value * instance.amount * sellValueMultiplier;
+    }, 0);
+  }
+
   return (
     <div>
+      {canSell && (
+        <div className="mb-2">
+          Total Liquid Value: {formatInt(totalValue)} coins
+        </div>
+      )}
       <table>
         <thead className="border-b">
           <tr>

@@ -762,6 +762,13 @@ const rawCreatures = {
           },
         },
         {
+          weight: 1,
+          item: {
+            definitionId: "bottle",
+            amount: [1, 2],
+          },
+        },
+        {
           weight: 0.2,
           item: {
             definitionId: "apprentice_robe",
@@ -813,10 +820,10 @@ const rawCreatures = {
           },
         },
         {
-          weight: 0.5,
+          weight: 1,
           item: {
             definitionId: "bottle",
-            amount: 1,
+            amount: [1, 3],
           },
         },
         {
