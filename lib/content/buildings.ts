@@ -371,7 +371,7 @@ const rawBuildings = {
         amount: 20,
       },
     ],
-    buildTime: 300000,
+    buildTime: 3000000,
     replaces: "infirmary",
     healthRegen: 15,
     manaRegen: 5,

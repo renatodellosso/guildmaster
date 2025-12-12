@@ -1,9 +1,8 @@
 import { canReassignAdventurer } from "@/lib/activity";
 import { canBuild, startBuildingConstruction } from "@/lib/building";
 import { BuildingId, buildings } from "@/lib/content/buildings";
-import { getConstructionPerTick, getSkill } from "@/lib/creatureUtils";
+import { getConstructionPerTick } from "@/lib/creatureUtils";
 import { addToInventory, hasInInventory } from "@/lib/inventory";
-import { SkillId } from "@/lib/skills";
 import { Context, getFromOptionalFunc } from "@/lib/utilTypes";
 import BuildingTooltip from "../BuildingTooltip";
 import { formatDuration, formatInt } from "@/lib/format";
@@ -56,10 +55,10 @@ export default function BuildingsMenu({ context }: { context: Context }) {
                 <th>Work Remaining</th>
                 <th>
                   <Tooltip content="Each worker contributes 1 + Construction skill by default.">
-                    Workers (?)
+                    Workers (work/tick) (?)
                   </Tooltip>
                 </th>
-                <th>Progress/Tick</th>
+                <th>Work/Tick</th>
                 <th>Time Remaining</th>
                 <th />
               </tr>
@@ -137,12 +136,10 @@ export default function BuildingsMenu({ context }: { context: Context }) {
                                   htmlFor={`${buildingId}-${String(worker.id)}`}
                                 >
                                   {worker.name} (
-                                  {getSkill(
-                                    SkillId.Construction,
-                                    worker,
-                                    context.game
-                                  )}{" "}
-                                  construction)
+                                  {formatInt(
+                                    getConstructionPerTick(worker, context.game)
+                                  )}
+                                  )
                                 </label>
                               </span>
                             ))
