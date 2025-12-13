@@ -1,5 +1,5 @@
 import { BuildingDefinition, buildingFilter } from "../building";
-import { DamageType } from "../damage";
+import { DamageType, DamageTypeGroups } from "../damage";
 import { countInInventory, sellFromInventory } from "../inventory";
 import { finishRegistry, RawRegistry } from "../registry";
 import { ItemId } from "./items";
@@ -25,7 +25,8 @@ export type BuildingId =
   | "workshop"
   | "market_stall"
   | "library"
-  | "alchemy_lab";
+  | "alchemy_lab"
+  | "grotto";
 
 export type BuildingTag =
   | "guildCenter"
@@ -479,6 +480,52 @@ const rawBuildings = {
       {
         type: DamageType.Poison,
         amount: 10,
+      },
+    ],
+  },
+  grotto: {
+    name: "Grotto",
+    description:
+      "A mystical grotto that enhances magical energies and provides sanctuary.",
+    canBuild: buildingFilter({
+      hasBuildingIds: ["alchemy_lab", "library"],
+      hasUpgradeOf: ["longhall"],
+    }),
+    tags: [],
+    cost: [
+      { definitionId: "coin", amount: 250_000 },
+      {
+        definitionId: "slime",
+        amount: 500,
+      },
+      {
+        definitionId: "incense",
+        amount: 200,
+      },
+      {
+        definitionId: "vampiric_dust",
+        amount: 50,
+      },
+    ],
+    buildTime: 15_000_000,
+    xpMultiplier: 0.3,
+    maxHealth: 30,
+    healthRegen: 20,
+    manaRegen: 20,
+    constructionPerTick: 5,
+    resistances: {
+      [DamageTypeGroups.All]: 0.1,
+    },
+    getDamageToDeal: [
+      {
+        type: DamageType.Psychic,
+        amount: 5,
+      },
+    ],
+    getDamageToTake: [
+      {
+        type: DamageType.Necrotic,
+        amount: 5,
       },
     ],
   },

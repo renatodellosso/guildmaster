@@ -37,6 +37,22 @@ export default function CreatureProviderDetails({
       gameContext: context.game,
       source,
     });
+  const maxMana =
+    provider.maxMana &&
+    getFromOptionalFunc(provider.maxMana, {
+      creature: creature!,
+      source,
+      gameContext: context.game,
+      prev: 0,
+    });
+  const manaRegen =
+    provider.manaRegen &&
+    getFromOptionalFunc(provider.manaRegen, {
+      creature: creature!,
+      prev: 0,
+      gameContext: context.game,
+      source,
+    });
   const actionsPerTurn =
     provider.actionsPerTurn &&
     getFromOptionalFunc(provider.actionsPerTurn, {
@@ -91,6 +107,8 @@ export default function CreatureProviderDetails({
   } = {
     "Max Health": maxHealth,
     "Health Regen": healthRegen,
+    "Max Mana": maxMana,
+    "Mana Regen": manaRegen,
     "Actions Per Turn": actionsPerTurn,
     "Construction Per Tick": constructionPerTick,
     "XP Multiplier": {
@@ -118,7 +136,7 @@ export default function CreatureProviderDetails({
       source
     );
 
-  const damage = provider.getDamageToDeal
+  const damageDealt = provider.getDamageToDeal
     ? Array.isArray(provider.getDamageToDeal)
       ? provider.getDamageToDeal
       : getFromOptionalFunc(provider.getDamageToDeal, {
@@ -128,6 +146,16 @@ export default function CreatureProviderDetails({
           gameContext: context.game,
           source,
         })
+    : [];
+
+  const damageTaken = Array.isArray(provider.getDamageToTake)
+    ? getFromOptionalFunc(provider.getDamageToTake, {
+        prev: [],
+        target: creature!,
+        dealer: createCreatureInstance("human", context.game),
+        gameContext: context.game,
+        source,
+      })
     : [];
 
   return (
@@ -164,12 +192,22 @@ export default function CreatureProviderDetails({
           ))}
         </div>
       )}
-      {damage && damage.length > 0 && (
+      {damageDealt && damageDealt.length > 0 && (
         <div>
-          <strong>Damage to Deal:</strong>
-          {damage.map((dmg, index) => (
+          <strong>Damage Dealt:</strong>
+          {damageDealt.map((dmg, index) => (
             <div key={index}>
               {titleCase(dmg.type)}: {formatBonus(dmg.amount, "int")}
+            </div>
+          ))}
+        </div>
+      )}
+      {damageTaken && damageTaken.length > 0 && (
+        <div>
+          <strong>Damage Taken:</strong>
+          {damageTaken.map((dmg, index) => (
+            <div key={index}>
+              {titleCase(dmg.type)}: {formatBonus(-dmg.amount, "int")}
             </div>
           ))}
         </div>
