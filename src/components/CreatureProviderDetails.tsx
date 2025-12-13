@@ -161,7 +161,7 @@ export default function CreatureProviderDetails({
   return (
     <>
       {Object.entries(stats)
-        .filter(([_, stat]) => stat != 0)
+        .filter(([, stat]) => stat != 0)
         .map(([statName, stat]) => {
           if (stat === undefined) return null;
           const format =

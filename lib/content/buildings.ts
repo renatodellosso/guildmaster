@@ -580,7 +580,7 @@ const rawBuildings = {
           }
         }
 
-        let skillId = config.skillId || SkillId.Melee;
+        const skillId = config.skillId || SkillId.Melee;
 
         levelUpAdventurer(adventurer, 1, classId, skillId);
       }
