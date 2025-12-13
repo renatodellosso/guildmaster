@@ -1,7 +1,11 @@
-import { BuildingDefinition, buildingFilter } from "../building";
+import { BuildingDefinition, buildingFilter, OfficesData } from "../building";
+import { getXpForNextLevel, levelUpAdventurer } from "../creatureUtils";
 import { DamageType, DamageTypeGroups } from "../damage";
 import { countInInventory, sellFromInventory } from "../inventory";
 import { finishRegistry, RawRegistry } from "../registry";
+import { SkillId } from "../skills";
+import { getFromOptionalFunc } from "../utilTypes";
+import { classes } from "./classes";
 import { ItemId } from "./items";
 
 export type BuildingId =
@@ -26,7 +30,8 @@ export type BuildingId =
   | "market_stall"
   | "library"
   | "alchemy_lab"
-  | "grotto";
+  | "grotto"
+  | "offices";
 
 export type BuildingTag =
   | "guildCenter"
@@ -400,8 +405,8 @@ const rawBuildings = {
     cost: [{ definitionId: "coin", amount: 15000 }],
     buildTime: 7200,
     sellValueMultiplier: 0.1,
-    tick: ({ source }, context) => {
-      const building = source as
+    tickBuilding: (data, context) => {
+      const building = data as
         | undefined
         | {
             autoSellItems?: ItemId[];
@@ -528,6 +533,58 @@ const rawBuildings = {
         amount: 5,
       },
     ],
+  },
+  offices: {
+    name: "Offices",
+    description:
+      "Administrative offices to manage guild operations and improve efficiency. Unlocks autoleveling adventurers.",
+    canBuild: buildingFilter({
+      hasUpgradeOf: ["longhall"],
+    }),
+    tags: [],
+    cost: [
+      { definitionId: "coin", amount: 150_000 },
+      {
+        definitionId: "scroll",
+        amount: 20,
+      },
+    ],
+    buildTime: 8_000_000,
+    tickBuilding: (data, context) => {
+      const building = data as undefined | OfficesData;
+
+      if (!building || !building.autolevelAdventurers) {
+        return;
+      }
+
+      const autolevelAdventurers = building.autolevelAdventurers;
+      const roster = context.roster;
+
+      for (const [id, config] of Object.entries(autolevelAdventurers)) {
+        if (
+          context.roster[id].xp < getXpForNextLevel(context.roster[id].level)
+        ) {
+          continue;
+        }
+        const adventurer = roster[id];
+        if (!adventurer) continue;
+
+        let classId = config.classId;
+        if (config.classId) {
+          const targetClass = classes[config.classId];
+          if (
+            !targetClass ||
+            !getFromOptionalFunc(targetClass.canSelect, adventurer, context)
+          ) {
+            classId = undefined;
+          }
+        }
+
+        let skillId = config.skillId || SkillId.Melee;
+
+        levelUpAdventurer(adventurer, 1, classId, skillId);
+      }
+    },
   },
 } satisfies RawRegistry<BuildingId, BuildingDefinition>;
 

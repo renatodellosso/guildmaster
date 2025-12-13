@@ -29,6 +29,8 @@ import ClassTooltip from "./ClassTooltip";
 import { canReassignAdventurer } from "@/lib/activity";
 import { EquipmentSlot } from "@/lib/equipmentSlot";
 import { Tooltip } from "./Tooltip";
+import AutoLevelConfig from "./AutoLevelConfig";
+import { OfficesData } from "@/lib/building";
 
 export function AdventurerDisplay({
   adventurer,
@@ -57,6 +59,11 @@ export function AdventurerDisplay({
     }
 
     delete context.game.roster[adventurer.id];
+    if ("offices" in context.game.buildings) {
+      const officesData = context.game.buildings["offices"]!
+        .data as OfficesData;
+      delete officesData.autolevelAdventurers[adventurer.id];
+    }
     context.updateGameState();
   }
 
@@ -83,6 +90,9 @@ export function AdventurerDisplay({
           <button onClick={() => setLevelUpMenuOpen(true)}>Level Up</button>
         )}
       </div>
+      {"offices" in context.game.buildings && (
+        <AutoLevelConfig adventurer={adventurer} context={context} />
+      )}
       {canReassignAdventurer(adventurer, context.game) &&
         Object.values(context.game.roster).length > 1 && (
           <button onClick={expelFromGuild} className="bg-red-900">

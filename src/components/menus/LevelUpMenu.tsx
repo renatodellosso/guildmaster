@@ -1,6 +1,10 @@
 import { classes, ClassId } from "@/lib/content/classes";
 import { AdventurerInstance } from "@/lib/creature";
-import { getSkill, getXpForNextLevel } from "@/lib/creatureUtils";
+import {
+  getSkill,
+  getXpForNextLevel,
+  levelUpAdventurer,
+} from "@/lib/creatureUtils";
 import { SkillId } from "@/lib/skills";
 import { getFromOptionalFunc, Context } from "@/lib/utilTypes";
 import { useState } from "react";
@@ -58,22 +62,7 @@ export function LevelUpMenu({
       return;
     }
 
-    adventurer.level += levelsToAdd;
-
-    // Increase selected skill by 1
-    const currentSkillValue = getSkill(skill, adventurer, context.game);
-    if (!adventurer.skills) {
-      adventurer.skills = {};
-    }
-    adventurer.skills[skill] = currentSkillValue + levelsToAdd;
-
-    // Add selected class
-    if (selectedClass) {
-      if (!adventurer.classes[selectedClass]) {
-        adventurer.classes[selectedClass] = 0;
-      }
-      adventurer.classes[selectedClass]! += levelsToAdd;
-    }
+    levelUpAdventurer(adventurer, levelsToAdd, selectedClass, skill);
 
     close();
   }

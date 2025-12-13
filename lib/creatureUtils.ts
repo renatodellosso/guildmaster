@@ -662,3 +662,22 @@ export function findDungeonsWithCreature(
 
   return dungeonNames;
 }
+
+export function levelUpAdventurer(
+  adventurer: AdventurerInstance,
+  levels: number,
+  classId: ClassId | undefined,
+  skillId: SkillId | undefined
+) {
+  adventurer.level += levels;
+
+  if (classId)
+    adventurer.classes[classId] = (adventurer.classes[classId] || 0) + 1;
+
+  if (!adventurer.skills) {
+    adventurer.skills = {};
+  }
+
+  if (skillId)
+    adventurer.skills[skillId] = (adventurer.skills[skillId] || 0) + levels;
+}

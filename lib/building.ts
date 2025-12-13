@@ -1,8 +1,10 @@
 import { BuildingId, buildings, BuildingTag } from "./content/buildings";
+import { ClassId } from "./content/classes";
 import { GameContext, GameProvider } from "./gameContext";
 import { removeFromInventory } from "./inventory";
 import { ItemInstance } from "./item";
-import { getFromOptionalFunc, OptionalFunc } from "./utilTypes";
+import { SkillId } from "./skills";
+import { getFromOptionalFunc, Id, OptionalFunc } from "./utilTypes";
 
 export type BuildingDefinition = GameProvider & {
   id: BuildingId;
@@ -19,6 +21,7 @@ export type BuildingDefinition = GameProvider & {
    * If specified, requires that the building this replaces is already built.
    */
   replaces?: BuildingId;
+  tickBuilding?: (data: unknown, gameContext: GameContext) => void;
 };
 
 export type BuildingInstance = {
@@ -201,3 +204,12 @@ export function buildingFilter(params: {
     );
   };
 }
+
+export type OfficesData = {
+  autolevelAdventurers: {
+    [id: Id]: {
+      classId: ClassId | undefined;
+      skillId: SkillId;
+    };
+  };
+};

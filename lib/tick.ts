@@ -1,6 +1,7 @@
 import { ActivityInstance } from "./activity";
 import { handleCombatTick } from "./combat";
 import { activities } from "./content/activities";
+import { BuildingId, buildings } from "./content/buildings";
 import { AdventurerInstance, CreatureInstance } from "./creature";
 import {
   getHealthRegen,
@@ -36,6 +37,13 @@ export function tick(gameContext: GameContext) {
 
   for (const creature of creaturesToTick) {
     tickCreature(creature, gameContext);
+  }
+
+  for (const [buildingId, instance] of Object.entries(gameContext.buildings)) {
+    const buildingDef = buildings[buildingId as BuildingId];
+    if (buildingDef.tickBuilding) {
+      buildingDef.tickBuilding(instance.data, gameContext);
+    }
   }
 }
 
